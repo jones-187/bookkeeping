@@ -1,72 +1,68 @@
-﻿# Project Overview
+# 项目概览
 
-Last updated: 2026-03-27
+最后更新：2026-03-27
 
-## Background
+## 背景
 
-This project aims to become a local-first bookkeeping app for personal finance use cases.
-The product direction remains:
+本项目旨在成为一个用于个人理财用例的 Local-First 记账应用。产品方向保持为：
 
-- fast local interaction
-- reliable offline behavior
-- simple and maintainable architecture
-- strict financial correctness
+- 快速的本地交互
+- 可靠的离线行为
+- 简单且可维护的架构
+- 严格的金融正确性
 
-## Current state
+## 当前状态
 
-As of 2026-03-27, the repository is no longer documentation-only.
-A minimal runnable scaffold now exists:
+截至 2026-03-27，仓库不再仅包含文档。现在存在一个最小化的可运行脚手架：
 
-- Expo + React Native + TypeScript app in `src/app`
-- Go + Gin API in `src/server`
-- one implemented feature: a service status page
+- `src/app` 中的 Expo + React Native + TypeScript 应用
+- `src/server` 中的 Go + Gin API
+- 一个已实现的功能：服务状态页面
 
-The service status page proves that:
+服务状态页面证明：
 
-- the app boots successfully
-- the server boots successfully
-- the app can call `GET /api/v1/bootstrap`
-- the UI handles loading, success, and retry-after-failure states
+- 应用成功启动
+- 服务端成功启动
+- 应用可以调用 `GET /api/v1/bootstrap`
+- UI 处理加载、成功和失败后重试状态
 
-Not implemented yet:
+尚未实现：
 
-- local SQLite persistence
-- ledger entry CRUD
-- accounts and categories
-- sync
-- migrations
-- auth
-- money-domain logic
+- 本地 SQLite 持久化
+- 账目流水 CRUD
+- 账户和类别
+- 同步
+- 迁移
+- 身份验证
+- 货币领域逻辑
 
-## Product goals
+## 产品目标
 
-- deliver a bookkeeping experience that remains usable offline
-- keep cloud responsibilities limited to backup and sync later on
-- maintain a codebase that can be evolved safely with tests and docs
+- 提供一个离线时仍可使用的记账体验
+- 将云端职责限制在稍后的备份和同步上
+- 维护一个可以通过测试和文档安全演进的代码库
 
-## Current architecture principles
+## 当前架构原则
 
-### 1. Local-first remains the product direction
+### 1. Local-First 仍然是产品方向
 
-Current code does not implement local persistence yet, but all future data flows should still prefer local storage and treat sync as secondary.
+当前代码尚未实现本地持久化，但所有未来的数据流仍应优先考虑本地存储，并将同步视为次要。
 
-### 2. Start from a narrow working slice
+### 2. 从狭窄的工作切片开始
 
-The repository intentionally starts with a thin end-to-end slice before moving into money and data correctness work.
-The current slice is the service status page.
+仓库有意在进入货币和数据正确性工作之前，从一个单薄的端到端切片开始。当前切片是服务状态页面。
 
-### 3. Financial correctness is deferred, not relaxed
+### 3. 金融正确性被推迟，而非放松
 
-Money logic is not implemented in this scaffold.
-When it is introduced, it must not use floating-point arithmetic.
+此脚手架中未实现货币逻辑。引入时，它绝不能使用浮点运算。
 
-### 4. Keep the scaffold easy to replace
+### 4. 保持脚手架易于替换
 
-The current app and API code are intentionally small and should remain easy to refactor as real bookkeeping flows arrive.
+当前应用和 API 代码有意保持小型，并且应在真正的记账流程到来时保持易于重构。
 
-## Current tech stack
+## 当前技术栈
 
-### App
+### 应用
 
 - Expo
 - React Native
@@ -74,18 +70,18 @@ The current app and API code are intentionally small and should remain easy to r
 - Jest + Testing Library
 - ESLint
 
-### Server
+### 服务端
 
 - Go 1.22
 - Gin
-- standard library tests
+- 标准库测试
 
-## Current public API
+## 当前公共 API
 
 - `GET /healthz`
 - `GET /api/v1/bootstrap`
 
-Bootstrap payload fields:
+Bootstrap 有效负载字段：
 
 - `status`
 - `serviceName`
@@ -93,28 +89,28 @@ Bootstrap payload fields:
 - `serverTime`
 - `features`
 
-## Near-term roadmap
+## 近期路线图
 
-### Phase 1
+### 阶段 1
 
-- keep the current bootstrap flow stable
-- introduce SQLite-backed local ledger entry capture
+- 保持当前 bootstrap 流程稳定
+- 引入由 SQLite 支持的本地账目流水记录
 
-### Phase 2
+### 阶段 2
 
-- add account and category models
-- add local reporting views
+- 添加账户和类别模型
+- 添加本地报表视图
 
-### Phase 3
+### 阶段 3
 
-- add explicit sync interfaces and conflict rules
+- 添加明确的同步接口和冲突规则
 
-## Documentation maintenance rule
+## 文档维护规则
 
-Update this file when any of these change:
+当以下任何内容发生变更时，更新此文件：
 
-- project status
-- implemented feature set
-- public API surface
-- core roadmap order
-- major environment expectations
+- 项目状态
+- 已实现的功能集
+- 公共 API 范围
+- 核心路线图顺序
+- 主要环境期望

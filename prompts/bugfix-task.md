@@ -1,30 +1,30 @@
-# Bugfix Task Prompt
+# 错误修复任务提示词
 
-## Bug Report
+## 错误报告
 
-- Symptom: TODO
-- Expected behavior: TODO
-- Reproduction steps: TODO
+- 症状：TODO
+- 预期行为：TODO
+- 复现步骤：TODO
 
-## Scope
+## 范围
 
-- Suspected files/modules: TODO
-- Must-not-change areas: TODO
+- 怀疑的文件/模块：TODO
+- 绝不能变更的区域：TODO
 
-## Debug Plan
+## 调试计划
 
-1. Reproduce with a test or script.
-2. Identify root cause (not just symptom patch).
-3. Add regression test.
-4. Implement minimal fix.
+1. 使用测试或脚本复现
+2. 识别根本原因（而不只是症状补丁）
+3. 添加回归测试
+4. 实现最小化修复
 
-## Acceptance Criteria
+## 验收标准
 
-- [ ] Root cause explained.
-- [ ] Regression test fails before fix and passes after fix.
-- [ ] No unrelated behavior changes.
+- [ ] 已解释根本原因
+- [ ] 回归测试在修复前失败，修复后通过
+- [ ] 无无关行为变更
 
-## Verification
+## 验证
 
-- Commands run: TODO
-- Results: TODO
+- 运行的命令：TODO
+- 结果：TODO

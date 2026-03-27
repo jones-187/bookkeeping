@@ -1,32 +1,32 @@
-# Migration Task Prompt
+# 迁移任务提示词
 
-## Change Request
+## 变更请求
 
-- Business reason: TODO
-- Schema change summary: TODO
-- Affected tables/entities: TODO
+- 业务原因：TODO
+- 架构变更摘要：TODO
+- 受影响的表/实体：TODO
 
-## Safety Constraints
+## 安全约束
 
-- Migration should be idempotent where possible.
-- Backward compatibility expectations: TODO
-- Rollback strategy: TODO
+- 迁移应尽可能幂等
+- 向后兼容性期望：TODO
+- 回滚策略：TODO
 
-## Implementation Plan
+## 实现计划
 
-1. Add migration file(s).
-2. Update affected models/repositories.
-3. Add migration validation tests.
-4. Update docs if data contract changes.
+1. 添加迁移文件
+2. 更新受影响的模型/仓库
+3. 添加迁移验证测试
+4. 如果数据契约变更，更新文档
 
-## Acceptance Criteria
+## 验收标准
 
-- [ ] Migration runs on clean database.
-- [ ] Migration runs on previous schema snapshot.
-- [ ] Rollback behavior documented and validated.
-- [ ] No float money fields introduced.
+- [ ] 迁移在干净数据库上运行
+- [ ] 迁移在先前架构快照上运行
+- [ ] 回滚行为已记录并验证
+- [ ] 未引入浮点货币字段
 
-## Verification
+## 验证
 
-- Commands run: TODO
-- Results: TODO
+- 运行的命令：TODO
+- 结果：TODO

@@ -1,34 +1,34 @@
-﻿# Unit Tests
+# 单元测试
 
-Last updated: 2026-03-27
+最后更新：2026-03-27
 
-This directory captures unit-test intent for the current and next phases.
+此目录捕获当前和下一阶段的单元测试意图。
 
-## Current reality
+## 当前现状
 
-The repo currently has:
+仓库目前有：
 
-- app UI state tests in `src/app/__tests__/App.test.tsx`
-- server handler/router tests in `src/server/internal/http/router_test.go`
+- `src/app/__tests__/App.test.tsx` 中的应用 UI 状态测试
+- `src/server/internal/http/router_test.go` 中的服务端处理器/路由测试
 
-## Current priorities
+## 当前优先级
 
-### App
+### 应用
 
-- loading state for bootstrap request
-- success rendering for bootstrap payload
-- failure rendering and retry flow
+- bootstrap 请求的加载状态
+- bootstrap 有效负载的成功渲染
+- 失败渲染和重试流程
 
-### Server
+### 服务端
 
-- `GET /healthz` returns `200` with status `ok`
-- `GET /api/v1/bootstrap` returns a complete JSON payload
-- `serverTime` stays RFC3339 formatted
+- `GET /healthz` 返回 `200`，状态为 `ok`
+- `GET /api/v1/bootstrap` 返回完整的 JSON 有效负载
+- `serverTime` 保持 RFC3339 格式
 
-## Next priorities
+## 下一个优先级
 
-When money-domain code appears, unit tests must cover:
+当货币领域代码出现时，单元测试必须覆盖：
 
-- integer or decimal-safe money math
-- negative, zero, and large-value boundaries
-- serialization and validation edge cases
+- 整数或小数安全的货币数学
+- 负数、零和大值边界
+- 序列化和验证边界情况

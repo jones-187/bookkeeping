@@ -1,32 +1,32 @@
-# Feature Task Prompt
+# 功能任务提示词
 
-## Context
+## 上下文
 
-- Goal: TODO
-- User value: TODO
-- Non-goals: TODO
+- 目标：TODO
+- 用户价值：TODO
+- 非目标：TODO
 
-## Scope
+## 范围
 
-- In scope paths:
+- 范围内路径：
   - TODO
-- Out of scope paths:
+- 范围外路径：
   - TODO
 
-## Constraints
+## 约束
 
-- Money values must avoid float arithmetic.
-- Keep offline behavior functional.
-- Do not break existing command workflows in `Makefile`.
+- 货币值必须避免浮点运算
+- 保持离线行为可用
+- 不要破坏 `Makefile` 中现有的命令工作流
 
-## Acceptance Criteria
+## 验收标准
 
 - [ ] TODO
 - [ ] TODO
-- [ ] Relevant tests added/updated.
+- [ ] 已添加/更新相关测试
 
-## Deliverables
+## 交付物
 
-- Files changed: TODO
-- Tests run: TODO
-- Known limitations: TODO
+- 变更的文件：TODO
+- 运行的测试：TODO
+- 已知限制：TODO

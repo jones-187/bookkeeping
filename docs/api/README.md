@@ -1,27 +1,26 @@
-﻿# API Docs
+# API 文档
 
-Last updated: 2026-03-27
+最后更新：2026-03-27
 
-This directory documents the currently implemented HTTP API surface.
-The repository only exposes a minimal bootstrap API at this stage.
+本目录记录当前已实现的 HTTP API 范围。在此阶段，仓库仅暴露一个最小化的 bootstrap API。
 
-## Design rules
+## 设计规则
 
-1. Use REST-style HTTP endpoints.
-2. Version public endpoints under `/api/v1/`.
-3. Return explicit JSON payloads.
-4. Keep the current surface small until bookkeeping domain models exist.
+1. 使用 REST 风格的 HTTP 端点
+2. 在 `/api/v1/` 下版本化公共端点
+3. 返回明确的 JSON 有效负载
+4. 在记账领域模型存在之前，保持当前范围较小
 
-## Implemented endpoints
+## 已实现的端点
 
 ### `GET /healthz`
 
-Purpose:
+用途：
 
-- process health check
-- local startup verification
+- 进程健康检查
+- 本地启动验证
 
-Response:
+响应：
 
 ```json
 {
@@ -31,12 +30,12 @@ Response:
 
 ### `GET /api/v1/bootstrap`
 
-Purpose:
+用途：
 
-- provide the app with stable startup metadata
-- verify app-to-server connectivity
+- 为应用提供稳定的启动元数据
+- 验证应用到服务端的连接性
 
-Response:
+响应：
 
 ```json
 {
@@ -52,15 +51,15 @@ Response:
 }
 ```
 
-## Not implemented yet
+## 尚未实现
 
-The following are intentionally absent in the current scaffold:
+以下内容有意在当前脚手架中缺失：
 
-- account endpoints
-- category endpoints
-- ledger entry endpoints
-- sync endpoints
-- auth endpoints
-- migrations or schema docs
+- 账户端点
+- 类别端点
+- 账目流水端点
+- 同步端点
+- 身份验证端点
+- 迁移或架构文档
 
-When those areas are added, this directory should expand with endpoint-specific documents or an OpenAPI file.
+添加这些区域时，本目录应随端点特定文档或 OpenAPI 文件一起扩展。

@@ -1,8 +1,8 @@
-﻿# System Context Diagram (C4 - Level 1)
+# 系统上下文图 (C4 - Level 1)
 
-Last updated: 2026-03-27
+最后更新：2026-03-27
 
-This diagram shows the currently implemented development-time system context.
+此图显示当前已实现的开发时系统上下文。
 
 ```mermaid
 graph TB
@@ -11,25 +11,25 @@ graph TB
     App -->|"Bootstrap request"| API
 ```
 
-## Notes
+## 说明
 
-### User
+### 用户
 
-- starts the Expo app locally
-- starts the Go API locally
-- uses the current scaffold to verify connectivity and UI states
+- 本地启动 Expo 应用
+- 本地启动 Go API
+- 使用当前脚手架验证连接性和 UI 状态
 
-### Bookkeeping App
+### 记账应用
 
-- runs as an Expo / React Native application
-- currently renders only the service status page
-- requests startup metadata from the API
+- 作为 Expo / React Native 应用运行
+- 当前仅渲染服务状态页面
+- 从 API 请求启动元数据
 
-### Bookkeeping API
+### 记账 API
 
-- runs as a local Go service
-- currently exposes `GET /healthz` and `GET /api/v1/bootstrap`
+- 作为本地 Go 服务运行
+- 当前暴露 `GET /healthz` 和 `GET /api/v1/bootstrap`
 
-## Future context
+## 未来上下文
 
-Local SQLite storage, cloud sync, and remote storage are part of the long-term direction, but they are not implemented in the current scaffold and are intentionally omitted from this diagram.
+本地 SQLite 存储、云同步和远程存储是长期方向的一部分，但它们在当前脚手架中尚未实现，因此有意从此图中省略。

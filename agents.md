@@ -1,72 +1,74 @@
-﻿# AI Agent Guide
+# AI Agent 指南
 
-This file defines how coding agents should work in this repository.
+本文件定义了编码代理应如何在本仓库中工作。
 
-## Mission
+## 使命
 
-- Build a local-first bookkeeping app with high financial correctness.
-- Keep architecture simple and maintainable.
-- Prefer small, testable, low-risk changes.
+- 构建一个具有高金融正确性的 Local-First 记账应用
+- 保持架构简单且可维护
+- 优先选择小型、可测试、低风险的变更
 
-## Project Status (2026-03-27)
+## 项目状态 (2026-03-27)
 
-- Repository now contains a runnable minimal scaffold.
-- `src/app` is an Expo + React Native + TypeScript app with a single service status page.
-- `src/server` is a Go + Gin API exposing `GET /healthz` and `GET /api/v1/bootstrap`.
-- SQLite, money-domain logic, sync, migrations, and auth are still ahead.
+- 仓库现在包含一个可运行的最小化脚手架
+- `src/app` 是一个 Expo + React Native + TypeScript 应用，包含单个服务状态页面
+- `src/server` 是一个 Go + Gin API，暴露 `GET /healthz` 和 `GET /api/v1/bootstrap`
+- SQLite、货币领域逻辑、同步、迁移和身份验证仍在计划中
 
-## Core Constraints
+## 核心约束
 
-- Never use floating-point arithmetic for money.
-- Preserve local-first behavior: local data must still work when offline.
-- Keep API and schema changes backward compatible when possible.
-- Do not introduce hidden side effects in sync or migration paths.
+- 永远不要对货币使用浮点运算
+- 保持 Local-First 行为：离线时本地数据仍可使用
+- 尽可能保持 API 和架构变更的向后兼容性
+- 不要在同步或迁移路径中引入隐藏的副作用
+- 所有文档注释使用中文编写
+- 所有文件编码使用 UTF-8
 
-## Working Agreement
+## 工作协议
 
-- Read `docs/code-map.md` before making structural edits.
-- Read `docs/risk-areas.md` before touching money/sync/migration code.
-- Keep commits focused on one logical concern.
-- Add or update tests with behavior changes.
-- Update all related docs in the same change when implementation or workflow changes.
+- 在进行结构性编辑之前阅读 `docs/code-map.md`
+- 在接触货币/同步/迁移代码之前阅读 `docs/risk-areas.md`
+- 保持提交专注于一个逻辑关注点
+- 随着行为变更添加或更新测试
+- 当实现或工作流程变更时，在同一变更集中更新所有相关文档
 
-## Standard Workflow
+## 标准工作流程
 
-1. Confirm scope and target paths.
-2. Implement the smallest viable change.
-3. Run lint and relevant tests.
-4. Document assumptions in PR/commit notes or user summary.
-5. Update docs that describe the changed behavior, setup, or architecture.
+1. 确认范围和目标路径
+2. 实现最小可行变更
+3. 运行 lint 和相关测试
+4. 在 PR/提交说明或用户总结中记录假设
+5. 更新描述变更行为、设置或架构的文档
 
-## Useful Commands
+## 有用命令
 
-- Setup: `make setup`
-- Run backend: `make run-server`
-- Run app: `make run-app`
-- Run all tests: `make test`
-- Lint all: `make lint`
+- 设置：`make setup`
+- 运行后端：`make run-server`
+- 运行应用：`make run-app`
+- 运行所有测试：`make test`
+- Lint 所有：`make lint`
 
-Windows direct commands remain the primary fallback because `make` may not be installed.
+Windows 直接命令仍然是主要的后备方案，因为 `make` 可能未安装。
 
-## Environment Notes
+## 环境说明
 
-- Prefer absolute paths under `E:\User_File\project\Project\bookkeeping` when invoking shell commands.
-- In this environment, tool `workdir` may not reliably switch to the repo on `E:`. Use `Set-Location 'E:\...path...'` or `cmd /c "cd /d E:\... && ..."` explicitly.
-- Node commands against the `E:` workspace may fail inside the sandbox with `EPERM` or path-resolution errors. If lint, test, or install hits that class of error, rerun with escalated permissions instead of retrying the same sandboxed command.
-- Go commands may fail if they write to the default user build cache. Prefer setting `GOCACHE` to a workspace-local path such as `E:\User_File\project\Project\bookkeeping\.cache\go-build` for test/build runs.
-- Do not ignore `src/server/go.sum`; it is part of the tracked dependency state.
-- Avoid broad recursive file scans that include `src/app/node_modules`; they create noise and timeouts. Exclude dependency directories when auditing docs or source files.
-- If a temporary `.cache/` directory is created for Go, it should stay git-ignored and not be committed.
+- 调用 shell 命令时，优先使用 `E:\User_File\project\Project\bookkeeping` 下的绝对路径
+- 在此环境中，工具 `workdir` 可能无法可靠地切换到 `E:` 上的仓库。请显式使用 `Set-Location 'E:\...path...'` 或 `cmd /c "cd /d E:\... && ..."`
+- 针对 `E:` 工作区的 Node 命令在沙箱中可能会因 `EPERM` 或路径解析错误而失败。如果 lint、test 或 install 遇到此类错误，请使用提升的权限重新运行，而不是重试相同的沙箱命令
+- 如果 Go 命令写入默认的用户构建缓存，可能会失败。优先将 `GOCACHE` 设置为工作区本地路径，例如 `E:\User_File\project\Project\bookkeeping\.cache\go-build` 用于测试/构建运行
+- 不要忽略 `src/server/go.sum`；它是跟踪的依赖状态的一部分
+- 避免包含 `src/app/node_modules` 的广泛递归文件扫描；它们会产生噪音和超时。在审核文档或源文件时排除依赖目录
+- 如果为 Go 创建了临时 `.cache/` 目录，它应该保持被 git 忽略且不被提交
 
-## Definition of Done
+## 完成的定义
 
-- Change is functionally correct.
-- No float-based money logic introduced.
-- Lint and tests pass, or failures are explicitly explained.
-- Docs are updated when behavior, setup, or architecture changed.
+- 变更在功能上是正确的
+- 没有引入基于浮点数的货币逻辑
+- Lint 和测试通过，或明确解释了失败原因
+- 当行为、设置或架构变更时，文档已更新
 
-## When Unsure
+## 不确定时
 
-- Choose correctness over speed for monetary logic.
-- Choose simpler design over speculative abstractions.
-- Ask for clarification if a change could affect data integrity.
+- 对于货币逻辑，选择正确性而非速度
+- 选择更简单的设计而非推测性抽象
+- 如果变更可能影响数据完整性，请询问澄清

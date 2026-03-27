@@ -1,55 +1,55 @@
-# Risk Areas
+# 风险区域
 
-Last updated: 2026-03-27
+最后更新：2026-03-27
 
-This file marks high-risk areas that require extra care and review.
+本文件标记需要额外小心和审查的高风险区域。
 
-## P0: Monetary Correctness
+## P0：货币正确性
 
-- No floats for amount storage or arithmetic.
-- Ensure deterministic rounding behavior.
-- Validate negative, zero, and large amount edge cases.
+- 不要使用浮点数进行金额存储或运算
+- 确保确定性的舍入行为
+- 验证负数、零和大金额边界情况
 
-Required checks:
+所需检查：
 
-- Unit tests for money operations and rounding boundaries.
-- Input validation tests for invalid formats.
+- 货币运算和舍入边界的单元测试
+- 无效格式的输入验证测试
 
-## P0: Data Migrations
+## P0：数据迁移
 
-- Migrations must be forward-safe and reversible when possible.
-- Never couple migration success to remote service availability.
-- Backfill steps must be idempotent.
+- 迁移应尽可能向前安全且可逆
+- 永远不要将迁移成功与远程服务可用性耦合
+- 回填步骤必须是幂等的
 
-Required checks:
+所需检查：
 
-- Migration test on clean DB.
-- Migration test from prior schema snapshot.
+- 在干净数据库上的迁移测试
+- 从先前架构快照的迁移测试
 
-## P1: Local-First Sync
+## P1：Local-First 同步
 
-- Offline actions must not be blocked by sync failures.
-- Conflict resolution must be explicit and reproducible.
-- Version/timestamp assumptions must be documented.
+- 离线操作不应被同步失败阻塞
+- 冲突解决必须明确且可重现
+- 版本/时间戳假设必须记录在案
 
-Required checks:
+所需检查：
 
-- Integration tests for conflict cases.
-- Retry/idempotency tests for duplicate sync payloads.
+- 冲突情况的集成测试
+- 重复同步有效负载的重试/幂等性测试
 
-## P1: Reporting/Aggregation
+## P1：报表/汇总
 
-- Totals must match ledger source of truth.
-- Timezone boundaries can skew daily/monthly reports.
+- 总计必须与账目来源真相匹配
+- 时区边界可能会扭曲每日/每月报表
 
-Required checks:
+所需检查：
 
-- Tests around day/month boundaries and timezone conversion.
+- 围绕日/月边界和时区转换的测试
 
-## Review Rule
+## 审查规则
 
-Changes touching P0 areas require:
+触及 P0 区域的变更需要：
 
-- Focused PR scope.
-- Explicit invariant checklist in PR description.
-- At least one reviewer who did not author the change.
+- 专注的 PR 范围
+- PR 描述中明确的不变量检查清单
+- 至少一名未编写变更的审查者

@@ -1,16 +1,16 @@
-# Prompt Templates
+# 提示词模板
 
-Use these templates to keep AI coding tasks scoped, testable, and reviewable.
+使用这些模板来保持 AI 编码任务范围明确、可测试且可审查。
 
-## Available Templates
+## 可用模板
 
-- `prompts/feature-task.md`: implement a new feature.
-- `prompts/bugfix-task.md`: diagnose and fix a bug.
-- `prompts/migration-task.md`: add or modify database migration.
+- `prompts/feature-task.md`：实现新功能
+- `prompts/bugfix-task.md`：诊断并修复错误
+- `prompts/migration-task.md`：添加或修改数据库迁移
 
-## Usage
+## 使用方法
 
-1. Copy a template.
-2. Fill every `TODO`.
-3. Keep acceptance criteria measurable.
-4. Include exact files or modules in scope.
+1. 复制一个模板
+2. 填写每个 `TODO`
+3. 保持验收标准可衡量
+4. 包含范围内的确切文件或模块

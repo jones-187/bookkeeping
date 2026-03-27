@@ -1,22 +1,22 @@
-# App Workspace
+# 应用工作区
 
-This workspace contains the Expo + React Native mobile shell for the project.
+此工作区包含项目的 Expo + React Native 移动外壳。
 
-## Current scope
+## 当前范围
 
-- Single-screen bootstrap app
-- Fetches backend status from `GET /api/v1/bootstrap`
-- Renders service name, version, server time, and feature list
-- Shows a retry action when the backend is unavailable
+- 单屏幕 bootstrap 应用
+- 从 `GET /api/v1/bootstrap` 获取后端状态
+- 渲染服务名称、版本、服务器时间和功能列表
+- 当后端不可用时显示重试操作
 
-## Key files
+## 关键文件
 
-- `App.tsx`: screen entry point
-- `src/services/api.ts`: backend request wrapper
-- `src/types/bootstrap.ts`: bootstrap response contract
-- `__tests__/App.test.tsx`: UI state tests
+- `App.tsx`：屏幕入口点
+- `src/services/api.ts`：后端请求包装器
+- `src/types/bootstrap.ts`：bootstrap 响应契约
+- `__tests__/App.test.tsx`：UI 状态测试
 
-## Run directly
+## 直接运行
 
 ```bash
 npm install

@@ -1,19 +1,19 @@
-﻿# Contributing Guide
+# 贡献指南
 
-Last updated: 2026-03-27
+最后更新：2026-03-27
 
-This repository currently contains a minimal runnable scaffold. Contributing changes should keep that scaffold stable while preparing for later bookkeeping features.
+本仓库目前包含一个最小化的可运行脚手架。贡献的变更应保持该脚手架稳定，同时为后续的记账功能做准备。
 
-## Development environment
+## 开发环境
 
-### Required tools
+### 所需工具
 
 - Node.js 22.x
 - npm 10.x+
 - Go 1.22.2+
-- Optional: `make`
+- 可选：`make`
 
-### Bootstrap
+### 引导
 
 ```powershell
 cd E:\User_File\project\Project\bookkeeping\src\app
@@ -23,37 +23,36 @@ cd E:\User_File\project\Project\bookkeeping\src\server
 go mod download
 ```
 
-If `make` is available:
+如果有 `make` 可用：
 
 ```bash
 make setup
 ```
 
-## Branching
+## 分支管理
 
-Use focused branches from `main`.
-Keep each branch limited to one logical concern.
+使用从 `main` 分出的专注分支。保持每个分支仅限于一个逻辑关注点。
 
-Suggested naming:
+建议命名：
 
 - `feature/<topic>`
 - `fix/<topic>`
 - `docs/<topic>`
 
-## Commit guidance
+## 提交指南
 
-Use conventional prefixes where practical:
+在实际可行的情况下使用常规前缀：
 
-- `feat:` feature work
-- `fix:` bug fixes
-- `docs:` documentation changes
-- `refactor:` structural change without intended behavior change
-- `test:` test-only updates
-- `chore:` tooling or build changes
+- `feat:` 功能工作
+- `fix:` 错误修复
+- `docs:` 文档变更
+- `refactor:` 结构变更，无预期行为变更
+- `test:` 仅测试更新
+- `chore:` 工具或构建变更
 
-## Current testing rules
+## 当前测试规则
 
-### App
+### 应用
 
 ```powershell
 cd E:\User_File\project\Project\bookkeeping\src\app
@@ -61,7 +60,7 @@ npm run lint
 npm test -- --runInBand
 ```
 
-### Server
+### 服务端
 
 ```powershell
 cd E:\User_File\project\Project\bookkeeping\src\server
@@ -70,33 +69,32 @@ go test ./...
 go build ./cmd/server
 ```
 
-## Current implemented surface
+## 当前已实现范围
 
-The repo currently guarantees only this end-to-end behavior:
+仓库目前仅保证此端到端行为：
 
-- the Expo app starts
-- the Go API starts
-- the app fetches `GET /api/v1/bootstrap`
-- the app renders success and failure states for that request
+- Expo 应用启动
+- Go API 启动
+- 应用获取 `GET /api/v1/bootstrap`
+- 应用渲染该请求的成功和失败状态
 
-## Coding constraints
+## 编码约束
 
 ### Go
 
-- Keep handlers and config simple.
-- Avoid introducing database or migration assumptions until those modules exist.
-- When money logic is introduced later, use integer/decimal-safe representations only.
+- 保持处理器和配置简单
+- 在这些模块存在之前，避免引入数据库或迁移假设
+- 稍后引入货币逻辑时，仅使用整数/小数安全表示
 
 ### TypeScript / React Native
 
-- Keep the current scaffold single-purpose and easy to test.
-- Avoid unnecessary state libraries or navigation until there is real product pressure.
-- Any money values introduced later must avoid floats.
+- 保持当前脚手架单一用途且易于测试
+- 在存在真正的产品压力之前，避免不必要的状态库或导航
+- 稍后引入的任何货币值必须避免浮点数
 
-## Documentation rule
+## 文档规则
 
-When you change behavior or setup, update all related docs in the same change set.
-At minimum, review:
+当你变更行为或设置时，在同一变更集中更新所有相关文档。至少审查：
 
 - `README.md`
 - `docs/dev-setup.md`
@@ -105,10 +103,10 @@ At minimum, review:
 - `docs/api/README.md`
 - `agents.md`
 
-## Pull request checklist
+## 拉取请求检查清单
 
-- [ ] Behavior is correct
-- [ ] Relevant tests were added or updated
-- [ ] Lint and test commands were run, or failures were explained
-- [ ] Related docs were updated
-- [ ] No float-based money logic was introduced
+- [ ] 行为正确
+- [ ] 已添加或更新相关测试
+- [ ] 已运行 lint 和测试命令，或解释了失败原因
+- [ ] 已更新相关文档
+- [ ] 未引入基于浮点数的货币逻辑

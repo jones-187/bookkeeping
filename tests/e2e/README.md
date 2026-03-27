@@ -1,27 +1,26 @@
-﻿# End-to-End Tests
+# 端到端测试
 
-Last updated: 2026-03-27
+最后更新：2026-03-27
 
-This directory captures end-to-end test intent.
+此目录捕获端到端测试意图。
 
-## Current reality
+## 当前现状
 
-No E2E harness is implemented yet.
-The current runnable slice is small enough that local manual verification is still acceptable.
+尚未实现 E2E 测试工具。当前可运行切片足够小，本地手动验证仍然可接受。
 
-## Current manual E2E checklist
+## 当前手动 E2E 检查清单
 
-1. Start the Go API.
-2. Start the Expo app.
-3. Confirm the service status page loads.
-4. Confirm service name, version, server time, and feature flags render.
-5. Stop the API and confirm the app shows the retryable error state.
+1. 启动 Go API
+2. 启动 Expo 应用
+3. 确认服务状态页面加载
+4. 确认服务名称、版本、服务器时间和功能标志渲染
+5. 停止 API 并确认应用显示可重试的错误状态
 
-## Future automated E2E scope
+## 未来自动化 E2E 范围
 
-When the product grows beyond the bootstrap page, automate:
+当产品增长超出 bootstrap 页面时，自动化：
 
-- ledger entry creation
-- offline reopen and local persistence checks
-- sync recovery after reconnect
-- reporting flows
+- 账目流水创建
+- 离线重新打开和本地持久化检查
+- 重新连接后的同步恢复
+- 报表流程

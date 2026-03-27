@@ -1,40 +1,40 @@
-﻿# Code Map
+# 代码地图
 
-Last updated: 2026-03-27
+最后更新：2026-03-27
 
-## Repository layout
+## 仓库布局
 
-- `docs/`: architecture, ADRs, setup, and contributor guidance
-- `src/app/`: Expo + React Native app workspace
-- `src/server/`: Go API workspace
-- `tests/`: reserved strategy folders for broader test planning
-- `scripts/`: helper scripts
-- `Makefile`: convenience commands for environments that provide `make`
+- `docs/`：架构、ADR、设置和贡献者指南
+- `src/app/`：Expo + React Native 应用工作区
+- `src/server/`：Go API 工作区
+- `tests/`：为更广泛的测试规划预留的策略文件夹
+- `scripts/`：辅助脚本
+- `Makefile`：为提供 `make` 的环境准备的便捷命令
 
-## Current implementation
+## 当前实现
 
 ### `src/app`
 
-- `App.tsx`: single-screen status page
-- `src/services/api.ts`: bootstrap API request
-- `src/types/bootstrap.ts`: response contract
-- `src/components/ServiceStatusCard.tsx`: success-state card
-- `__tests__/App.test.tsx`: app success and retry flows
+- `App.tsx`：单屏幕状态页面
+- `src/services/api.ts`：bootstrap API 请求
+- `src/types/bootstrap.ts`：响应契约
+- `src/components/ServiceStatusCard.tsx`：成功状态卡片
+- `__tests__/App.test.tsx`：应用成功和重试流程
 
 ### `src/server`
 
-- `cmd/server/main.go`: executable entry point
-- `internal/app/config.go`: environment-based config
-- `internal/http/router.go`: Gin router and middleware
-- `internal/http/handler/bootstrap.go`: health and bootstrap handlers
-- `internal/http/router_test.go`: HTTP endpoint tests
+- `cmd/server/main.go`：可执行入口点
+- `internal/app/config.go`：基于环境的配置
+- `internal/http/router.go`：Gin 路由和中间件
+- `internal/http/handler/bootstrap.go`：健康和 bootstrap 处理器
+- `internal/http/router_test.go`：HTTP 端点测试
 
-## Current public interface
+## 当前公共接口
 
 - `GET /healthz`
 - `GET /api/v1/bootstrap`
 
-Bootstrap response fields:
+Bootstrap 响应字段：
 
 - `status`
 - `serviceName`
@@ -42,17 +42,17 @@ Bootstrap response fields:
 - `serverTime`
 - `features`
 
-## Near-term build order
+## 近期构建顺序
 
-1. Keep the service status page stable.
-2. Introduce local SQLite-backed ledger entry capture.
-3. Add account/category models.
-4. Add offline-first persistence and later sync.
+1. 保持服务状态页面稳定
+2. 引入由 SQLite 支持的本地账目流水记录
+3. 添加账户/类别模型
+4. 添加离线优先持久化和后续同步
 
-## Change planning rule
+## 变更规划规则
 
-For non-trivial changes, continue to list:
+对于非平凡的变更，请继续列出：
 
-- paths to edit
-- invariants to preserve
-- tests to add or update
+- 要编辑的路径
+- 要保持的不变量
+- 要添加或更新的测试

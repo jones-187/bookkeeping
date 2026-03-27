@@ -1,20 +1,19 @@
-﻿# Architecture Docs
+# 架构文档
 
-Last updated: 2026-03-27
+最后更新：2026-03-27
 
-This directory stores Mermaid-based architecture views.
-The current implementation is intentionally smaller than the long-term target architecture.
+本目录存储基于 Mermaid 的架构视图。当前实现有意小于长期目标架构。
 
-## Current diagrams
+## 当前图表
 
-- `context.md`: system context
-- `container.md`: current container-level view for the runnable scaffold
+- `context.md`：系统上下文
+- `container.md`：可运行脚手架的当前容器级视图
 
-## Important note
+## 重要说明
 
-The architecture docs should distinguish between:
+架构文档应区分：
 
-- what is implemented now
-- what is planned later
+- 现在已实现的内容
+- 稍后计划的内容
 
-Do not present future PostgreSQL, Redis, auth, or sync components as already implemented unless the code exists.
+除非代码存在，否则不要将未来的 PostgreSQL、Redis、身份验证或同步组件呈现为已实现。

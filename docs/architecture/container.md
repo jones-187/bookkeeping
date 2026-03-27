@@ -1,8 +1,8 @@
-﻿# Container Diagram (C4 - Level 2)
+# 容器图 (C4 - Level 2)
 
-Last updated: 2026-03-27
+最后更新：2026-03-27
 
-This diagram describes the currently implemented runnable scaffold, not the full target-state system.
+此图描述当前已实现的可运行脚手架，而非完整的目标状态系统。
 
 ```mermaid
 graph TB
@@ -18,21 +18,21 @@ graph TB
     App -->|"HTTP GET /healthz (optional debug)"| API
 ```
 
-## Containers
+## 容器
 
-| Container | Stack | Current responsibility |
+| 容器 | 技术栈 | 当前职责 |
 |------|--------|------|
-| App | Expo + React Native + TypeScript | Render the service status page and call the bootstrap API |
-| API Service | Go + Gin | Expose health and bootstrap metadata endpoints |
+| App | Expo + React Native + TypeScript | 渲染服务状态页面并调用 bootstrap API |
+| API Service | Go + Gin | 暴露健康和 bootstrap 元数据端点 |
 
-## Not yet implemented
+## 尚未实现
 
-These are planned later, but are not part of the current diagram because the code does not exist yet:
+这些是稍后计划的，但不属于当前图表的一部分，因为代码尚不存在：
 
-- SQLite local persistence
-- ledger domain services
+- SQLite 本地持久化
+- 账目领域服务
 - PostgreSQL
 - Redis
-- authentication
-- sync engine
-- external push or object storage integrations
+- 身份验证
+- 同步引擎
+- 外部推送或对象存储集成

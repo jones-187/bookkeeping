@@ -1,19 +1,18 @@
-﻿# Scripts
+# 脚本
 
-Last updated: 2026-03-27
+最后更新：2026-03-27
 
-This directory is reserved for repository helper scripts.
+此目录为仓库辅助脚本预留。
 
-## Current reality
+## 当前现状
 
-No project-owned automation scripts are implemented yet.
-Do not document script names here unless the files actually exist.
+尚未实现项目拥有的自动化脚本。除非文件实际存在，否则不要在此处记录脚本名称。
 
-## Expected future use
+## 预期的未来用途
 
-When helper scripts are added, document:
+添加辅助脚本时，请记录：
 
-- script path
-- purpose
-- invocation example
-- environment assumptions
+- 脚本路径
+- 用途
+- 调用示例
+- 环境假设

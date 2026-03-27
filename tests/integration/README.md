@@ -1,31 +1,30 @@
-﻿# Integration Tests
+# 集成测试
 
-Last updated: 2026-03-27
+最后更新：2026-03-27
 
-This directory captures integration-test intent.
+此目录捕获集成测试意图。
 
-## Current reality
+## 当前现状
 
-There is no separate integration suite yet.
-The current scaffold is validated by:
+尚无单独的集成套件。当前脚手架通过以下方式验证：
 
-- app Jest tests for UI behavior
-- server HTTP tests
-- manual local startup checks
+- 应用 UI 行为的 Jest 测试
+- 服务端 HTTP 测试
+- 手动本地启动检查
 
-## Near-term integration scope
+## 近期集成范围
 
-The first real integration suite should cover:
+第一个真正的集成套件应覆盖：
 
-- app-to-server bootstrap connectivity
-- environment-based API base URL configuration
-- server startup and endpoint responses
+- 应用到服务端的 bootstrap 连接性
+- 基于环境的 API 基础 URL 配置
+- 服务端启动和端点响应
 
-## Later integration scope
+## 后续集成范围
 
-Once persistence and sync exist, add integration tests for:
+一旦持久化和同步存在，添加针对以下内容的集成测试：
 
-- SQLite reads and writes
-- migration behavior
-- sync request idempotency
-- conflict handling
+- SQLite 读写
+- 迁移行为
+- 同步请求幂等性
+- 冲突处理

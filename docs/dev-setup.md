@@ -1,15 +1,15 @@
-﻿# Dev Setup
+# 开发设置
 
-Last updated: 2026-03-27
+最后更新：2026-03-27
 
-## Prerequisites
+## 前置条件
 
 - Node.js 22.x
 - npm 10.x+
 - Go 1.22.2+
-- Optional: `make`
+- 可选：`make`
 
-## Bootstrap
+## 引导
 
 ### Windows PowerShell
 
@@ -21,22 +21,22 @@ cd E:\User_File\project\Project\bookkeeping\src\server
 go mod download
 ```
 
-### With make
+### 使用 make
 
 ```bash
 make setup
 ```
 
-## Run the current scaffold
+## 运行当前脚手架
 
-### Server
+### 服务端
 
 ```powershell
 cd E:\User_File\project\Project\bookkeeping\src\server
 go run ./cmd/server
 ```
 
-### App
+### 应用
 
 ```powershell
 cd E:\User_File\project\Project\bookkeeping\src\app
@@ -44,17 +44,17 @@ Copy-Item .env.example .env
 npm start
 ```
 
-The app expects:
+应用期望：
 
 ```dotenv
 EXPO_PUBLIC_API_BASE_URL=http://localhost:8080
 ```
 
-For physical devices, replace `localhost` with your computer's reachable IP address.
+对于物理设备，请将 `localhost` 替换为你计算机可访问的 IP 地址。
 
-## Test and lint
+## 测试和 Lint
 
-### App
+### 应用
 
 ```powershell
 cd E:\User_File\project\Project\bookkeeping\src\app
@@ -62,7 +62,7 @@ npm run lint
 npm test -- --runInBand
 ```
 
-### Server
+### 服务端
 
 ```powershell
 cd E:\User_File\project\Project\bookkeeping\src\server
@@ -70,16 +70,16 @@ go test ./...
 go build ./cmd/server
 ```
 
-## Current implemented behavior
+## 当前已实现的行为
 
-The only end-to-end behavior in the repo is the service status page:
+仓库中唯一的端到端行为是服务状态页面：
 
-- app loads
-- app requests `GET /api/v1/bootstrap`
-- success state renders bootstrap data
-- failure state renders an error box and retry button
+- 应用加载
+- 应用请求 `GET /api/v1/bootstrap`
+- 成功状态渲染 bootstrap 数据
+- 失败状态渲染错误框和重试按钮
 
-## Notes
+## 注意事项
 
-- `make` is not required on Windows for the current scaffold.
-- Database, migration, sync, and auth commands are intentionally absent until those modules exist.
+- 对于当前脚手架，Windows 上不需要 `make`
+- 在这些模块存在之前，数据库、迁移、同步和身份验证命令有意缺失
