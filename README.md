@@ -64,6 +64,10 @@ make migrate
 
 ## 📚 文档导航
 
+### 项目概览
+
+- [项目概览与现状](docs/designs/project-overview.md)
+
 ### 架构决策记录 (ADR)
 
 所有重大架构决策均记录于 [docs/adr](docs/adr)：
