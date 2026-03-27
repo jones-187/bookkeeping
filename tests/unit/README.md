@@ -1,31 +1,34 @@
-# 单元测试
+﻿# Unit Tests
 
-测试金字塔的底层，覆盖核心计算逻辑。
+Last updated: 2026-03-27
 
-## 测试重点
+This directory captures unit-test intent for the current and next phases.
 
-### 金融计算 (最高优先级)
-- 金额加减乘除
-- 货币转换
-- 精度边界测试 (0元、负数、极大值)
+## Current reality
 
-### 同步逻辑
-- 版本号递增
-- 冲突检测
-- 合并策略
+The repo currently has:
 
-### 工具函数
-- 日期处理
-- 数据格式化
-- 校验逻辑
+- app UI state tests in `src/app/__tests__/App.test.tsx`
+- server handler/router tests in `src/server/internal/http/router_test.go`
 
-## 测试工具
+## Current priorities
 
-- 前端：Jest
-- 后端：Go Testing
+### App
 
-## 覆盖率要求
+- loading state for bootstrap request
+- success rendering for bootstrap payload
+- failure rendering and retry flow
 
-- 核心计算逻辑：**100%**
-- 业务逻辑：**80%+**
-- 工具函数：**70%+**
+### Server
+
+- `GET /healthz` returns `200` with status `ok`
+- `GET /api/v1/bootstrap` returns a complete JSON payload
+- `serverTime` stays RFC3339 formatted
+
+## Next priorities
+
+When money-domain code appears, unit tests must cover:
+
+- integer or decimal-safe money math
+- negative, zero, and large-value boundaries
+- serialization and validation edge cases

@@ -1,31 +1,31 @@
-# 集成测试
+﻿# Integration Tests
 
-测试金字塔的中层，验证模块间协作。
+Last updated: 2026-03-27
 
-## 测试重点
+This directory captures integration-test intent.
 
-### 数据库操作
-- SQLite 读写
-- PostgreSQL 连接
-- 数据迁移
+## Current reality
 
-### API 接口
-- 请求/响应格式
-- 错误处理
-- 认证授权
+There is no separate integration suite yet.
+The current scaffold is validated by:
 
-### 同步流程
-- 本地 -> 云端
-- 云端 -> 本地
-- 双向同步
+- app Jest tests for UI behavior
+- server HTTP tests
+- manual local startup checks
 
-## 测试工具
+## Near-term integration scope
 
-- 前端：Jest + Testing Library
-- 后端：Go Testing + httptest
+The first real integration suite should cover:
 
-## 测试环境
+- app-to-server bootstrap connectivity
+- environment-based API base URL configuration
+- server startup and endpoint responses
 
-- 使用独立的测试数据库
-- 每次测试前清理数据
-- 模拟网络延迟和异常
+## Later integration scope
+
+Once persistence and sync exist, add integration tests for:
+
+- SQLite reads and writes
+- migration behavior
+- sync request idempotency
+- conflict handling

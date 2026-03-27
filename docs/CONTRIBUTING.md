@@ -1,139 +1,114 @@
-# 开发规范 (Contributing Guide)
+﻿# Contributing Guide
 
-本文档定义了项目的开发规范和工作流程。
+Last updated: 2026-03-27
 
-## 开发环境
+This repository currently contains a minimal runnable scaffold. Contributing changes should keep that scaffold stable while preparing for later bookkeeping features.
 
-### 环境要求
+## Development environment
 
-- Node.js v20+
-- Go 1.22+
-- Docker & Docker Compose
-- React Native 开发环境
+### Required tools
 
-### 一键配置
+- Node.js 22.x
+- npm 10.x+
+- Go 1.22.2+
+- Optional: `make`
+
+### Bootstrap
+
+```powershell
+cd E:\User_File\project\Project\bookkeeping\src\app
+npm install
+
+cd E:\User_File\project\Project\bookkeeping\src\server
+go mod download
+```
+
+If `make` is available:
 
 ```bash
 make setup
 ```
 
-## 分支策略
+## Branching
 
-采用 **Trunk-Based Development**：
+Use focused branches from `main`.
+Keep each branch limited to one logical concern.
 
-| 分支 | 说明 |
-|------|------|
-| `main` | 永远是可发布的稳定状态 |
-| `feature/xxx` | 开发新功能 |
-| `fix/xxx` | Bug 修复 |
+Suggested naming:
 
-### 工作流
+- `feature/<topic>`
+- `fix/<topic>`
+- `docs/<topic>`
 
-1. 从 `main` 创建 `feature/xxx` 分支
-2. 开发完成后提交 PR
-3. **自己 Review 代码**（复盘习惯）
-4. 合并到 `main`
+## Commit guidance
 
-## 提交规范
+Use conventional prefixes where practical:
 
-```
-feat: 添加新功能
-fix: 修复 Bug
-docs: 文档更新
-refactor: 代码重构
-test: 测试相关
-chore: 构建/工具相关
-```
+- `feat:` feature work
+- `fix:` bug fixes
+- `docs:` documentation changes
+- `refactor:` structural change without intended behavior change
+- `test:` test-only updates
+- `chore:` tooling or build changes
 
-**示例**：
-```
-feat: 添加账户管理模块
-fix: 修复金额计算精度问题
-docs: 更新 API 文档
+## Current testing rules
+
+### App
+
+```powershell
+cd E:\User_File\project\Project\bookkeeping\src\app
+npm run lint
+npm test -- --runInBand
 ```
 
-## 测试规范
+### Server
 
-### 测试金字塔
-
-| 层级 | 覆盖率要求 | 重点 |
-|------|-----------|------|
-| 单元测试 | 核心逻辑 100% | 金额计算、同步逻辑 |
-| 集成测试 | 80%+ | API 接口、数据库操作 |
-| E2E 测试 | 关键路径 | 用户核心流程 |
-
-### 金融专项测试
-
-**必须覆盖的边界场景**：
-- 金额为 0
-- 金额为负数
-- 金额极大值 (Overflow)
-- 精度丢失测试
-
-### 运行测试
-
-```bash
-make test           # 运行所有测试
-make test-unit      # 仅运行单元测试
-make test-coverage  # 生成覆盖率报告
+```powershell
+cd E:\User_File\project\Project\bookkeeping\src\server
+$env:GOCACHE='E:\User_File\project\Project\bookkeeping\.cache\go-build'
+go test ./...
+go build ./cmd/server
 ```
 
-## 代码规范
+## Current implemented surface
 
-### Go (后端)
+The repo currently guarantees only this end-to-end behavior:
 
-- 使用 `golangci-lint` 检查
-- 金额计算必须使用 `shopspring/decimal`
-- 错误处理禁止吞掉异常
+- the Expo app starts
+- the Go API starts
+- the app fetches `GET /api/v1/bootstrap`
+- the app renders success and failure states for that request
 
-```bash
-make lint-server
-```
+## Coding constraints
 
-### TypeScript (前端)
+### Go
 
-- 使用 ESLint + Prettier
-- 金额使用 String 存储，禁止 Float
-- 使用 Zustand 管理状态
+- Keep handlers and config simple.
+- Avoid introducing database or migration assumptions until those modules exist.
+- When money logic is introduced later, use integer/decimal-safe representations only.
 
-```bash
-make lint-app
-```
+### TypeScript / React Native
 
-## 数据库迁移
+- Keep the current scaffold single-purpose and easy to test.
+- Avoid unnecessary state libraries or navigation until there is real product pressure.
+- Any money values introduced later must avoid floats.
 
-### 迁移策略
+## Documentation rule
 
-1. 所有 Schema 变更必须编写迁移脚本
-2. 迁移脚本放在 `src/server/migrations/`
-3. 兼容离线同步逻辑（`deleted_at`, `version` 字段）
+When you change behavior or setup, update all related docs in the same change set.
+At minimum, review:
 
-### 运行迁移
+- `README.md`
+- `docs/dev-setup.md`
+- `docs/code-map.md`
+- `docs/designs/project-overview.md`
+- `docs/api/README.md`
+- `agents.md`
 
-```bash
-make migrate        # 执行迁移
-make migrate-rollback # 回滚上一次迁移
-```
+## Pull request checklist
 
-## 架构决策记录 (ADR)
-
-### 何时记录
-
-- 技术选型变更
-- 架构调整
-- 引入新依赖
-- 重大重构
-
-### 如何记录
-
-1. 复制 `docs/adr/README.md` 中的模板
-2. 命名为 `ADR-XXX-简短标题.md`
-3. 填写上下文、决策、后果
-
-## PR 检查清单
-
-- [ ] 代码通过 Lint 检查
-- [ ] 单元测试通过
-- [ ] 新功能有对应测试
-- [ ] 文档已更新（如有必要）
-- [ ] PR 描述关联 Issue (`Fixes #xxx`)
+- [ ] Behavior is correct
+- [ ] Relevant tests were added or updated
+- [ ] Lint and test commands were run, or failures were explained
+- [ ] Related docs were updated
+- [ ] No float-based money logic was introduced

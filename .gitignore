@@ -1,7 +1,6 @@
 # Dependencies
 node_modules/
 vendor/
-go.sum
 
 # Build outputs
 dist/
@@ -49,6 +48,7 @@ coverage/
 android/app/build/
 ios/build/
 ios/Pods/
+.expo/
 
 # Database
 *.db
@@ -59,6 +59,7 @@ ios/Pods/
 tmp/
 temp/
 *.tmp
+.cache/
 
 # Secrets
 *.pem

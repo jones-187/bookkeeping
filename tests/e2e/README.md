@@ -1,33 +1,27 @@
-# 端到端测试 (E2E)
+﻿# End-to-End Tests
 
-测试金字塔的顶层，模拟真实用户场景。
+Last updated: 2026-03-27
 
-## 测试场景
+This directory captures end-to-end test intent.
 
-### 核心流程
-1. 用户注册/登录
-2. 创建账户
-3. 记录一笔收支
-4. 查看报表
-5. 多设备同步
+## Current reality
 
-### 边界场景
-- 离线操作
-- 网络恢复后同步
-- 数据冲突解决
+No E2E harness is implemented yet.
+The current runnable slice is small enough that local manual verification is still acceptable.
 
-### 金融专项
-- 大额数据输入
-- 并发操作
-- 数据一致性验证
+## Current manual E2E checklist
 
-## 测试工具
+1. Start the Go API.
+2. Start the Expo app.
+3. Confirm the service status page loads.
+4. Confirm service name, version, server time, and feature flags render.
+5. Stop the API and confirm the app shows the retryable error state.
 
-- 移动端：Detox (React Native) / Appium
-- 服务端：Playwright
+## Future automated E2E scope
 
-## 运行策略
+When the product grows beyond the bootstrap page, automate:
 
-- 每日定时运行
-- 发布前必须通过
-- 关键路径每次提交运行
+- ledger entry creation
+- offline reopen and local persistence checks
+- sync recovery after reconnect
+- reporting flows

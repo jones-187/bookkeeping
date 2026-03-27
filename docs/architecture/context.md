@@ -1,48 +1,35 @@
-# 系统上下文图 (C4 - Level 1)
+﻿# System Context Diagram (C4 - Level 1)
 
-展示系统与外部用户和系统的交互关系。
+Last updated: 2026-03-27
+
+This diagram shows the currently implemented development-time system context.
 
 ```mermaid
 graph TB
-    User[用户] --> App[记账 App]
-    App --> |可选同步| Cloud[云端服务]
-    Cloud --> |备份存储| DB[(PostgreSQL)]
-    
-    subgraph 用户设备
-        App
-        LocalDB[(SQLite)]
-        App --> LocalDB
-    end
-    
-    subgraph 云端
-        Cloud
-        DB
-    end
-
-    style User fill:#f9f,stroke:#333
-    style App fill:#bbf,stroke:#333
-    style Cloud fill:#bfb,stroke:#333
-    style LocalDB fill:#ffd,stroke:#333
-    style DB fill:#ffd,stroke:#333
+    User["Developer or tester"] --> App["Bookkeeping App\nExpo client"]
+    User --> API["Bookkeeping API\nGo service"]
+    App -->|"Bootstrap request"| API
 ```
 
-## 说明
+## Notes
 
-### 用户 (User)
-- 个人记账用户
-- 使用移动设备记录收支
-- 期望离线可用、数据安全
+### User
 
-### 记账 App (Mobile App)
-- 运行在用户移动设备上
-- 本地优先，离线完全可用
-- 可选云端同步
+- starts the Expo app locally
+- starts the Go API locally
+- uses the current scaffold to verify connectivity and UI states
 
-### 云端服务 (Cloud Service)
-- 可选的数据备份服务
-- 支持多设备同步
-- 用户可选择是否启用
+### Bookkeeping App
 
-### 数据存储
-- **SQLite**：本地数据库，存储所有用户数据
-- **PostgreSQL**：云端数据库，存储同步数据
+- runs as an Expo / React Native application
+- currently renders only the service status page
+- requests startup metadata from the API
+
+### Bookkeeping API
+
+- runs as a local Go service
+- currently exposes `GET /healthz` and `GET /api/v1/bootstrap`
+
+## Future context
+
+Local SQLite storage, cloud sync, and remote storage are part of the long-term direction, but they are not implemented in the current scaffold and are intentionally omitted from this diagram.

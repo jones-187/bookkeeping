@@ -1,128 +1,120 @@
-# 项目概览与现状
+﻿# Project Overview
 
-最后更新：2026-03-27
+Last updated: 2026-03-27
 
-## 项目背景
+## Background
 
-这是一款面向个人用户的记账 App，目标是替代当前市面上臃肿、维护不力的产品。
+This project aims to become a local-first bookkeeping app for personal finance use cases.
+The product direction remains:
 
-项目发起人具备 Java 后端开发和一定项目管理经验，因此本项目在产品与工程上追求三件事：
+- fast local interaction
+- reliable offline behavior
+- simple and maintainable architecture
+- strict financial correctness
 
-- 极致的本地体验
-- 轻量级的云端备份
-- 可维护的架构
+## Current state
 
-## 当前现状
+As of 2026-03-27, the repository is no longer documentation-only.
+A minimal runnable scaffold now exists:
 
-截至 2026-03-27，项目仍处于方案沉淀和工程骨架阶段，核心方向已经明确：
+- Expo + React Native + TypeScript app in `src/app`
+- Go + Gin API in `src/server`
+- one implemented feature: a service status page
 
-- 已确定 Local-First 为核心架构原则
-- 已确定前后端技术栈
-- 已拆分核心需求模块与阶段路线图
-- 尚未完成前端 App 与 Go 服务端的可运行 MVP 实现
+The service status page proves that:
 
-当前默认开发重点为 Phase 1：本地 MVP。
+- the app boots successfully
+- the server boots successfully
+- the app can call `GET /api/v1/bootstrap`
+- the UI handles loading, success, and retry-after-failure states
 
-## 产品目标
+Not implemented yet:
 
-- 提供响应足够快、离线可用的个人记账体验
-- 将云端能力控制在“备份与多端一致性保障”范围内，避免反客为主
-- 在保证代码简单可维护的前提下，确保金融数据计算准确
+- local SQLite persistence
+- ledger entry CRUD
+- accounts and categories
+- sync
+- migrations
+- auth
+- money-domain logic
 
-## 核心架构原则
+## Product goals
 
-### 1. Local-First
+- deliver a bookkeeping experience that remains usable offline
+- keep cloud responsibilities limited to backup and sync later on
+- maintain a codebase that can be evolved safely with tests and docs
 
-- 用户数据优先写入本地 SQLite
-- 核心功能离线可用
-- 本地交互不依赖云端实时响应
+## Current architecture principles
 
-### 2. 云端同步非阻塞
+### 1. Local-first remains the product direction
 
-- 云端只承担备份和多端一致性职责
-- 同步以增量方式进行
-- 云端故障不应阻塞本地记账
+Current code does not implement local persistence yet, but all future data flows should still prefer local storage and treat sync as secondary.
 
-### 3. 金融数据准确性优先
+### 2. Start from a narrow working slice
 
-- 严禁使用 Float 处理货币
-- 服务端统一使用 `shopspring/decimal`
-- 金额字段设计与传输必须避免精度丢失
+The repository intentionally starts with a thin end-to-end slice before moving into money and data correctness work.
+The current slice is the service status page.
 
-### 4. 保持可维护性
+### 3. Financial correctness is deferred, not relaxed
 
-- 拒绝过度设计
-- 优先选择成熟、生态稳定的技术方案
-- 架构设计服务于 MVP 落地，而不是为了“看起来完整”
+Money logic is not implemented in this scaffold.
+When it is introduced, it must not use floating-point arithmetic.
 
-## 技术栈
+### 4. Keep the scaffold easy to replace
 
-### 前端 App
+The current app and API code are intentionally small and should remain easy to refactor as real bookkeeping flows arrive.
 
-- 框架：React Native（Expo）
-- 语言：TypeScript
-- 本地存储：SQLite
-- 状态管理：Zustand
-- 图表库：Victory Charts
-- 目标平台：iOS / Android / 鸿蒙
+## Current tech stack
 
-### 后端 Server
+### App
 
-- 语言：Go
-- 框架：Gin + GORM
-- 货币精度：`shopspring/decimal`
-- 数据库：PostgreSQL
-- 部署方式：Docker
+- Expo
+- React Native
+- TypeScript
+- Jest + Testing Library
+- ESLint
 
-## 需求模块优先级
+### Server
 
-### P0
+- Go 1.22
+- Gin
+- standard library tests
 
-1. 记账基础：单笔流水、金额、分类、账户、时间、备注、退款标记
-2. 账户体系：多账户、账户分组、余额走势记录
+## Current public API
 
-### P1
+- `GET /healthz`
+- `GET /api/v1/bootstrap`
 
-3. 统计报表：按分类、按时间维度可视化展示
-4. 数据同步：本地与云端备份的增量同步
+Bootstrap payload fields:
 
-### P2
+- `status`
+- `serviceName`
+- `version`
+- `serverTime`
+- `features`
 
-5. 辅助功能：周期记账自动生成、查询过滤
+## Near-term roadmap
 
-## 开发路线图
+### Phase 1
 
-### Phase 1：本地 MVP
+- keep the current bootstrap flow stable
+- introduce SQLite-backed local ledger entry capture
 
-- 完成基于 SQLite 的本地增删改查
-- 搭建前端页面骨架与核心交互
+### Phase 2
 
-### Phase 2：可视化
+- add account and category models
+- add local reporting views
 
-- 基于 SQLite 本地数据完成统计图表能力
+### Phase 3
 
-### Phase 3：云端备份
+- add explicit sync interfaces and conflict rules
 
-- 部署 Go 后端
-- 打通增量同步接口
+## Documentation maintenance rule
 
-### Phase 4：闭环
+Update this file when any of these change:
 
-- 完善权限、用户体系与发布上线流程
-
-## 当前决策约束
-
-- MVP 优先保证“能稳定记账”而不是“功能大而全”
-- 云端能力必须服从 Local-First 原则
-- 所有金额相关设计都必须先过精度审查
-- 新增功能前，优先检查是否会破坏现有数据模型与同步策略
-
-## 文档维护约定
-
-当以下信息发生变化时，应优先更新本文件：
-
-- 产品目标或范围调整
-- 技术栈变更
-- 模块优先级变更
-- 路线图阶段推进
-- 当前项目状态发生明显变化
+- project status
+- implemented feature set
+- public API surface
+- core roadmap order
+- major environment expectations

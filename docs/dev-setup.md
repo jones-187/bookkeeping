@@ -1,44 +1,85 @@
-# Dev Setup
+﻿# Dev Setup
 
 Last updated: 2026-03-27
 
 ## Prerequisites
 
-- Node.js 20+
-- Go 1.22+
-- Docker + Docker Compose
-- `make` available in shell
+- Node.js 22.x
+- npm 10.x+
+- Go 1.22.2+
+- Optional: `make`
 
 ## Bootstrap
+
+### Windows PowerShell
+
+```powershell
+cd E:\User_File\project\Project\bookkeeping\src\app
+npm install
+
+cd E:\User_File\project\Project\bookkeeping\src\server
+go mod download
+```
+
+### With make
 
 ```bash
 make setup
 ```
 
-This installs app and server dependencies and configures git hooks.
+## Run the current scaffold
 
-## Day-to-Day Commands
+### Server
 
-- Start backend: `make run-server`
-- Start mobile app: `make run-app`
-- Run all tests: `make test`
-- Run unit tests only: `make test-unit`
-- Generate coverage: `make test-coverage`
-- Run lint checks: `make lint`
+```powershell
+cd E:\User_File\project\Project\bookkeeping\src\server
+go run ./cmd/server
+```
 
-## Migrations
+### App
 
-- Apply migrations: `make migrate`
-- Roll back latest migration: `make migrate-rollback`
+```powershell
+cd E:\User_File\project\Project\bookkeeping\src\app
+Copy-Item .env.example .env
+npm start
+```
 
-## Docker Helpers
+The app expects:
 
-- Start local stack: `make docker-up`
-- Stop local stack: `make docker-down`
-- Follow logs: `make docker-logs`
+```dotenv
+EXPO_PUBLIC_API_BASE_URL=http://localhost:8080
+```
 
-## Troubleshooting
+For physical devices, replace `localhost` with your computer's reachable IP address.
 
-- If `make setup` fails in `src/app`, remove `src/app/node_modules` and retry.
-- If `go mod download` fails, check Go proxy/network settings.
-- If lint fails before code exists, treat missing implementation as expected and keep docs updated.
+## Test and lint
+
+### App
+
+```powershell
+cd E:\User_File\project\Project\bookkeeping\src\app
+npm run lint
+npm test -- --runInBand
+```
+
+### Server
+
+```powershell
+cd E:\User_File\project\Project\bookkeeping\src\server
+go test ./...
+go build ./cmd/server
+```
+
+## Current implemented behavior
+
+The only end-to-end behavior in the repo is the service status page:
+
+- app loads
+- app requests `GET /api/v1/bootstrap`
+- success state renders bootstrap data
+- failure state renders an error box and retry button
+
+## Notes
+
+- `make` is not required on Windows for the current scaffold.
+- Database, migration, sync, and auth commands are intentionally absent until those modules exist.

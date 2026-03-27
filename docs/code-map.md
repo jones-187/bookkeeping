@@ -1,42 +1,58 @@
-# Code Map
+﻿# Code Map
 
 Last updated: 2026-03-27
 
-## Repository Layout
+## Repository layout
 
-- `docs/`: architecture notes, ADRs, API docs, and contribution guidance.
-- `src/app/`: mobile app workspace (currently scaffold-level docs).
-- `src/server/`: backend workspace (currently scaffold-level docs).
-- `tests/unit/`: unit test strategy and notes.
-- `tests/integration/`: integration test strategy and notes.
-- `tests/e2e/`: end-to-end test strategy and notes.
-- `scripts/`: automation and helper scripts (to be expanded).
-- `Makefile`: primary developer task entrypoint.
+- `docs/`: architecture, ADRs, setup, and contributor guidance
+- `src/app/`: Expo + React Native app workspace
+- `src/server/`: Go API workspace
+- `tests/`: reserved strategy folders for broader test planning
+- `scripts/`: helper scripts
+- `Makefile`: convenience commands for environments that provide `make`
 
-## Existing Documentation
+## Current implementation
 
-- Architecture: `docs/architecture/`
-- ADRs: `docs/adr/`
-- Product/Design overview: `docs/designs/`
-- API docs: `docs/api/`
+### `src/app`
 
-## Planned Ownership (Target State)
+- `App.tsx`: single-screen status page
+- `src/services/api.ts`: bootstrap API request
+- `src/types/bootstrap.ts`: response contract
+- `src/components/ServiceStatusCard.tsx`: success-state card
+- `__tests__/App.test.tsx`: app success and retry flows
 
-- `src/app`: UI flows, local cache, sync client behavior.
-- `src/server`: API, data model, migrations, sync protocol.
-- `tests/*`: regression safety net for money logic and sync behavior.
+### `src/server`
 
-## Priority Build Order
+- `cmd/server/main.go`: executable entry point
+- `internal/app/config.go`: environment-based config
+- `internal/http/router.go`: Gin router and middleware
+- `internal/http/handler/bootstrap.go`: health and bootstrap handlers
+- `internal/http/router_test.go`: HTTP endpoint tests
 
-1. Backend domain model for accounts, categories, and ledger entries.
-2. Local app data model and offline-first CRUD flows.
-3. Sync protocol and conflict strategy.
-4. Reporting views and aggregation endpoints.
+## Current public interface
 
-## Change Planning Rule
+- `GET /healthz`
+- `GET /api/v1/bootstrap`
 
-For any non-trivial change, list:
+Bootstrap response fields:
 
-- Paths to edit.
-- Invariants to preserve.
-- Tests to add or update.
+- `status`
+- `serviceName`
+- `version`
+- `serverTime`
+- `features`
+
+## Near-term build order
+
+1. Keep the service status page stable.
+2. Introduce local SQLite-backed ledger entry capture.
+3. Add account/category models.
+4. Add offline-first persistence and later sync.
+
+## Change planning rule
+
+For non-trivial changes, continue to list:
+
+- paths to edit
+- invariants to preserve
+- tests to add or update
