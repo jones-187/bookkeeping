@@ -55,13 +55,14 @@ go run ./cmd/server
 
 ### 3. 配置应用
 
-从 `src/app/.env.example` 创建 `src/app/.env` 并保持：
+从 `src/app/.env.example` 创建 `src/app/.env`，默认保持 `EXPO_PUBLIC_API_BASE_URL` 未设置。
 
-```dotenv
-EXPO_PUBLIC_API_BASE_URL=http://localhost:8080
-```
+平台默认值会自动生效：
 
-如果你在真实设备上运行应用，请将 `localhost` 替换为机器的局域网 IP。
+- iOS 模拟器和 Web: `http://localhost:8080`
+- Android 模拟器: `http://10.0.2.2:8080`
+
+如果你在真实设备上运行应用，或者后端不在本机，请在 `.env` 中显式设置一个设备可访问的地址。
 
 ### 4. 启动应用
 

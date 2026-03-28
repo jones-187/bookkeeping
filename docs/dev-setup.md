@@ -44,13 +44,14 @@ Copy-Item .env.example .env
 npm start
 ```
 
-应用期望：
+默认情况下请保持 `EXPO_PUBLIC_API_BASE_URL` 未设置，让 Expo 使用平台相关默认值：
 
-```dotenv
-EXPO_PUBLIC_API_BASE_URL=http://localhost:8080
-```
+- iOS 模拟器和 Web: `http://localhost:8080`
+- Android 模拟器: `http://10.0.2.2:8080`
 
-对于物理设备，请将 `localhost` 替换为你计算机可访问的 IP 地址。
+如果你要连接物理设备，或者后端运行在其他主机上，请在 `.env` 中显式设置一个可访问的地址，例如你的电脑局域网 IP。
+
+对于物理设备，请确保 `EXPO_PUBLIC_API_BASE_URL` 指向当前设备能够访问的主机地址。
 
 ## 测试和 Lint
 
