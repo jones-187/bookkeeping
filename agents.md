@@ -10,14 +10,15 @@
 
 ## 项目状态 (2026-04-05)
 
+- 阶段 1 已完成：本地账目流水记录
 - 已完成 Feature-Slice 架构迁移
-- 账目功能 (ledger) 已实现 CRUD
 - 使用 Zustand 进行状态管理
-- 单元测试 107/107 通过
-- E2E 测试 39/39 通过 (Playwright)
+- 测试：单元测试 ✅ E2E 测试 ✅
 - SQLite 本地存储已实现
-- 货币金额处理 (Money 工具类) 已实现
+- 货币金额处理已实现（整数存储）
 - 同步、迁移和身份验证仍在计划中
+
+详细进度见 [CHANGELOG.md](CHANGELOG.md) 和 [ROADMAP.md](ROADMAP.md)。
 
 ## 核心约束
 
