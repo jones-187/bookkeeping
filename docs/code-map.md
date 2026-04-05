@@ -1,53 +1,137 @@
 # 代码地图
 
-最后更新：2026-03-27
+最后更新：2026-04-05
 
 ## 仓库布局
 
-- `docs/`：架构、ADR、设置和贡献者指南
-- `src/app/`：Expo + React Native 应用工作区
-- `src/server/`：Go API 工作区
-- `tests/`：为更广泛的测试规划预留的策略文件夹
-- `scripts/`：辅助脚本
-- `Makefile`：为提供 `make` 的环境准备的便捷命令
+```
+bookkeeping/
+├── docs/                      # 文档
+│   ├── adr/                   # 架构决策记录
+│   ├── designs/               # 设计文档
+│   └── architecture/          # 架构文档
+├── src/
+│   ├── app/                   # Expo + React Native 应用
+│   │   ├── src/
+│   │   │   ├── components/    # UI 组件
+│   │   │   ├── screens/       # 页面组件
+│   │   │   ├── services/      # 业务逻辑层
+│   │   │   ├── repositories/  # 数据访问层
+│   │   │   ├── db/            # 数据库配置和迁移
+│   │   │   ├── hooks/         # React Hooks
+│   │   │   ├── utils/         # 工具函数
+│   │   │   ├── types/         # TypeScript 类型定义
+│   │   │   └── navigation/    # 路由配置
+│   │   └── __tests__/         # 测试文件
+│   └── server/                # Go API 服务端（可选）
+├── tests/
+│   └── e2e/                   # E2E 测试（Maestro）
+├── scripts/                   # 辅助脚本
+├── BACKLOG.md                 # 任务待办列表
+├── ROADMAP.md                 # 产品路线图
+└── Makefile                   # 便捷命令
+```
 
-## 当前实现
+## 应用核心模块 (`src/app/src`)
 
-### `src/app`
+### 数据层
 
-- `App.tsx`：单屏幕状态页面
-- `src/services/api.ts`：bootstrap API 请求
-- `src/types/bootstrap.ts`：响应契约
-- `src/components/ServiceStatusCard.tsx`：成功状态卡片
-- `__tests__/App.test.tsx`：应用成功和重试流程
+| 文件 | 职责 |
+|------|------|
+| `db/index.ts` | 数据库初始化和迁移 |
+| `db/types.ts` | 数据库行类型定义 |
+| `repositories/LedgerEntryRepository.ts` | 账目流水数据访问 |
 
-### `src/server`
+### 业务层
 
-- `cmd/server/main.go`：可执行入口点
-- `internal/app/config.go`：基于环境的配置
-- `internal/http/router.go`：Gin 路由和中间件
-- `internal/http/handler/bootstrap.go`：健康和 bootstrap 处理器
-- `internal/http/router_test.go`：HTTP 端点测试
+| 文件 | 职责 |
+|------|------|
+| `services/LedgerEntryService.ts` | 账目流水业务逻辑 |
+| `utils/Money.ts` | 货币计算工具（整数存储） |
+| `errors/index.ts` | 自定义错误类型 |
 
-## 当前公共接口
+### UI 层
 
-- `GET /healthz`
-- `GET /api/v1/bootstrap`
+| 文件 | 职责 |
+|------|------|
+| `screens/LedgerListScreen.tsx` | 账目列表页面 |
+| `screens/AddEntryScreen.tsx` | 添加账目页面 |
+| `screens/EditEntryScreen.tsx` | 编辑账目页面 |
+| `components/EntryForm.tsx` | 账目表单组件 |
+| `hooks/useEntries.ts` | 账目数据 Hook |
 
-Bootstrap 响应字段：
+### 导航
 
-- `status`
-- `serviceName`
-- `version`
-- `serverTime`
-- `features`
+| 文件 | 职责 |
+|------|------|
+| `navigation/AppNavigator.tsx` | 路由配置 |
+| `types/navigation.ts` | 导航类型定义 |
+
+## 服务端模块 (`src/server`)
+
+| 文件 | 职责 |
+|------|------|
+| `cmd/server/main.go` | 可执行入口点 |
+| `internal/app/config.go` | 配置管理 |
+| `internal/http/router.go` | 路由配置 |
+| `internal/http/handler/bootstrap.go` | Bootstrap 处理器 |
+
+## 测试结构 (`src/app/__tests__`)
+
+| 目录 | 内容 |
+|------|------|
+| `unit/` | 单元测试（已废弃，测试文件移至源文件旁） |
+| `integration/` | 集成测试 |
+| `db.test.ts` | 数据库测试 |
+| `App.test.tsx` | 应用入口测试 |
+| `api.test.ts` | API 测试 |
+
+## 数据流
+
+```
+UI (screens/components)
+       ↓
+   Hooks (useEntries)
+       ↓
+   Services (LedgerEntryService)
+       ↓
+   Repositories (LedgerEntryRepository)
+       ↓
+   SQLite (expo-sqlite)
+```
+
+## 公共接口
+
+### 服务端 API
+
+- `GET /healthz` - 健康检查
+- `GET /api/v1/bootstrap` - 启动元数据
+
+### 应用服务
+
+```typescript
+// 创建账目
+await ledgerEntryService.create({
+  amount: 100,      // 元
+  type: 'expense',
+  description: '午餐',
+  date: '2026-04-05'
+});
+
+// 获取列表
+const entries = await ledgerEntryService.getList();
+
+// 获取汇总
+const summary = await ledgerEntryService.getSummary();
+// { totalIncome, totalExpense, balance, count }
+```
 
 ## 近期构建顺序
 
-1. 保持服务状态页面稳定
-2. 引入由 SQLite 支持的本地账目流水记录
-3. 添加账户/类别模型
-4. 添加离线优先持久化和后续同步
+1. ✅ 本地账目流水记录
+2. 🔄 账户和类别管理
+3. ⏳ 本地报表和可视化
+4. ⏳ 云端数据同步
 
 ## 变更规划规则
 

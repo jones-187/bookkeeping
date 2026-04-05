@@ -1,35 +1,52 @@
 # 系统上下文图 (C4 - Level 1)
 
-最后更新：2026-03-27
+最后更新：2026-04-05
 
-此图显示当前已实现的开发时系统上下文。
+此图显示当前系统的上下文。
 
 ```mermaid
 graph TB
-    User["Developer or tester"] --> App["Bookkeeping App\nExpo client"]
-    User --> API["Bookkeeping API\nGo service"]
-    App -->|"Bootstrap request"| API
+    User["用户"] --> App["Bookkeeping App\nExpo + React Native"]
+    App -->|"SQLite"| LocalDB[("本地 SQLite 数据库")]
+    App -->|"可选"| API["Bookkeeping API\nGo 服务"]
 ```
 
 ## 说明
 
 ### 用户
 
-- 本地启动 Expo 应用
-- 本地启动 Go API
-- 使用当前脚手架验证连接性和 UI 状态
+- 使用 Expo 应用记录日常收支
+- 可完全离线使用
+- 数据存储在本地设备
 
 ### 记账应用
 
 - 作为 Expo / React Native 应用运行
-- 当前仅渲染服务状态页面
-- 从 API 请求启动元数据
+- 使用本地 SQLite 存储所有数据
+- 可选连接 API 进行未来同步
 
-### 记账 API
+### 本地 SQLite 数据库
+
+- 存储账目流水记录
+- 存储账户和类别（阶段 2）
+- 完全离线可用
+
+### 记账 API（可选）
 
 - 作为本地 Go 服务运行
-- 当前暴露 `GET /healthz` 和 `GET /api/v1/bootstrap`
+- 暴露 `GET /healthz` 和 `GET /api/v1/bootstrap`
+- 未来用于数据同步和备份
 
-## 未来上下文
+## 当前功能
 
-本地 SQLite 存储、云同步和远程存储是长期方向的一部分，但它们在当前脚手架中尚未实现，因此有意从此图中省略。
+- ✅ 账目流水 CRUD
+- ✅ 收入/支出分类
+- ✅ 收支汇总
+- ✅ 本地数据持久化
+
+## 未来扩展
+
+- 云端数据备份
+- 多设备同步
+- 账户和类别管理
+- 报表和可视化

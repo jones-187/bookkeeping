@@ -1,23 +1,35 @@
 # 开发设置
 
-最后更新：2026-03-27
+最后更新：2026-04-05
 
 ## 前置条件
 
 - Node.js 22.x
 - npm 10.x+
-- Go 1.22.2+
+- Go 1.22.2+（可选，用于服务端）
 - 可选：`make`
 
 ## 引导
 
+### macOS / Linux
+
+```bash
+cd src/app
+npm install
+
+# 服务端（可选）
+cd ../server
+go mod download
+```
+
 ### Windows PowerShell
 
 ```powershell
-cd E:\User_File\project\Project\bookkeeping\src\app
+cd src/app
 npm install
 
-cd E:\User_File\project\Project\bookkeeping\src\server
+# 服务端（可选）
+cd ..\server
 go mod download
 ```
 
@@ -27,60 +39,112 @@ go mod download
 make setup
 ```
 
-## 运行当前脚手架
+## 运行应用
 
-### 服务端
+### 启动应用
 
-```powershell
-cd E:\User_File\project\Project\bookkeeping\src\server
-go run ./cmd/server
-```
-
-### 应用
-
-```powershell
-cd E:\User_File\project\Project\bookkeeping\src\app
-Copy-Item .env.example .env
+```bash
+cd src/app
 npm start
 ```
 
-默认情况下请保持 `EXPO_PUBLIC_API_BASE_URL` 未设置，让 Expo 使用平台相关默认值：
+然后选择：
+- 按 `i` 打开 iOS 模拟器
+- 按 `a` 打开 Android 模拟器
+- 按 `w` 打开 Web 浏览器
 
-- iOS 模拟器和 Web: `http://localhost:8080`
-- Android 模拟器: `http://10.0.2.2:8080`
+### 启动服务端（可选）
 
-如果你要连接物理设备，或者后端运行在其他主机上，请在 `.env` 中显式设置一个可访问的地址，例如你的电脑局域网 IP。
+服务端目前仅用于健康检查，未来将支持数据同步：
 
-对于物理设备，请确保 `EXPO_PUBLIC_API_BASE_URL` 指向当前设备能够访问的主机地址。
-
-## 测试和 Lint
-
-### 应用
-
-```powershell
-cd E:\User_File\project\Project\bookkeeping\src\app
-npm run lint
-npm test -- --runInBand
+```bash
+cd src/server
+go run ./cmd/server
 ```
 
-### 服务端
+服务端地址：`http://localhost:8080`
 
-```powershell
-cd E:\User_File\project\Project\bookkeeping\src\server
+## 测试
+
+### 单元测试和集成测试
+
+```bash
+cd src/app
+npm test
+```
+
+### E2E 测试
+
+需要先安装 Maestro 和启动模拟器：
+
+```bash
+# 安装 Maestro
+brew tap mobiledevops/mobiledevops
+brew install maestro
+
+# 启动应用后运行
+cd src/app
+npm run test:e2e
+```
+
+详细说明请参考 [tests/e2e/README.md](../../tests/e2e/README.md)。
+
+### 服务端测试
+
+```bash
+cd src/server
 go test ./...
-go build ./cmd/server
 ```
 
-## 当前已实现的行为
+## Lint
 
-仓库中唯一的端到端行为是服务状态页面：
+```bash
+cd src/app
+npm run lint
+```
 
-- 应用加载
-- 应用请求 `GET /api/v1/bootstrap`
-- 成功状态渲染 bootstrap 数据
-- 失败状态渲染错误框和重试按钮
+## 当前已实现的功能
+
+### 账目管理
+
+- 📝 添加账目（收入/支出）
+- ✏️ 编辑账目
+- 🗑️ 删除账目（软删除）
+- 📋 账目列表（按日期排序）
+- 📊 收支汇总
+
+### 数据存储
+
+- 💾 本地 SQLite 存储
+- 🔢 金额整数存储（分为单位）
+- 🔒 数据验证和错误处理
+
+## 环境配置
+
+从 `src/app/.env.example` 创建 `src/app/.env`：
+
+```bash
+cd src/app
+cp .env.example .env
+```
+
+默认情况下，应用使用本地 SQLite，无需配置服务端地址。
+
+如果需要连接服务端，设置 `EXPO_PUBLIC_API_BASE_URL`：
+
+```env
+# iOS 模拟器 / Web
+EXPO_PUBLIC_API_BASE_URL=http://localhost:8080
+
+# Android 模拟器
+EXPO_PUBLIC_API_BASE_URL=http://10.0.2.2:8080
+
+# 物理设备（使用电脑局域网 IP）
+EXPO_PUBLIC_API_BASE_URL=http://192.168.1.x:8080
+```
 
 ## 注意事项
 
-- 对于当前脚手架，Windows 上不需要 `make`
-- 在这些模块存在之前，数据库、迁移、同步和身份验证命令有意缺失
+- 应用可完全离线运行，服务端是可选的
+- 所有数据存储在本地 SQLite 数据库
+- 货币金额使用整数存储，避免浮点精度问题

@@ -1,8 +1,8 @@
 # 贡献指南
 
-最后更新：2026-03-27
+最后更新：2026-04-05
 
-本仓库目前包含一个最小化的可运行脚手架。贡献的变更应保持该脚手架稳定，同时为后续的记账功能做准备。
+本仓库包含一个 Local-First 记账应用，阶段 1（本地账目流水记录）已完成。
 
 ## 开发环境
 
@@ -10,16 +10,18 @@
 
 - Node.js 22.x
 - npm 10.x+
-- Go 1.22.2+
+- Go 1.22.2+（可选，用于服务端）
 - 可选：`make`
 
 ### 引导
 
-```powershell
-cd E:\User_File\project\Project\bookkeeping\src\app
+```bash
+# 安装应用依赖
+cd src/app
 npm install
 
-cd E:\User_File\project\Project\bookkeeping\src\server
+# 安装服务端依赖（可选）
+cd ../server
 go mod download
 ```
 
@@ -50,47 +52,65 @@ make setup
 - `test:` 仅测试更新
 - `chore:` 工具或构建变更
 
-## 当前测试规则
+## 测试
 
-### 应用
+### 应用测试
 
-```powershell
-cd E:\User_File\project\Project\bookkeeping\src\app
+```bash
+cd src/app
+
+# 单元测试和集成测试
+npm test
+
+# E2E 测试（需要模拟器）
+npm run test:e2e
+
+# Lint
 npm run lint
-npm test -- --runInBand
 ```
 
-### 服务端
+### 服务端测试
 
-```powershell
-cd E:\User_File\project\Project\bookkeeping\src\server
-$env:GOCACHE='E:\User_File\project\Project\bookkeeping\.cache\go-build'
+```bash
+cd src/server
 go test ./...
 go build ./cmd/server
 ```
 
 ## 当前已实现范围
 
-仓库目前仅保证此端到端行为：
+### 账目管理
 
-- Expo 应用启动
-- Go API 启动
-- 应用获取 `GET /api/v1/bootstrap`
-- 应用渲染该请求的成功和失败状态
+- 添加收入/支出记录
+- 编辑账目
+- 删除账目（软删除）
+- 账目列表（按日期排序）
+- 收支汇总
+
+### 数据存储
+
+- 本地 SQLite 存储
+- 货币金额整数存储（分）
+- 数据验证和错误处理
 
 ## 编码约束
 
 ### Go
 
 - 保持处理器和配置简单
-- 在这些模块存在之前，避免引入数据库或迁移假设
-- 稍后引入货币逻辑时，仅使用整数/小数安全表示
+- 仅使用整数/小数安全表示货币逻辑
 
 ### TypeScript / React Native
 
-- 保持当前脚手架单一用途且易于测试
-- 在存在真正的产品压力之前，避免不必要的状态库或导航
-- 稍后引入的任何货币值必须避免浮点数
+- 业务逻辑放在 Service 层，与 UI 解耦
+- 货币值必须使用整数（分），禁止浮点数
+- 使用 `testID` 属性支持 E2E 测试
+
+### 数据层
+
+- 所有金额使用整数存储（分为单位）
+- 使用软删除（`deleted_at` 字段）
+- 使用 UUID 主键（为未来同步准备）
 
 ## 文档规则
 
@@ -101,7 +121,8 @@ go build ./cmd/server
 - `docs/code-map.md`
 - `docs/designs/project-overview.md`
 - `docs/api/README.md`
-- `agents.md`
+- `BACKLOG.md`
+- `ROADMAP.md`
 
 ## 拉取请求检查清单
 
@@ -110,3 +131,4 @@ go build ./cmd/server
 - [ ] 已运行 lint 和测试命令，或解释了失败原因
 - [ ] 已更新相关文档
 - [ ] 未引入基于浮点数的货币逻辑
+- [ ] 新 UI 组件已添加 testID 属性
