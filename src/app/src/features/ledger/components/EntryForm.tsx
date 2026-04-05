@@ -1,7 +1,7 @@
 /**
  * 账目表单组件
  */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -36,6 +36,7 @@ export default function EntryForm({
     handleSubmit,
     formState: { errors },
     watch,
+    reset,
   } = useForm<EntryFormData>({
     resolver: zodResolver(entryFormSchema),
     defaultValues: {
@@ -44,6 +45,17 @@ export default function EntryForm({
       ...initialValues,
     },
   });
+
+  // 当 initialValues 变化时（例如编辑页面数据加载完成），重置表单
+  useEffect(() => {
+    if (initialValues) {
+      reset({
+        type: 'expense',
+        date: new Date().toISOString().split('T')[0],
+        ...initialValues,
+      });
+    }
+  }, [initialValues, reset]);
 
   const type = watch('type');
 

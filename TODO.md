@@ -1,7 +1,17 @@
 # 待办事项清单
 
 > 创建时间: 2026-04-05
+> 最后更新: 2026-04-05
 > 状态: 进行中
+
+## 当前进度概览
+
+```
+架构迁移 ████████████████████ 100%
+文档完善 ████████████████████ 100%
+E2E测试 ████████████████████ 100%
+架构检查 ░░░░░░░░░░░░░░░░░░░░   0%
+```
 
 ## 当前状态
 
@@ -10,62 +20,19 @@
 | Feature-Slice 架构迁移 | ✅ 完成 | 已迁移 ledger 功能模块 |
 | Zustand 状态管理 | ✅ 完成 | ledgerStore 已实现 |
 | 单元测试 | ✅ 107/107 通过 | |
-| E2E 测试 | ⚠️ 37/39 通过 | 2个编辑测试失败 |
+| E2E 测试 | ✅ 39/39 通过 | |
 | TypeScript 编译 | ✅ 通过 | |
-| 设计文档 | ⚠️ 需要更新 | 架构已实现，文档未同步 |
+| 设计文档 | ✅ 已完成 | ADR-004 已创建 |
+| Git 提交 | ✅ 已提交 | 提交哈希: e5c43dd |
 
 ---
 
 ## 待办事项
 
-### 1. 🐛 修复 E2E 测试 Bug
-
-**优先级**: 高
-**状态**: 待处理
-
-**问题描述**:
-2个编辑相关的测试失败：
-- `persistence.spec.ts >> 编辑类型后刷新页面，类型应该正确`
-- `persistence.spec.ts >> 编辑日期后刷新页面，日期应该正确`
-
-**错误信息**:
-```
-TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
-Call log:
-  - waiting for getByTestId('add-entry-fab') to be visible
-    35 × locator resolved to hidden
-```
-
-**分析**:
-- `EntryFormPage.submit()` 等待 FAB 按钮出现超时
-- 编辑表单提交后没有正确返回列表页
-- 页面快照显示仍在编辑页面，表单显示验证错误
-
-**相关文件**:
-- `src/app/e2e/pages/EntryFormPage.ts` - Page Object
-- `src/app/e2e/specs/persistence.spec.ts` - 测试文件
-- `src/app/e2e/fixtures/test.ts` - 测试 fixture
-
----
-
-### 2. 📝 更新设计文档
-
-**优先级**: 中
-**状态**: ✅ 已完成 (2026-04-05)
-
-**已完成的事情**:
-
-- [x] 创建 ADR-004: Feature-Slice 架构模式 (`docs/adr/ADR-004-feature-slice-architecture.md`)
-- [x] 更新 ADR 索引 (`docs/adr/README.md`)
-- [x] 更新 app README (`src/app/README.md`)
-- [x] 标记计划文档为已完成 (`.claude/plans/shiny-honking-cloud.md`)
-
----
-
-### 3. 🔍 架构检查
+### 1. 🔍 架构检查
 
 **优先级**: 低
-**状态**: 待处理
+**状态**: 🔴 待处理
 
 **检查项**:
 
@@ -76,11 +43,25 @@ Call log:
 
 ---
 
-## 已完成
+## ✅ 已完成
 
-### Feature-Slice 架构迁移
+### E2E 测试 Bug 修复 (2026-04-05)
 
-**完成时间**: 2026-04-05
+- [x] 修复编辑表单 `initialValues` 不生效的问题
+- [x] 在 `EntryForm` 组件中添加 `useEffect` + `reset()` 来响应 `initialValues` 变化
+- [x] 所有 39 个 E2E 测试通过
+
+### 文档完善 (2026-04-05)
+
+- [x] 创建 ADR-004: Feature-Slice 架构模式 (`docs/adr/ADR-004-feature-slice-architecture.md`)
+- [x] 更新 ADR 索引 (`docs/adr/README.md`)
+- [x] 更新 app README (`src/app/README.md`)
+- [x] 更新 agents.md (添加 Git 提交中文要求，更新项目状态)
+- [x] 标记计划文档为已完成 (`.claude/plans/shiny-honking-cloud.md`)
+- [x] 创建 TODO.md
+- [x] Git 提交 (e5c43dd)
+
+### Feature-Slice 架构迁移 (2026-04-05)
 
 **已迁移内容**:
 - `src/app/src/features/ledger/` - 账目功能模块
@@ -105,6 +86,13 @@ Call log:
 
 ---
 
+## 下一步行动
+
+1. **架构检查** - 确保模块边界清晰（可延后）
+2. **Git 提交** - 提交 E2E 测试修复
+
+---
+
 ## 相关文件
 
 | 文件 | 用途 |
@@ -112,3 +100,4 @@ Call log:
 | `.claude/plans/shiny-honking-cloud.md` | Feature-Slice 架构设计文档 |
 | `src/app/e2e/test-results/` | E2E 测试失败详情 |
 | `docs/adr/` | 架构决策记录目录 |
+| `docs/adr/ADR-004-feature-slice-architecture.md` | Feature-Slice 架构 ADR |
