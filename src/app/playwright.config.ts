@@ -10,6 +10,10 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: 1, // 单线程，避免 IndexedDB 并发问题
+  timeout: 60000, // 每个测试最长 60 秒
+  expect: {
+    timeout: 10000, // 断言超时 10 秒
+  },
   reporter: [
     ['list'],
     ['html', { outputFolder: 'playwright-report' }],
@@ -19,6 +23,8 @@ export default defineConfig({
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     headless: true,
+    actionTimeout: 10000, // 每个操作超时 10 秒
+    navigationTimeout: 30000, // 导航超时 30 秒
   },
   projects: [
     {

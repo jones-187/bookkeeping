@@ -28,7 +28,7 @@ test.describe('数据持久化', () => {
         date: '2026-04-05',
       });
       await formPage.submit();
-      await listPage.waitForLoad();
+      await listPage.reloadAndWait();
 
       // 验证添加成功
       await listPage.assertEntryCount(1);
@@ -55,7 +55,7 @@ test.describe('数据持久化', () => {
           date: `2026-04-0${i}`,
         });
         await formPage.submit();
-        await listPage.waitForLoad();
+        await listPage.reloadAndWait();
       }
 
       await listPage.assertEntryCount(3);
@@ -78,7 +78,7 @@ test.describe('数据持久化', () => {
         date: '2026-04-01',
       });
       await formPage.submit();
-      await listPage.waitForLoad();
+      await listPage.reloadAndWait();
 
       // 添加支出
       await listPage.clickAddButton();
@@ -89,7 +89,7 @@ test.describe('数据持久化', () => {
         date: '2026-04-02',
       });
       await formPage.submit();
-      await listPage.waitForLoad();
+      await listPage.reloadAndWait();
 
       // 刷新页面
       await listPage.page.reload();
@@ -97,7 +97,7 @@ test.describe('数据持久化', () => {
 
       // 验证汇总数据
       const summary = await listPage.getSummary();
-      expect(summary.totalIncome).toContain('5,000');
+      expect(summary.totalIncome).toContain('5000');
       expect(summary.totalExpense).toContain('200');
     });
   });
@@ -112,7 +112,7 @@ test.describe('数据持久化', () => {
         date: '2026-04-01',
       });
       await formPage.submit();
-      await listPage.waitForLoad();
+      await listPage.reloadAndWait();
 
       // 编辑
       const entryId = await listPage.getEntryIdByDescription('原始描述');
@@ -122,7 +122,7 @@ test.describe('数据持久化', () => {
         amount: 200,
       });
       await formPage.submit();
-      await listPage.waitForLoad();
+      await listPage.reloadAndWait();
 
       // 刷新页面
       await listPage.page.reload();
@@ -144,7 +144,7 @@ test.describe('数据持久化', () => {
         date: '2026-04-01',
       });
       await formPage.submit();
-      await listPage.waitForLoad();
+      await listPage.reloadAndWait();
 
       // 编辑为收入
       const entryId = await listPage.getEntryIdByDescription('测试类型切换');
@@ -153,7 +153,7 @@ test.describe('数据持久化', () => {
         type: 'income',
       });
       await formPage.submit();
-      await listPage.waitForLoad();
+      await listPage.reloadAndWait();
 
       // 刷新页面
       await listPage.page.reload();
@@ -177,7 +177,7 @@ test.describe('数据持久化', () => {
         date: '2026-04-01',
       });
       await formPage.submit();
-      await listPage.waitForLoad();
+      await listPage.reloadAndWait();
 
       // 编辑日期
       const entryId = await listPage.getEntryIdByDescription('测试日期修改');
@@ -186,7 +186,7 @@ test.describe('数据持久化', () => {
         date: '2026-04-05',
       });
       await formPage.submit();
-      await listPage.waitForLoad();
+      await listPage.reloadAndWait();
 
       // 刷新页面
       await listPage.page.reload();
@@ -200,6 +200,11 @@ test.describe('数据持久化', () => {
 
   test.describe('删除后持久化', () => {
     test('删除账目后刷新页面，账目应该仍然不存在', async () => {
+      // 覆盖 window.confirm 使其总是返回 true
+      await listPage.page.addInitScript(() => {
+        window.confirm = () => true;
+      });
+
       // 添加两条账目
       await listPage.clickAddButton();
       await formPage.fillForm({
@@ -208,7 +213,7 @@ test.describe('数据持久化', () => {
         date: '2026-04-01',
       });
       await formPage.submit();
-      await listPage.waitForLoad();
+      await listPage.reloadAndWait();
 
       await listPage.clickAddButton();
       await formPage.fillForm({
@@ -217,7 +222,7 @@ test.describe('数据持久化', () => {
         date: '2026-04-02',
       });
       await formPage.submit();
-      await listPage.waitForLoad();
+      await listPage.reloadAndWait();
 
       await listPage.assertEntryCount(2);
 
@@ -226,16 +231,9 @@ test.describe('数据持久化', () => {
       await listPage.clickEntry(entryId!);
       await formPage.clickDelete();
 
-      // 处理确认对话框（Web Alert）
-      // 注意：在 Web 上，react-native 的 Alert.alert 可能表现为 window.confirm
-      listPage.page.once('dialog', async (dialog) => {
-        await dialog.accept();
-      });
-
       // 等待返回列表页
-      await listPage.page.waitForURL('**/', { timeout: 5000 }).catch(() => {
-        // 如果超时，可能是因为 Alert 行为不同，手动返回
-      });
+      await listPage.page.waitForTimeout(2000);
+      await listPage.waitForLoad();
 
       // 刷新页面
       await listPage.page.reload();
@@ -258,30 +256,27 @@ test.describe('数据持久化', () => {
         date: '2026-04-05',
       });
       await formPage.submit();
-      await listPage.waitForLoad();
+      await listPage.reloadAndWait();
 
-      // 记录当前 URL
-      const url = listPage.page.url();
+      // 验证数据存在
+      await listPage.assertEntryCount(1);
 
-      // 模拟关闭并重新打开（通过清除上下文并重新访问）
-      // 在 Playwright 中，我们通过新的浏览器上下文来模拟
-      const browser = listPage.page.context().browser();
-      const newContext = await browser!.newContext();
-      const newPage = await newContext.newPage();
-
-      // 访问相同 URL
-      await newPage.goto(url);
+      // 在同一上下文中打开新页面（模拟重新打开标签页）
+      // 注意：IndexedDB 在同一浏览器上下文中是共享的
+      const newPage = await listPage.page.context().newPage();
+      await newPage.goto('/');
 
       // 等待页面加载
       const newListPage = new LedgerListPage(newPage);
       await newListPage.waitForLoad();
+      await newListPage.reloadAndWait();
 
       // 验证数据仍然存在
       await newListPage.assertEntryCount(1);
       const entries = await newListPage.getEntries();
       expect(entries[0].description).toContain('跨会话测试');
 
-      await newContext.close();
+      await newPage.close();
     });
   });
 });

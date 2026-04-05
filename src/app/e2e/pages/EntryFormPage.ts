@@ -98,8 +98,11 @@ export class EntryFormPage {
    */
   async submit(): Promise<void> {
     await this.submitButton.click();
-    // 等待返回列表页
-    await this.page.waitForURL('**/');
+    // 等待返回列表页（通过检测列表元素而不是 URL）
+    // 先等待 FAB 出现，然后等待条目加载
+    await this.page.getByTestId('add-entry-fab').waitFor({ state: 'visible', timeout: 10000 });
+    // 额外等待数据加载
+    await this.page.waitForTimeout(1000);
   }
 
   /**
@@ -114,12 +117,9 @@ export class EntryFormPage {
    * 确认删除对话框
    */
   async confirmDelete(): Promise<void> {
-    // Web 上 Alert.alert 会显示为原生对话框，但 Playwright 可以处理
-    // 在 Web 环境中，react-native-paper 可能使用不同的对话框实现
-    // 这里等待对话框出现并点击确认
-
-    // 等待返回列表页（删除成功）
-    await this.page.waitForURL('**/');
+    // Web 上 Alert.alert 在 React Native Web 中可能表现为 window.confirm
+    // 等待返回列表页（通过检测列表元素而不是 URL）
+    await this.page.getByTestId('add-entry-fab').waitFor({ state: 'visible', timeout: 10000 });
   }
 
   /**
@@ -153,6 +153,15 @@ export class EntryFormPage {
       return await errorLocator.textContent();
     }
     return null;
+  }
+
+  /**
+   * 提交表单（用于验证错误场景，不等待返回列表页）
+   */
+  async submitExpectingError(): Promise<void> {
+    await this.submitButton.click();
+    // 等待一小段时间让验证错误显示
+    await this.page.waitForTimeout(500);
   }
 
   /**

@@ -5,32 +5,25 @@
 import { test as base, Page } from '@playwright/test';
 
 /**
- * 清空 IndexedDB 数据库
- */
-async function clearIndexedDB(page: Page): Promise<void> {
-  await page.evaluate(() => {
-    return new Promise<void>((resolve) => {
-      const request = indexedDB.deleteDatabase('bookkeeping');
-      request.onsuccess = () => resolve();
-      request.onerror = () => resolve(); // 即使失败也继续
-      request.onblocked = () => resolve(); // 被阻塞时也继续
-    });
-  });
-}
-
-/**
  * 扩展的测试 fixture
  */
 export const test = base.extend<{
   /**
-   * 清空数据库的页面对象
+   * 已清空数据库的页面对象
    */
   cleanPage: Page;
 }>({
   cleanPage: async ({ page }, use) => {
-    // 每个测试前清空数据库
+    // 访问页面并清空数据库
     await page.goto('/');
-    await clearIndexedDB(page);
+    await page.evaluate(() => {
+      return new Promise<void>((resolve) => {
+        const request = indexedDB.deleteDatabase('bookkeeping');
+        request.onsuccess = () => resolve();
+        request.onerror = () => resolve();
+        request.onblocked = () => resolve();
+      });
+    });
     await use(page);
   },
 });

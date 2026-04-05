@@ -27,7 +27,7 @@ test.describe('表单验证', () => {
         date: '2026-04-05',
       });
 
-      await formPage.submit();
+      await formPage.submitExpectingError();
 
       // 应该还在表单页面，未跳转
       await formPage.assertHasError();
@@ -42,7 +42,7 @@ test.describe('表单验证', () => {
         date: '2026-04-05',
       });
 
-      await formPage.submit();
+      await formPage.submitExpectingError();
 
       await formPage.assertHasError();
     });
@@ -55,7 +55,7 @@ test.describe('表单验证', () => {
         date: '2026-04-05',
       });
 
-      await formPage.submit();
+      await formPage.submitExpectingError();
 
       await formPage.assertHasError();
     });
@@ -70,7 +70,7 @@ test.describe('表单验证', () => {
       });
 
       await formPage.submit();
-      await listPage.waitForLoad();
+      await listPage.reloadAndWait();
 
       await listPage.assertEntryCount(1);
     });
@@ -85,7 +85,7 @@ test.describe('表单验证', () => {
       });
 
       await formPage.submit();
-      await listPage.waitForLoad();
+      await listPage.reloadAndWait();
 
       await listPage.assertEntryCount(1);
     });
@@ -100,7 +100,7 @@ test.describe('表单验证', () => {
       });
 
       await formPage.submit();
-      await listPage.waitForLoad();
+      await listPage.reloadAndWait();
 
       const entries = await listPage.getEntries();
       expect(entries[0].amount).toContain('12.34');
@@ -117,7 +117,7 @@ test.describe('表单验证', () => {
         date: '2026-04-05',
       });
 
-      await formPage.submit();
+      await formPage.submitExpectingError();
 
       await formPage.assertHasError();
     });
@@ -131,7 +131,7 @@ test.describe('表单验证', () => {
         date: '2026-04-05',
       });
 
-      await formPage.submit();
+      await formPage.submitExpectingError();
 
       await formPage.assertHasError();
     });
@@ -146,7 +146,7 @@ test.describe('表单验证', () => {
       });
 
       await formPage.submit();
-      await listPage.waitForLoad();
+      await listPage.reloadAndWait();
 
       await listPage.assertEntryCount(1);
     });
@@ -162,7 +162,7 @@ test.describe('表单验证', () => {
       });
 
       await formPage.submit();
-      await listPage.waitForLoad();
+      await listPage.reloadAndWait();
 
       await listPage.assertEntryCount(1);
     });
@@ -178,7 +178,7 @@ test.describe('表单验证', () => {
         date: '2026/04/05', // 错误格式
       });
 
-      await formPage.submit();
+      await formPage.submitExpectingError();
 
       await formPage.assertHasError();
     });
@@ -192,7 +192,7 @@ test.describe('表单验证', () => {
         date: '2099-12-31',
       });
 
-      await formPage.submit();
+      await formPage.submitExpectingError();
 
       await formPage.assertHasError();
     });
@@ -207,7 +207,7 @@ test.describe('表单验证', () => {
       });
 
       await formPage.submit();
-      await listPage.waitForLoad();
+      await listPage.reloadAndWait();
 
       await listPage.assertEntryCount(1);
     });
@@ -222,7 +222,7 @@ test.describe('表单验证', () => {
       });
 
       await formPage.submit();
-      await listPage.waitForLoad();
+      await listPage.reloadAndWait();
 
       await listPage.assertEntryCount(1);
     });
@@ -238,7 +238,7 @@ test.describe('表单验证', () => {
       });
 
       await formPage.submit();
-      await listPage.waitForLoad();
+      await listPage.reloadAndWait();
 
       await listPage.assertEntryCount(1);
     });
@@ -256,7 +256,7 @@ test.describe('表单验证', () => {
       });
 
       await formPage.submit();
-      await listPage.waitForLoad();
+      await listPage.reloadAndWait();
 
       const entries = await listPage.getEntries();
       expect(entries[0].type).toBe('expense');
@@ -273,7 +273,7 @@ test.describe('表单验证', () => {
       });
 
       await formPage.submit();
-      await listPage.waitForLoad();
+      await listPage.reloadAndWait();
 
       const entries = await listPage.getEntries();
       expect(entries[0].type).toBe('income');
@@ -290,7 +290,7 @@ test.describe('表单验证', () => {
         date: '2026-04-01',
       });
       await formPage.submit();
-      await listPage.waitForLoad();
+      await listPage.reloadAndWait();
 
       // 进入编辑
       const entryId = await listPage.getEntryIdByDescription('原始账目');
@@ -298,7 +298,7 @@ test.describe('表单验证', () => {
 
       // 清空金额
       await formPage.fillAmount(0);
-      await formPage.submit();
+      await formPage.submitExpectingError();
 
       await formPage.assertHasError();
     });
@@ -312,7 +312,7 @@ test.describe('表单验证', () => {
         date: '2026-04-01',
       });
       await formPage.submit();
-      await listPage.waitForLoad();
+      await listPage.reloadAndWait();
 
       // 进入编辑
       const entryId = await listPage.getEntryIdByDescription('原始账目');
@@ -320,7 +320,7 @@ test.describe('表单验证', () => {
 
       // 清空描述
       await formPage.fillDescription('');
-      await formPage.submit();
+      await formPage.submitExpectingError();
 
       await formPage.assertHasError();
     });

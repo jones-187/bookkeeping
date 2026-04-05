@@ -58,11 +58,23 @@ export class LedgerListPage {
    * 等待页面加载完成
    */
   async waitForLoad(): Promise<void> {
-    // 等待汇总卡片或空状态出现
+    await this.page.waitForLoadState('networkidle');
+    // 等待 FAB 可见
+    await this.addFab.waitFor({ state: 'visible', timeout: 10000 });
+  }
+
+  /**
+   * 刷新页面并等待数据加载
+   */
+  async reloadAndWait(): Promise<void> {
+    await this.page.reload();
+    await this.page.waitForLoadState('networkidle');
+    // 等待条目或空状态
     await Promise.race([
-      this.summaryCard.waitFor({ state: 'visible' }),
-      this.emptyState.waitFor({ state: 'visible' }),
+      this.page.locator('[data-testid^="entry-item-"]').first().waitFor({ state: 'visible', timeout: 10000 }).catch(() => {}),
+      this.emptyState.waitFor({ state: 'visible', timeout: 10000 }).catch(() => {}),
     ]);
+    await this.page.waitForTimeout(500);
   }
 
   /**
@@ -84,31 +96,37 @@ export class LedgerListPage {
    * 获取所有账目条目
    */
   async getEntries(): Promise<Entry[]> {
-    const cards = await this.page.locator('[data-testid^="entry-item-"]').all();
+    // 查找包含 aria-label 的元素
+    const elements = await this.page.locator('[aria-label*="账目:"]').all();
+
     const entries: Entry[] = [];
 
-    for (const card of cards) {
-      const testId = await card.getAttribute('data-testid') || '';
-      const id = testId.replace('entry-item-', '');
+    for (const element of elements) {
+      // 从 aria-label 解析信息: "账目: {description}, {+/-}{amount}"
+      const label = await element.getAttribute('aria-label') || '';
+      const match = label.match(/账目:\s*(.+?),\s*([+-])(.+)/);
 
-      const description = await card.locator('text=/^(?!\\+|\\-|¥)/').first().textContent() || '';
+      if (match) {
+        // 从 data-testid 获取 ID（从父元素或当前元素）
+        const testId = await element.getAttribute('data-testid') ||
+                      await element.locator('xpath=..').getAttribute('data-testid') || '';
+        const id = testId.replace('entry-item-', '');
 
-      // 获取金额（带 +/- 前缀）
-      const amountText = await card.locator('text=/^[+\\-]/').textContent() || '';
+        // 解析日期（如果 aria-label 包含）
+        let date = '';
+        const dateMatch = label.match(/日期:\s*(\d{4}-\d{2}-\d{2})/);
+        if (dateMatch) {
+          date = dateMatch[1];
+        }
 
-      // 判断类型
-      const type = amountText.startsWith('+') ? 'income' : 'expense';
-
-      // 获取日期
-      const dateText = await card.locator('text=/^\\d{4}-\\d{2}-\\d{2}$/').textContent() || '';
-
-      entries.push({
-        id,
-        description: description.trim(),
-        amount: amountText,
-        type,
-        date: dateText,
-      });
+        entries.push({
+          id,
+          description: match[1].trim(),
+          amount: match[2] + match[3].trim(),
+          type: match[2] === '+' ? 'income' : 'expense',
+          date,
+        });
+      }
     }
 
     return entries;
@@ -126,8 +144,8 @@ export class LedgerListPage {
    */
   async clickAddButton(): Promise<void> {
     await this.addFab.click();
-    // 等待表单页面加载
-    await this.page.waitForURL('**/add');
+    // 等待表单页面加载（通过检测表单元素而不是 URL）
+    await this.page.getByTestId('amount-input').waitFor({ state: 'visible', timeout: 10000 });
   }
 
   /**
@@ -135,8 +153,8 @@ export class LedgerListPage {
    */
   async clickEntry(entryId: string): Promise<void> {
     await this.page.getByTestId(`entry-item-${entryId}`).click();
-    // 等待编辑页面加载
-    await this.page.waitForURL('**/edit/**');
+    // 等待编辑页面加载（通过检测表单元素而不是 URL）
+    await this.page.getByTestId('amount-input').waitFor({ state: 'visible', timeout: 10000 });
   }
 
   /**
