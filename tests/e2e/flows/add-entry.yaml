@@ -1,0 +1,62 @@
+# 添加账目流程 E2E 测试
+# 测试用户添加新账目的完整流程
+
+appId: com.jones.bookkeeping
+name: 添加账目流程
+
+onFlowStart:
+  - clearState
+
+steps:
+  # 1. 启动应用并等待加载
+  - launchApp:
+      clearState: true
+  - waitForAnimationToEnd:
+      timeout: 3000
+
+  # 2. 验证首页显示（空状态或列表）
+  - assertVisible:
+      id: "entry-list"
+
+  # 3. 点击 FAB 按钮进入添加页面
+  - tapOn:
+      id: "add-entry-fab"
+  - waitForAnimationToEnd:
+      timeout: 1000
+
+  # 4. 验证添加表单显示
+  - assertVisible:
+      id: "type-selector"
+
+  # 5. 选择类型（默认支出，可选切换到收入）
+  - tapOn:
+      id: "type-income"
+
+  # 6. 输入金额
+  - tapOn:
+      id: "amount-input"
+  - inputText: "100.50"
+
+  # 7. 输入描述
+  - tapOn:
+      id: "description-input"
+  - inputText: "E2E测试收入"
+
+  # 8. 输入日期（保持默认今天）
+  - tapOn:
+      id: "date-input"
+  - inputText: "2026-04-05"
+
+  # 9. 点击添加按钮
+  - tapOn:
+      id: "submit-button"
+
+  # 10. 验证返回列表页
+  - waitForAnimationToEnd:
+      timeout: 2000
+  - assertVisible:
+      id: "entry-list"
+
+  # 11. 验证新条目显示（通过描述文本匹配）
+  - assertVisible:
+      text: "E2E测试收入"

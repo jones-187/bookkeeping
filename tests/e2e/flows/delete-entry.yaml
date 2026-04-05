@@ -1,0 +1,66 @@
+# 删除账目流程 E2E 测试
+# 前提：需要先有一条账目记录
+
+appId: com.jones.bookkeeping
+name: 删除账目流程
+
+onFlowStart:
+  - clearState
+
+steps:
+  # 1. 首先添加一条测试数据
+  - launchApp:
+      clearState: true
+  - waitForAnimationToEnd:
+      timeout: 3000
+
+  # 添加一条账目用于删除测试
+  - tapOn:
+      id: "add-entry-fab"
+  - waitForAnimationToEnd:
+      timeout: 1000
+
+  - tapOn:
+      id: "amount-input"
+  - inputText: "30"
+
+  - tapOn:
+      id: "description-input"
+  - inputText: "待删除的测试数据"
+
+  - tapOn:
+      id: "submit-button"
+  - waitForAnimationToEnd:
+      timeout: 2000
+
+  # 2. 验证条目存在
+  - assertVisible:
+      text: "待删除的测试数据"
+
+  # 3. 点击条目进入编辑页面
+  - tapOn:
+      text: "待删除的测试数据"
+  - waitForAnimationToEnd:
+      timeout: 1000
+
+  # 4. 验证删除按钮显示
+  - assertVisible:
+      id: "delete-button"
+
+  # 5. 点击删除按钮
+  - tapOn:
+      id: "delete-button"
+
+  # 6. 确认删除对话框
+  - tapOn:
+      text: "删除"
+  - waitForAnimationToEnd:
+      timeout: 2000
+
+  # 7. 验证返回列表页
+  - assertVisible:
+      id: "entry-list"
+
+  # 8. 验证条目已删除（空状态或条目不存在）
+  - assertNotVisible:
+      text: "待删除的测试数据"

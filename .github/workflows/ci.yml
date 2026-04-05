@@ -62,3 +62,64 @@ jobs:
       - name: Build server
         working-directory: src/server
         run: go build -o bin/server ./cmd/server
+
+  # E2E 测试 Job（需要 macOS 运行模拟器）
+  # 注意：此 Job 需要先安装 Maestro，且需要模拟器环境
+  # 可考虑使用 Maestro Cloud 进行托管测试
+  e2e-tests:
+    needs: build
+    runs-on: macos-latest
+    # 仅在 main 分支运行，节省资源
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: src/app/package-lock.json
+
+      - name: Install app dependencies
+        working-directory: src/app
+        run: npm ci
+
+      - name: Setup Maestro
+        run: |
+          brew tap mobiledevops/mobiledevops
+          brew install maestro
+
+      - name: Start iOS Simulator
+        uses: futureware-tech/simulator-action@v3
+        with:
+          model: 'iPhone 15'
+          os_version: '17.5'
+
+      - name: Install Expo Go
+        run: |
+          xcrun simctl install booted "$(find ~/Library/Developer/CoreSimulator/Devices -name "Expo Go.app" | head -1)" || echo "Expo Go not found, will be installed automatically"
+
+      - name: Start Expo server
+        working-directory: src/app
+        run: npx expo start --ios &
+        env:
+          EXPO_NO_INTERACTIVE: true
+
+      - name: Wait for app to be ready
+        run: sleep 30
+
+      - name: Run E2E tests
+        working-directory: src/app
+        run: npm run test:e2e:ci
+        continue-on-error: true
+
+      - name: Upload E2E test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-results
+          path: src/app/e2e-results/
+          retention-days: 7

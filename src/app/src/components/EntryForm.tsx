@@ -64,14 +64,19 @@ export default function EntryForm({
                   label: '支出',
                   icon: 'arrow-up',
                   style: value === 'expense' && { backgroundColor: '#FFEBEE' },
+                  testID: 'type-expense',
+                  accessibilityLabel: '支出',
                 },
                 {
                   value: 'income',
                   label: '收入',
                   icon: 'arrow-down',
                   style: value === 'income' && { backgroundColor: '#E8F5E9' },
+                  testID: 'type-income',
+                  accessibilityLabel: '收入',
                 },
               ]}
+              testID="type-selector"
             />
           </View>
         )}
@@ -94,6 +99,8 @@ export default function EntryForm({
               error={!!errors.amount}
               mode="outlined"
               left={<TextInput.Affix text="¥" />}
+              testID="amount-input"
+              accessibilityLabel="金额输入"
             />
             {errors.amount && (
               <Text style={styles.error}>{errors.amount.message}</Text>
@@ -117,6 +124,8 @@ export default function EntryForm({
               error={!!errors.description}
               mode="outlined"
               placeholder="例如：午餐、交通、工资等"
+              testID="description-input"
+              accessibilityLabel="描述输入"
             />
             {errors.description && (
               <Text style={styles.error}>{errors.description.message}</Text>
@@ -138,6 +147,8 @@ export default function EntryForm({
               mode="outlined"
               placeholder="YYYY-MM-DD"
               right={<TextInput.Icon icon="calendar" />}
+              testID="date-input"
+              accessibilityLabel="日期输入"
             />
             {errors.date && (
               <Text style={styles.error}>{errors.date.message}</Text>
@@ -153,6 +164,8 @@ export default function EntryForm({
           loading={loading}
           disabled={loading}
           style={[styles.button, { backgroundColor: theme.colors.primary }]}
+          testID="submit-button"
+          accessibilityLabel={submitLabel}
         >
           {submitLabel}
         </Button>
@@ -165,6 +178,8 @@ export default function EntryForm({
             disabled={loading}
             textColor="#F44336"
             style={styles.button}
+            testID="delete-button"
+            accessibilityLabel="删除"
           >
             删除
           </Button>

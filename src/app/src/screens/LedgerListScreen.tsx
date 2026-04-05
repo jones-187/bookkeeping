@@ -32,7 +32,12 @@ export default function LedgerListScreen() {
     const prefix = isIncome ? '+' : '-';
 
     return (
-      <Card style={styles.entryCard} onPress={() => navigation.navigate(ROUTES.EDIT_ENTRY, { entryId: item.id })}>
+      <Card
+        style={styles.entryCard}
+        onPress={() => navigation.navigate(ROUTES.EDIT_ENTRY, { entryId: item.id })}
+        testID={`entry-item-${item.id}`}
+        accessibilityLabel={`账目: ${item.description}, ${prefix}${Money.format(item.amount)}`}
+      >
         <Card.Content style={styles.entryContent}>
           <View style={styles.entryLeft}>
             <Text style={styles.entryDescription}>{item.description}</Text>
@@ -50,24 +55,24 @@ export default function LedgerListScreen() {
     if (!summary) return null;
 
     return (
-      <Card style={styles.summaryCard}>
+      <Card style={styles.summaryCard} testID="summary-card">
         <Card.Content>
           <View style={styles.summaryRow}>
             <View style={styles.summaryItem}>
               <Text style={styles.summaryLabel}>收入</Text>
-              <Text style={[styles.summaryValue, { color: '#4CAF50' }]}>
+              <Text style={[styles.summaryValue, { color: '#4CAF50' }]} testID="total-income">
                 +{Money.format(summary.totalIncome)}
               </Text>
             </View>
             <View style={styles.summaryItem}>
               <Text style={styles.summaryLabel}>支出</Text>
-              <Text style={[styles.summaryValue, { color: '#F44336' }]}>
+              <Text style={[styles.summaryValue, { color: '#F44336' }]} testID="total-expense">
                 -{Money.format(summary.totalExpense)}
               </Text>
             </View>
             <View style={styles.summaryItem}>
               <Text style={styles.summaryLabel}>结余</Text>
-              <Text style={[styles.summaryValue, { color: summary.balance >= 0 ? '#4CAF50' : '#F44336' }]}>
+              <Text style={[styles.summaryValue, { color: summary.balance >= 0 ? '#4CAF50' : '#F44336' }]} testID="balance">
                 {Money.format(Math.abs(summary.balance))}
               </Text>
             </View>
@@ -78,7 +83,7 @@ export default function LedgerListScreen() {
   };
 
   const renderEmpty = () => (
-    <View style={styles.emptyContainer}>
+    <View style={styles.emptyContainer} testID="empty-state">
       <Text style={styles.emptyText}>暂无账目记录</Text>
       <Text style={styles.emptyHint}>点击右下角按钮添加第一笔账目</Text>
     </View>
@@ -86,7 +91,7 @@ export default function LedgerListScreen() {
 
   if (error) {
     return (
-      <View style={styles.centerContainer}>
+      <View style={styles.centerContainer} testID="error-state">
         <Text style={styles.errorText}>加载失败: {error.message}</Text>
       </View>
     );
@@ -110,6 +115,7 @@ export default function LedgerListScreen() {
           refreshControl={
             <RefreshControl refreshing={loading} onRefresh={refresh} />
           }
+          testID="entry-list"
         />
       )}
 
@@ -118,6 +124,9 @@ export default function LedgerListScreen() {
         style={[styles.fab, { backgroundColor: theme.colors.primary }]}
         onPress={() => navigation.navigate(ROUTES.ADD_ENTRY)}
         color="#fff"
+        testID="add-entry-fab"
+        accessibilityLabel="添加账目"
+        accessibilityRole="button"
       />
     </View>
   );

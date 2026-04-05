@@ -1,0 +1,11 @@
+# Maestro E2E 测试配置
+# 文档: https://maestro.mobile.dev/
+
+appId: com.jones.bookkeeping
+
+# 测试环境配置
+onFlowStart:
+  - clearState
+
+onFlowComplete:
+  - stopApp
