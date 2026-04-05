@@ -1,8 +1,8 @@
 /**
  * 账目流水 Repository 测试
  */
-import { LedgerEntryRepository, CreateLedgerEntryParams } from '../../src/repositories/LedgerEntryRepository';
-import { getDatabase } from '../../src/db/index';
+import { LedgerEntryRepository, CreateLedgerEntryParams } from '../../src/features/ledger/repositories/LedgerEntryRepository';
+import { getDatabase } from '../../src/shared/db/index';
 
 describe('LedgerEntryRepository', () => {
   let repository: LedgerEntryRepository;

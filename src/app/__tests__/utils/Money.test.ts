@@ -14,7 +14,7 @@ import {
   abs,
   negate,
   SCALE,
-} from '../../src/utils/Money';
+} from '../../src/shared/utils/Money';
 
 describe('Money', () => {
   describe('fromYuan', () => {

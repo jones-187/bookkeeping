@@ -1,7 +1,7 @@
 /**
  * 数据库初始化测试
  */
-import { getDatabase } from '../src/db/index';
+import { getDatabase } from '../src/shared/db/index';
 
 describe('Database Initialization', () => {
   it('should create database and run migrations', async () => {

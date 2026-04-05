@@ -34,16 +34,16 @@ jest.mock("react-native-safe-area-context", () => ({
 }));
 
 // Mock screens
-jest.mock("../src/screens/LedgerListScreen", () => {
+jest.mock("../src/features/ledger/screens/LedgerListScreen", () => {
   const { Text } = require("react-native");
   return () => null;
 });
 
-jest.mock("../src/screens/AddEntryScreen", () => {
+jest.mock("../src/features/ledger/screens/AddEntryScreen", () => {
   return () => null;
 });
 
-jest.mock("../src/screens/EditEntryScreen", () => {
+jest.mock("../src/features/ledger/screens/EditEntryScreen", () => {
   return () => null;
 });
 

@@ -4,8 +4,8 @@
  *
  * 这个测试文件专注于数据层集成，不涉及 React 组件
  */
-import { LedgerEntryRepository } from '../../src/repositories/LedgerEntryRepository';
-import { LedgerEntryService } from '../../src/services/LedgerEntryService';
+import { LedgerEntryRepository } from '../../src/features/ledger/repositories/LedgerEntryRepository';
+import { LedgerEntryService } from '../../src/features/ledger/services/LedgerEntryService';
 import * as SQLite from 'expo-sqlite';
 
 // 辅助函数：清空数据库

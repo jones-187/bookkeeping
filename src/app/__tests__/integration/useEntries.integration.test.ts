@@ -2,8 +2,8 @@
  * useEntries Hook 核心逻辑集成测试
  * 测试 Hook 底层数据流与数据库的交互
  */
-import { LedgerEntryRepository } from '../../src/repositories/LedgerEntryRepository';
-import { LedgerEntryService } from '../../src/services/LedgerEntryService';
+import { LedgerEntryRepository } from '../../src/features/ledger/repositories/LedgerEntryRepository';
+import { LedgerEntryService } from '../../src/features/ledger/services/LedgerEntryService';
 import * as SQLite from 'expo-sqlite';
 
 // 辅助函数：清空数据库

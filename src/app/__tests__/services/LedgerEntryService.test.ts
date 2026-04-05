@@ -1,12 +1,12 @@
 /**
  * LedgerEntryService 单元测试
  */
-import { LedgerEntryService, CreateEntryInput, UpdateEntryInput } from '../../src/services/LedgerEntryService';
-import { LedgerEntryRepository, LedgerEntry } from '../../src/repositories/LedgerEntryRepository';
-import { ValidationError, EntryNotFoundError, BusinessError } from '../../src/errors';
+import { LedgerEntryService, CreateEntryInput, UpdateEntryInput } from '../../src/features/ledger/services/LedgerEntryService';
+import { LedgerEntryRepository, LedgerEntry } from '../../src/features/ledger/repositories/LedgerEntryRepository';
+import { ValidationError, EntryNotFoundError, BusinessError } from '../../src/shared/errors';
 
 // Mock Repository
-jest.mock('../../src/repositories/LedgerEntryRepository');
+jest.mock('../../src/features/ledger/repositories/LedgerEntryRepository');
 
 describe('LedgerEntryService', () => {
   let service: LedgerEntryService;

@@ -1,4 +1,4 @@
-import { resolveApiBaseUrl } from "../src/constants/api";
+import { resolveApiBaseUrl } from "../src/shared/constants/api";
 
 describe("resolveApiBaseUrl", () => {
   it("defaults Android to the emulator host loopback", () => {
