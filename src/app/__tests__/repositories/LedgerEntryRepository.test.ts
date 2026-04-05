@@ -124,7 +124,8 @@ describe('LedgerEntryRepository', () => {
 
     it('应该按日期降序排列', async () => {
       const entries = await repository.findAll();
-      expect(entries[0].date).toBeGreaterThanOrEqual(entries[1].date);
+      // 日期是字符串格式 YYYY-MM-DD，使用字符串比较
+      expect(entries[0].date >= entries[1].date).toBe(true);
     });
   });
 
