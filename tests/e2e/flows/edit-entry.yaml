@@ -1,7 +1,7 @@
 # 编辑账目流程 E2E 测试
 # 前提：需要先有一条账目记录
 
-appId: com.jones.bookkeeping
+appId: host.exp.Exponent
 name: 编辑账目流程
 
 onFlowStart:

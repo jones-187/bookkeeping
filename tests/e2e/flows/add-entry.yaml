@@ -1,7 +1,7 @@
 # 添加账目流程 E2E 测试
 # 测试用户添加新账目的完整流程
 
-appId: com.jones.bookkeeping
+appId: host.exp.Exponent
 name: 添加账目流程
 
 onFlowStart:
