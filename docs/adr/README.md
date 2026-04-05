@@ -18,6 +18,8 @@ ADR (Architecture Decision Records) 是记录重要架构决策的轻量级文�
 |------|------|------|------|
 | [ADR-001](./ADR-001-local-first-architecture.md) | Local-First 架构决策 | 已采纳 | 2026-03-16 |
 | [ADR-002](./ADR-002-tech-stack-selection.md) | 技术栈选型 | 已采纳 | 2026-03-16 |
+| [ADR-003](./ADR-003-sqlite-library.md) | SQLite 库选型 | 已采纳 | 2026-03-31 |
+| [ADR-004](./ADR-004-feature-slice-architecture.md) | Feature-Slice 架构模式 | 已采纳 | 2026-04-05 |
 
 ## ADR 模板
 
