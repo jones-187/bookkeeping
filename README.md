@@ -134,10 +134,11 @@ bookkeeping/
 
 ## 文档
 
-- [BACKLOG.md](BACKLOG.md) - 任务待办列表
+- [CHANGELOG.md](CHANGELOG.md) - 版本变更记录
 - [ROADMAP.md](ROADMAP.md) - 产品路线图
+- [BACKLOG.md](BACKLOG.md) - 待办任务列表
 - [docs/adr/](docs/adr/) - 架构决策记录
-- [tests/e2e/README.md](tests/e2e/README.md) - E2E 测试说明
+- [docs/DOCUMENTATION.md](docs/DOCUMENTATION.md) - 文档维护指南
 
 ## 下一步计划
 
