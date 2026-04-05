@@ -63,7 +63,7 @@ export default function EntryForm({
                   value: 'expense',
                   label: '支出',
                   icon: 'arrow-up',
-                  style: value === 'expense' && { backgroundColor: '#FFEBEE' },
+                  style: value === 'expense' ? { backgroundColor: '#FFEBEE' } : undefined,
                   testID: 'type-expense',
                   accessibilityLabel: '支出',
                 },
@@ -71,12 +71,11 @@ export default function EntryForm({
                   value: 'income',
                   label: '收入',
                   icon: 'arrow-down',
-                  style: value === 'income' && { backgroundColor: '#E8F5E9' },
+                  style: value === 'income' ? { backgroundColor: '#E8F5E9' } : undefined,
                   testID: 'type-income',
                   accessibilityLabel: '收入',
                 },
               ]}
-              testID="type-selector"
             />
           </View>
         )}

@@ -3,17 +3,12 @@
  */
 import { useState, useEffect } from 'react';
 import { LedgerEntry } from '../types/ledger.types';
+import { LedgerEntryService } from '../services/LedgerEntryService';
+import { LedgerEntryRepository } from '../repositories/LedgerEntryRepository';
 
-// 动态导入服务，避免循环依赖
-let serviceInstance: Awaited<ReturnType<typeof import('../services/LedgerEntryService').LedgerEntryService>> | null = null;
-
-const getService = async () => {
-  if (!serviceInstance) {
-    const { LedgerEntryService } = await import('../services/LedgerEntryService');
-    const { LedgerEntryRepository } = await import('../repositories/LedgerEntryRepository');
-    serviceInstance = new LedgerEntryService(new LedgerEntryRepository());
-  }
-  return serviceInstance;
+// 创建服务实例
+const getService = () => {
+  return new LedgerEntryService(new LedgerEntryRepository());
 };
 
 export function useEntry(id: string) {
@@ -26,7 +21,7 @@ export function useEntry(id: string) {
       try {
         setLoading(true);
         setError(null);
-        const service = await getService();
+        const service = getService();
         const data = await service.getById(id);
         setEntry(data);
       } catch (err) {

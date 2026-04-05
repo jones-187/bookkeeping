@@ -93,7 +93,7 @@ export class SQLiteDatabase implements Database {
 
   async getFirstAsync<T>(
     sql: string,
-    params?: (string | number | null)[]
+    params: (string | number | null)[] = []
   ): Promise<T | null> {
     if (!this.db) {
       await this.init();
@@ -103,7 +103,7 @@ export class SQLiteDatabase implements Database {
 
   async getAllAsync<T>(
     sql: string,
-    params?: (string | number | null)[]
+    params: (string | number | null)[] = []
   ): Promise<T[]> {
     if (!this.db) {
       await this.init();

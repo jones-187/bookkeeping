@@ -1,7 +1,7 @@
 /**
  * 导航类型定义
  */
-import { LedgerEntry } from '../repositories/LedgerEntryRepository';
+import type { LedgerEntry } from '../../features/ledger/types/ledger.types';
 
 export type RootStackParamList = {
   LedgerList: undefined;

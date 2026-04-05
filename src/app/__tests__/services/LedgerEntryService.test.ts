@@ -1,8 +1,10 @@
 /**
  * LedgerEntryService 单元测试
  */
-import { LedgerEntryService, CreateEntryInput, UpdateEntryInput } from '../../src/features/ledger/services/LedgerEntryService';
-import { LedgerEntryRepository, LedgerEntry } from '../../src/features/ledger/repositories/LedgerEntryRepository';
+import { LedgerEntryService } from '../../src/features/ledger/services/LedgerEntryService';
+import type { CreateEntryInput, UpdateEntryInput } from '../../src/features/ledger/services/LedgerEntryService';
+import { LedgerEntryRepository } from '../../src/features/ledger/repositories/LedgerEntryRepository';
+import type { LedgerEntry } from '../../src/features/ledger/types/ledger.types';
 import { ValidationError, EntryNotFoundError, BusinessError } from '../../src/shared/errors';
 
 // Mock Repository

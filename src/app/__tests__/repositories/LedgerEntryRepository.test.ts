@@ -1,7 +1,8 @@
 /**
  * 账目流水 Repository 测试
  */
-import { LedgerEntryRepository, CreateLedgerEntryParams } from '../../src/features/ledger/repositories/LedgerEntryRepository';
+import { LedgerEntryRepository } from '../../src/features/ledger/repositories/LedgerEntryRepository';
+import type { CreateLedgerEntryParams } from '../../src/features/ledger/types/ledger.types';
 import { getDatabase } from '../../src/shared/db/index';
 
 describe('LedgerEntryRepository', () => {
@@ -14,7 +15,7 @@ describe('LedgerEntryRepository', () => {
 
     // 清空测试数据
     const db = await getDatabase();
-    await db.runAsync('DELETE FROM ledger_entries');
+    await db.runAsync('DELETE FROM ledger_entries', []);
   });
 
   describe('create', () => {

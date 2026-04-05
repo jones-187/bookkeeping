@@ -26,7 +26,7 @@ export async function getDatabase(): Promise<Database> {
     db = await getNativeDatabase();
   }
 
-  return db;
+  return db!;
 }
 
 // 导出类型
