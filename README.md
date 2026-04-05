@@ -1,6 +1,6 @@
 # Bookkeeping
 
-基于 Local-First 架构的记账应用，支持本地 SQLite 存储和离线使用。
+基于 Local-First 架构的记账应用，支持 iOS 和 Android 平台，使用本地 SQLite 存储和离线使用。
 
 ## 当前状态
 
@@ -46,7 +46,6 @@ npm start
 然后选择：
 - 按 `i` 打开 iOS 模拟器
 - 按 `a` 打开 Android 模拟器
-- 按 `w` 打开 Web 浏览器
 
 ### 3. 启动服务端（可选）
 
