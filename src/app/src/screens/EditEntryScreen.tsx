@@ -59,28 +59,42 @@ export default function EditEntryScreen() {
   };
 
   const handleDelete = async () => {
-    Alert.alert(
-      '确认删除',
-      '删除后无法恢复，确定要删除这条账目吗？',
-      [
-        { text: '取消', style: 'cancel' },
-        {
-          text: '删除',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              setSaving(true);
-              await ledgerEntryService.delete(entryId);
-              navigation.goBack();
-            } catch (error) {
-              Alert.alert('删除失败', error instanceof Error ? error.message : '未知错误');
-            } finally {
-              setSaving(false);
-            }
-          },
-        },
-      ]
-    );
+    const confirmDelete = () => {
+      // 使用 Promise 包装以支持 async/await
+      return new Promise<boolean>((resolve) => {
+        if (Platform.OS === 'web') {
+          // Web 上使用 window.confirm
+          resolve(window.confirm('删除后无法恢复，确定要删除这条账目吗？'));
+        } else {
+          // 原生平台使用 Alert
+          Alert.alert(
+            '确认删除',
+            '删除后无法恢复，确定要删除这条账目吗？',
+            [
+              { text: '取消', style: 'cancel', onPress: () => resolve(false) },
+              { text: '删除', style: 'destructive', onPress: () => resolve(true) },
+            ]
+          );
+        }
+      });
+    };
+
+    const confirmed = await confirmDelete();
+    if (!confirmed) return;
+
+    try {
+      setSaving(true);
+      await ledgerEntryService.delete(entryId);
+      navigation.goBack();
+    } catch (error) {
+      if (Platform.OS === 'web') {
+        window.alert(error instanceof Error ? error.message : '删除失败');
+      } else {
+        Alert.alert('删除失败', error instanceof Error ? error.message : '未知错误');
+      }
+    } finally {
+      setSaving(false);
+    }
   };
 
   if (loading) {

@@ -89,14 +89,15 @@ export class WebDatabase implements Database {
     }
 
     const tableName = match[1];
-    const columns = match[2].split(',').map(c => c.trim().replace(/_/g, '_'));
+    const columns = match[2].split(',').map(c => c.trim());
 
     // 将 params 映射到列名
     const row: DbRow = {};
     columns.forEach((col, i) => {
       // 将 snake_case 转换为 camelCase 存储
       const camelKey = this.toCamelCase(col);
-      row[camelKey] = params[i];
+      // 如果 params[i] 是 undefined，使用 null
+      row[camelKey] = params[i] !== undefined ? params[i] : null;
     });
 
     return new Promise((resolve, reject) => {
@@ -343,8 +344,9 @@ export class WebDatabase implements Database {
     whereClause: string,
     params: (string | number | null)[]
   ): boolean {
-    // 处理 deleted_at IS NULL
+    // 处理 deleted_at IS NULL (包括 undefined 情况)
     if (whereClause.includes('deleted_at IS NULL')) {
+      // undefined 也视为 NULL
       if (row.deletedAt !== null && row.deletedAt !== undefined) {
         return false;
       }
@@ -369,6 +371,7 @@ export class WebDatabase implements Database {
       const nullMatch = cond.match(/(\w+)\s+IS\s+NULL/i);
       if (nullMatch) {
         const column = this.toCamelCase(nullMatch[1]);
+        // undefined 也视为 NULL
         if (row[column] !== null && row[column] !== undefined) {
           return false;
         }

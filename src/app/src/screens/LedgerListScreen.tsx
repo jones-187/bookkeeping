@@ -1,7 +1,7 @@
 /**
  * 账目列表页面
  */
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   View,
   FlatList,
@@ -10,7 +10,7 @@ import {
   ActivityIndicator,
   Text,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Card, FAB, useTheme } from 'react-native-paper';
 import { useEntries } from '../hooks/useEntries';
@@ -26,6 +26,13 @@ export default function LedgerListScreen() {
   const theme = useTheme();
   const { entries, summary, loading, error, refresh } = useEntries();
 
+  // 页面获得焦点时自动刷新数据
+  useFocusEffect(
+    useCallback(() => {
+      refresh();
+    }, [refresh])
+  );
+
   const renderEntry = ({ item }: { item: LedgerEntry }) => {
     const isIncome = item.type === 'income';
     const amountColor = isIncome ? '#4CAF50' : '#F44336';
@@ -36,7 +43,7 @@ export default function LedgerListScreen() {
         style={styles.entryCard}
         onPress={() => navigation.navigate(ROUTES.EDIT_ENTRY, { entryId: item.id })}
         testID={`entry-item-${item.id}`}
-        accessibilityLabel={`账目: ${item.description}, ${prefix}${Money.format(item.amount)}`}
+        accessibilityLabel={`账目: ${item.description}, ${prefix}${Money.format(item.amount)}, 日期: ${item.date}`}
       >
         <Card.Content style={styles.entryContent}>
           <View style={styles.entryLeft}>
