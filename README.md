@@ -1,12 +1,13 @@
 # Bookkeeping
 
-基于 Local-First 架构的记账应用，支持 iOS 和 Android 平台，使用本地 SQLite 存储和离线使用。
+基于 Local-First 架构的记账应用，支持 iOS、Android 和 Web 平台，使用本地存储和离线使用。
 
 ## 当前状态
 
 **阶段 1 已完成** ✅ - 本地账目流水记录功能已实现：
 
-- ✅ SQLite 本地存储
+- ✅ SQLite 本地存储（iOS/Android）
+- ✅ IndexedDB 本地存储（Web）
 - ✅ 账目流水的增删改查
 - ✅ 收入/支出分类
 - ✅ 金额使用整数存储（避免浮点精度问题）
@@ -18,7 +19,7 @@
 - **应用**：Expo 51 + React Native 0.74 + TypeScript
 - **UI**：React Native Paper
 - **导航**：React Navigation
-- **存储**：expo-sqlite
+- **存储**：expo-sqlite (iOS/Android) / IndexedDB (Web)
 - **测试**：Jest + Maestro
 - **服务端**：Go 1.22 + Gin（可选，用于未来同步功能）
 
@@ -44,6 +45,7 @@ npm start
 ```
 
 然后选择：
+- 按 `w` 打开 Web 浏览器
 - 按 `i` 打开 iOS 模拟器
 - 按 `a` 打开 Android 模拟器
 
@@ -70,7 +72,7 @@ go run ./cmd/server
 
 ### 数据存储
 
-- 💾 本地 SQLite 存储
+- 💾 本地存储（SQLite for iOS/Android，IndexedDB for Web）
 - 🔢 金额整数存储（分为单位）
 - 🔒 数据验证和错误处理
 

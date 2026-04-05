@@ -2,8 +2,7 @@
  * Ledger Entry Repository
  * Data access layer for ledger entries
  */
-import * as SQLite from 'expo-sqlite';
-import { getDatabase } from '../db';
+import { getDatabase, Database } from '../db';
 import { LedgerEntryRow } from '../db/types';
 
 export interface LedgerEntry {
@@ -39,9 +38,9 @@ export interface LedgerEntryFilter {
 }
 
 export class LedgerEntryRepository {
-  private db: SQLite.SQLiteDatabase | null = null;
+  private db: Database | null = null;
 
-  private async getDb(): Promise<SQLite.SQLiteDatabase> {
+  private async getDb(): Promise<Database> {
     if (!this.db) {
       this.db = await getDatabase();
     }

@@ -9,6 +9,8 @@
 - Go 1.22.2+（可选，用于服务端）
 - 可选：`make`
 
+> **Web 开发**：如无 iOS/Android 设备或模拟器，可直接使用 Web 平台进行开发测试。
+
 ## 引导
 
 ### macOS / Linux
@@ -49,6 +51,7 @@ npm start
 ```
 
 然后选择：
+- 按 `w` 打开 Web 浏览器
 - 按 `i` 打开 iOS 模拟器
 - 按 `a` 打开 Android 模拟器
 
@@ -114,7 +117,7 @@ npm run lint
 
 ### 数据存储
 
-- 💾 本地 SQLite 存储
+- 💾 本地存储（SQLite for iOS/Android，IndexedDB for Web）
 - 🔢 金额整数存储（分为单位）
 - 🔒 数据验证和错误处理
 
@@ -127,7 +130,7 @@ cd src/app
 cp .env.example .env
 ```
 
-默认情况下，应用使用本地 SQLite，无需配置服务端地址。
+默认情况下，应用使用本地存储，无需配置服务端地址。
 
 如果需要连接服务端，设置 `EXPO_PUBLIC_API_BASE_URL`：
 
@@ -145,5 +148,6 @@ EXPO_PUBLIC_API_BASE_URL=http://192.168.1.x:8080
 ## 注意事项
 
 - 应用可完全离线运行，服务端是可选的
-- 所有数据存储在本地 SQLite 数据库
+- 所有数据存储在本地（SQLite for iOS/Android，IndexedDB for Web）
 - 货币金额使用整数存储，避免浮点精度问题
+- Web 平台用于开发测试，生产环境建议使用 iOS/Android
