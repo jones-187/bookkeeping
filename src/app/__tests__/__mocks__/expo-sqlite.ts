@@ -22,7 +22,7 @@ export const SQLiteMock = {
   openDatabaseAsync: async (name: string): Promise<SQLiteDatabase> => {
     const db = new Map<string, unknown[][]>();
     databases.set(name, db);
-    tables.set(name, { { columns: [], rows: [] } });
+    tables.set(name, { columns: [], rows: [] });
 
     return {
       execAsync: async (sql: string) => {
@@ -41,27 +41,27 @@ export const SQLiteMock = {
         const table = tables.get(name)!;
 
         if (sql.includes('INSERT INTO schema_version')) {
-          return { { changes: 1, lastInsertRowId: 1 } };
+          return { changes: 1, lastInsertRowId: 1 };
         }
 
         if (sql.includes('INSERT INTO ledger_entries')) {
           const row = params as unknown[];
           table.rows.push(row);
-          return { { changes: 1, lastInsertRowId: table.rows.length } };
+          return { changes: 1, lastInsertRowId: table.rows.length };
         }
 
         if (sql.includes('UPDATE ledger_entries')) {
-          return { { changes: 1, lastInsertRowId: 0 } };
+          return { changes: 1, lastInsertRowId: 0 };
         }
 
-        return { { changes: 0, lastInsertRowId: 0 } };
+        return { changes: 0, lastInsertRowId: 0 };
       },
 
       getFirstAsync: async <T>(sql: string, params?: unknown[]): Promise<T | undefined> => {
         const table = tables.get(name)!;
 
         if (sql.includes('SELECT MAX(version)')) {
-          return { { version: 1 } } as T;
+          return { version: 1 } as T;
         }
 
         if (sql.includes('SELECT * FROM ledger_entries WHERE id = ?')) {
@@ -81,7 +81,7 @@ export const SQLiteMock = {
         }
 
         if (sql.includes('SELECT COUNT(*)')) {
-          return { { count: table.rows.length } } as T;
+          return { count: table.rows.length } as T;
         }
 
         return undefined;
