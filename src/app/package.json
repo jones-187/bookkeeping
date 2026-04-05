@@ -11,7 +11,10 @@
     "lint": "eslint . --ext .ts,.tsx",
     "test": "jest --runInBand",
     "test:e2e": "maestro test ../tests/e2e/flows",
-    "test:e2e:ci": "maestro test --format junit --output e2e-results ../tests/e2e/flows"
+    "test:e2e:ci": "maestro test --format junit --output e2e-results ../tests/e2e/flows",
+    "test:e2e:web": "playwright test",
+    "test:e2e:web:ui": "playwright test --ui",
+    "test:e2e:web:debug": "playwright test --debug"
   },
   "dependencies": {
     "@expo/metro-runtime": "~3.2.3",
@@ -34,6 +37,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
+    "@playwright/test": "^1.59.1",
     "@testing-library/jest-native": "^5.4.3",
     "@testing-library/react-native": "^12.7.2",
     "@types/jest": "^29.5.12",
