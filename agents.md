@@ -14,8 +14,10 @@
 - 账目功能 (ledger) 已实现 CRUD
 - 使用 Zustand 进行状态管理
 - 单元测试 107/107 通过
-- E2E 测试 37/39 通过（2个编辑相关测试待修复）
-- SQLite、货币领域逻辑、同步、迁移和身份验证仍在计划中
+- E2E 测试 39/39 通过 (Playwright)
+- SQLite 本地存储已实现
+- 货币金额处理 (Money 工具类) 已实现
+- 同步、迁移和身份验证仍在计划中
 
 ## 核心约束
 
@@ -56,10 +58,6 @@ Windows 直接命令仍然是主要的后备方案，因为 `make` 可能未安�
 
 ## 环境说明
 
-- 调用 shell 命令时，优先使用 `E:\User_File\project\Project\bookkeeping` 下的绝对路径
-- 在此环境中，工具 `workdir` 可能无法可靠地切换到 `E:` 上的仓库。请显式使用 `Set-Location 'E:\...path...'` 或 `cmd /c "cd /d E:\... && ..."`
-- 针对 `E:` 工作区的 Node 命令在沙箱中可能会因 `EPERM` 或路径解析错误而失败。如果 lint、test 或 install 遇到此类错误，请使用提升的权限重新运行，而不是重试相同的沙箱命令
-- 如果 Go 命令写入默认的用户构建缓存，可能会失败。优先将 `GOCACHE` 设置为工作区本地路径，例如 `E:\User_File\project\Project\bookkeeping\.cache\go-build` 用于测试/构建运行
 - 不要忽略 `src/server/go.sum`；它是跟踪的依赖状态的一部分
 - 避免包含 `src/app/node_modules` 的广泛递归文件扫描；它们会产生噪音和超时。在审核文档或源文件时排除依赖目录
 - 如果为 Go 创建了临时 `.cache/` 目录，它应该保持被 git 忽略且不被提交
@@ -79,4 +77,3 @@ Windows 直接命令仍然是主要的后备方案，因为 `make` 可能未安�
 
 ## 工具注意
 
-- 如果 `rg` 在当前环境中不可用，直接改用 PowerShell 的 `Select-String`、`Get-ChildItem` 和 `Where-Object`，不要重复重试 `rg`

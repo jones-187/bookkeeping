@@ -106,18 +106,25 @@ bookkeeping/
 ├── src/
 │   ├── app/                    # React Native 应用
 │   │   ├── src/
-│   │   │   ├── components/     # UI 组件
-│   │   │   ├── screens/        # 页面
-│   │   │   ├── services/       # 业务逻辑层
-│   │   │   ├── repositories/   # 数据访问层
-│   │   │   ├── db/             # 数据库配置
-│   │   │   ├── hooks/          # React Hooks
-│   │   │   ├── utils/          # 工具函数
-│   │   │   └── types/          # 类型定义
-│   │   └── __tests__/          # 测试文件
+│   │   │   ├── features/       # 功能模块 (Feature-Slice)
+│   │   │   │   └── ledger/     # 账目功能
+│   │   │   │       ├── components/
+│   │   │   │       ├── screens/
+│   │   │   │       ├── services/
+│   │   │   │       ├── repositories/
+│   │   │   │       ├── stores/
+│   │   │   │       ├── hooks/
+│   │   │   │       └── types/
+│   │   │   ├── shared/         # 共享资源
+│   │   │   │   ├── components/
+│   │   │   │   ├── db/
+│   │   │   │   ├── utils/
+│   │   │   │   └── types/
+│   │   │   └── navigation/     # 路由配置
+│   │   └── e2e/                # E2E 测试 (Playwright)
 │   └── server/                 # Go API 服务端（可选）
 ├── tests/
-│   └── e2e/                    # E2E 测试
+│   └── e2e/                    # E2E 测试 (Maestro)
 ├── docs/                       # 文档
 │   ├── adr/                    # 架构决策记录
 │   └── designs/                # 设计文档
