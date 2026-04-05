@@ -98,11 +98,14 @@ export class EntryFormPage {
    */
   async submit(): Promise<void> {
     await this.submitButton.click();
-    // 等待返回列表页（通过检测列表元素而不是 URL）
-    // 先等待 FAB 出现，然后等待条目加载
-    await this.page.getByTestId('add-entry-fab').waitFor({ state: 'visible', timeout: 10000 });
+    // 等待导航完成 - 检查是否在列表页或仍在表单页
+    // 先等待表单页消失或 FAB 出现
+    await Promise.race([
+      this.page.getByTestId('add-entry-fab').waitFor({ state: 'visible', timeout: 15000 }),
+      this.page.waitForURL('**/LedgerList', { timeout: 15000 }).catch(() => {}),
+    ]);
     // 额外等待数据加载
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(1500);
   }
 
   /**

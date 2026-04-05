@@ -24,6 +24,9 @@ export const test = base.extend<{
         request.onblocked = () => resolve();
       });
     });
+    // 刷新页面以重新初始化数据库
+    await page.reload();
+    await page.waitForLoadState('networkidle');
     await use(page);
   },
 });
