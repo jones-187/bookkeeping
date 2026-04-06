@@ -13,6 +13,32 @@
 - 支持文本匹配和 testID 选择器
 - CI/CD 友好
 
+## 已知问题与解决方案
+
+### 问题 1：Expo Go 不能使用 clearState
+
+**症状**：每次测试开始都超时，日志显示等待 "收入" 文字超时
+
+**根因**：`config.yaml` 的 `onFlowStart: clearState` 对 `host.exp.exponent`（Expo Go）执行 `adb pm clear`，清除整个 JS bundle 缓存。每次测试都要重新从 Metro 下载并编译 bundle，耗时 30-60 秒
+
+**解决**：删除 `clearState`，改用 `_reset.yaml` 的深层链接重置数据
+
+### 问题 2：重置完成判断不可靠
+
+**症状**：测试在脏数据上运行，导致断言失败
+
+**根因**：`_reset.yaml` 等待 "收入" 文字，但 "收入" 是列表页固定文字，数据未清空时也可见
+
+**解决**：改为等待 `empty-state` testID，这是空列表才显示的元素，能确保数据已清空
+
+### 问题 3：eraseText 只删一个字符
+
+**症状**：编辑时文本追加而非替换，如 "Test EntryUpdated Entry"
+
+**根因**：`eraseText` 不带参数时只删除选中内容，不选中则删除一个字符
+
+**解决**：使用 `eraseText: 100` 删除足够多的字符（最多删到字段为空）
+
 ## 测试数据隔离
 
 为了确保测试可靠性，每个测试用例都遵循以下原则：
@@ -139,12 +165,35 @@ adb shell "am start -a android.intent.action.VIEW -d 'exp://192.168.31.249:8081/
 |------|------------|-----|
 | 添加按钮 | testID | `add-entry-fab` |
 | 账目列表 | testID | `entry-list` |
+| 空列表状态 | testID | `empty-state` |
 | 类型选择 | testID | `type-selector` |
 | 金额输入 | testID | `amount-input` |
 | 描述输入 | testID | `description-input` |
 | 日期输入 | testID | `date-input` |
 | 提交按钮 | testID | `submit-button` |
 | 删除按钮 | testID | `delete-button` |
+
+## 文本输入框清空方法
+
+React Native Paper 的 TextInput 与 react-hook-form 组合时，文本清空需要特别注意：
+
+```yaml
+# ✅ 正确方法：使用 eraseText 删除足够多的字符
+- tapOn:
+    id: "amount-input"
+- eraseText: 100    # 删除最多 100 个字符，确保清空
+- inputText: "新值"
+
+# ❌ 错误方法：doubleTapOn + eraseText 不带参数
+- doubleTapOn:
+    id: "amount-input"  # 只选中一个词
+- eraseText              # 只删除选中内容
+- eraseText              # 无效
+- eraseText              # 无效
+- inputText: "新值"      # 变成追加而非替换
+```
+
+**原因**：`doubleTapOn` 在英文环境下只选中光标处的一个词，不是整个字段。`eraseText` 不带参数只删除选中内容或一个字符。
 
 ## 添加新测试
 

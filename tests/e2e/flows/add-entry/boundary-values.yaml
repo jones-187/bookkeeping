@@ -1,0 +1,76 @@
+appId: host.exp.exponent
+name: 添加账目 - 边界值测试
+---
+# 测试场景1: 最小有效金额 0.01
+- runFlow: ../_reset.yaml
+- tapOn:
+    id: "add-entry-fab"
+- tapOn:
+    id: "amount-input"
+- eraseText: 100
+- inputText: "0.01"
+- tapOn:
+    id: "description-input"
+- inputText: "最小金额测试"
+- tapOn:
+    id: "submit-button"
+- waitForAnimationToEnd:
+    timeout: 3000
+- assertVisible:
+    text: "最小金额测试"
+- assertVisible:
+    text: "¥1.00"  # 0.01 * 100 = 1分
+
+# 测试场景2: 最大有效金额 999999.99
+- runFlow: ../_reset.yaml
+- tapOn:
+    id: "add-entry-fab"
+- tapOn:
+    id: "amount-input"
+- eraseText: 100
+- inputText: "999999.99"
+- tapOn:
+    id: "description-input"
+- inputText: "最大金额测试"
+- tapOn:
+    id: "submit-button"
+- waitForAnimationToEnd:
+    timeout: 3000
+- assertVisible:
+    text: "最大金额测试"
+- assertVisible:
+    text: "¥99999999.00"
+
+# 测试场景3: 最小描述长度（1字符）
+- runFlow: ../_reset.yaml
+- tapOn:
+    id: "add-entry-fab"
+- tapOn:
+    id: "amount-input"
+- inputText: "100"
+- tapOn:
+    id: "description-input"
+- inputText: "A"  # 1个字符
+- tapOn:
+    id: "submit-button"
+- waitForAnimationToEnd:
+    timeout: 3000
+- assertVisible:
+    text: "A"
+
+# 测试场景4: 普通整数金额
+- runFlow: ../_reset.yaml
+- tapOn:
+    id: "add-entry-fab"
+- tapOn:
+    id: "amount-input"
+- inputText: "500"
+- tapOn:
+    id: "description-input"
+- inputText: "整数金额测试"
+- tapOn:
+    id: "submit-button"
+- waitForAnimationToEnd:
+    timeout: 3000
+- assertVisible:
+    text: "¥50000.00"

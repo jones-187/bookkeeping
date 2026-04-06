@@ -1,0 +1,58 @@
+appId: host.exp.exponent
+name: 删除账目 - 正常流程
+---
+# ==================== Given ====================
+# 已有一条测试数据
+- runFlow: ../_reset.yaml
+- tapOn:
+    id: "add-entry-fab"
+- tapOn:
+    id: "amount-input"
+- eraseText: 100
+- inputText: "30"
+- tapOn:
+    id: "description-input"
+- eraseText: 100
+- inputText: "待删除数据"
+- tapOn:
+    id: "submit-button"
+- waitForAnimationToEnd:
+    timeout: 3000
+
+# 验证数据已创建
+- assertVisible:
+    text: "待删除数据"
+
+# ==================== When ====================
+# 点击进入编辑页面
+- tapOn:
+    text: "待删除数据"
+- waitForAnimationToEnd:
+    timeout: 2000
+
+# 验证删除按钮存在
+- assertVisible:
+    id: "delete-button"
+
+# 点击删除按钮
+- tapOn:
+    id: "delete-button"
+- waitForAnimationToEnd:
+    timeout: 1000
+
+# 确认删除对话框
+- assertVisible:
+    text: "确认删除"
+- tapOn:
+    text: "删除"
+- waitForAnimationToEnd:
+    timeout: 3000
+
+# ==================== Then ====================
+# 验证返回列表
+- assertVisible:
+    id: "entry-list"
+
+# 验证数据已删除
+- assertNotVisible:
+    text: "待删除数据"

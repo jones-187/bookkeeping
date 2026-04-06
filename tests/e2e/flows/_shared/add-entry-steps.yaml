@@ -1,0 +1,24 @@
+# 共享步骤：添加账目
+# 用法: 在其他流程中引入
+
+appId: host.exp.exponent
+---
+# 前置条件: 已在添加表单页面
+
+# 填写金额
+- tapOn:
+    id: "amount-input"
+- eraseText: 100
+- inputText: ${amount}
+
+# 填写描述
+- tapOn:
+    id: "description-input"
+- eraseText: 100
+- inputText: ${description}
+
+# 提交表单
+- tapOn:
+    id: "submit-button"
+- waitForAnimationToEnd:
+    timeout: 3000

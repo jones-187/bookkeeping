@@ -1,0 +1,84 @@
+appId: host.exp.exponent
+name: 编辑账目 - 正常流程
+---
+# ==================== Given ====================
+# 已有一条测试数据
+- runFlow: ../_reset.yaml
+- tapOn:
+    id: "add-entry-fab"
+- tapOn:
+    id: "amount-input"
+- eraseText: 100
+- inputText: "50"
+- tapOn:
+    id: "description-input"
+- eraseText: 100
+- inputText: "原始数据"
+- tapOn:
+    id: "submit-button"
+- waitForAnimationToEnd:
+    timeout: 3000
+
+# 验证初始数据
+- assertVisible:
+    text: "原始数据"
+- assertVisible:
+    text: "¥5000.00"
+
+# ==================== When ====================
+# 点击进入编辑页面
+- tapOn:
+    text: "原始数据"
+- waitForAnimationToEnd:
+    timeout: 2000
+
+# 验证编辑表单显示
+- assertVisible:
+    id: "entry-form"
+- assertVisible:
+    id: "amount-input"
+- assertVisible:
+    id: "description-input"
+- assertVisible:
+    id: "delete-button"
+
+# 修改金额
+- tapOn:
+    id: "amount-input"
+- doubleTapOn:
+    id: "amount-input"
+- eraseText
+- eraseText
+- eraseText
+- inputText: "75"
+
+# 修改描述
+- tapOn:
+    id: "description-input"
+- doubleTapOn:
+    id: "description-input"
+- eraseText
+- eraseText
+- eraseText
+- inputText: "修改后的数据"
+
+# 提交修改
+- tapOn:
+    id: "submit-button"
+- waitForAnimationToEnd:
+    timeout: 3000
+
+# ==================== Then ====================
+# 验证返回列表
+- assertVisible:
+    id: "entry-list"
+
+# 验证修改后的数据显示
+- assertVisible:
+    text: "修改后的数据"
+- assertVisible:
+    text: "¥7500.00"
+
+# 验证原始数据不再显示
+- assertNotVisible:
+    text: "原始数据"

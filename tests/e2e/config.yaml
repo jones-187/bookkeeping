@@ -2,12 +2,7 @@
 # 文档: https://maestro.mobile.dev/
 
 # Expo Go 应用 ID（在 Expo Go 中运行时使用）
-# 本地开发时使用 Expo Go，生产环境需要修改为实际应用 ID
 appId: host.exp.exponent
 
-# 测试环境配置
-onFlowStart:
-  - clearState
-
-onFlowComplete:
-  - stopApp
+# 注意：不使用 clearState（会清除 Expo Go 的 JS bundle 缓存，导致每次测试都要重新编译，耗时 30-60 秒）
+# 重置由各 flow 内的 _reset.yaml 通过深链接完成

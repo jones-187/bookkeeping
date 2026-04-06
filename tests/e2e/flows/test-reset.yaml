@@ -1,0 +1,15 @@
+appId: host.exp.exponent
+name: 测试重置验证
+---
+# 验证 _reset.yaml 能正确重置环境和导航状态
+
+# 1. 运行重置流程
+- runFlow: _reset.yaml
+
+# 2. 验证在列表页面（能看到 "收入" 文本）
+- assertVisible:
+    text: "收入"
+
+# 3. 验证不在编辑页面（提交按钮不应该存在）
+- assertNotVisible:
+    id: "submit-button"

@@ -1,0 +1,80 @@
+appId: host.exp.exponent
+name: E2E Test Suite - Simplified
+---
+# Simplified E2E Test Suite
+
+# 1. Reset app state (clean data + navigation)
+- runFlow: _reset.yaml
+
+# 2. Test: Add Entry
+- tapOn:
+    id: "add-entry-fab"
+- waitForAnimationToEnd:
+    timeout: 2000
+
+# Fill form - Amount
+- tapOn:
+    id: "amount-input"
+- inputText: "100"
+
+- tapOn:
+    id: "description-input"
+- inputText: "Test Entry"
+
+- tapOn:
+    id: "submit-button"
+- waitForAnimationToEnd:
+    timeout: 3000
+
+# Verify
+- assertVisible:
+    text: "Test Entry"
+
+# 6. Test: Edit Entry
+- tapOn:
+    text: "Test Entry"
+- waitForAnimationToEnd:
+    timeout: 2000
+
+# 清除金额
+- tapOn:
+    id: "amount-input"
+- eraseText: 100
+- inputText: "200"
+
+# 清除描述
+- tapOn:
+    id: "description-input"
+- eraseText: 100
+- inputText: "Updated Entry"
+
+- tapOn:
+    id: "submit-button"
+- waitForAnimationToEnd:
+    timeout: 3000
+
+# Verify
+- assertVisible:
+    text: "Updated Entry"
+- assertNotVisible:
+    text: "Test Entry"
+
+# 7. Test: Delete Entry
+- tapOn:
+    text: "Updated Entry"
+- waitForAnimationToEnd:
+    timeout: 2000
+
+- tapOn:
+    id: "delete-button"
+- waitForAnimationToEnd:
+    timeout: 1000
+
+- tapOn:
+    text: "删除"
+- waitForAnimationToEnd:
+    timeout: 3000
+
+# Verify
+- assertNotVisible:
+    text: "Updated Entry"

@@ -1,0 +1,95 @@
+appId: host.exp.exponent
+name: 编辑账目 - 边界值测试
+---
+# 测试场景1: 修改为最小金额
+- runFlow: ../_reset.yaml
+- tapOn:
+    id: "add-entry-fab"
+- tapOn:
+    id: "amount-input"
+- inputText: "100"
+- tapOn:
+    id: "description-input"
+- inputText: "编辑边界测试"
+- tapOn:
+    id: "submit-button"
+- waitForAnimationToEnd:
+    timeout: 3000
+
+# 编辑为最小金额
+- tapOn:
+    text: "编辑边界测试"
+- waitForAnimationToEnd:
+    timeout: 2000
+- tapOn:
+    id: "amount-input"
+- eraseText: 100
+- inputText: "0.01"
+- tapOn:
+    id: "submit-button"
+- waitForAnimationToEnd:
+    timeout: 3000
+- assertVisible:
+    text: "¥1.00"
+
+# 测试场景2: 修改为最大金额
+- runFlow: ../_reset.yaml
+- tapOn:
+    id: "add-entry-fab"
+- tapOn:
+    id: "amount-input"
+- inputText: "100"
+- tapOn:
+    id: "description-input"
+- inputText: "编辑最大金额"
+- tapOn:
+    id: "submit-button"
+- waitForAnimationToEnd:
+    timeout: 3000
+
+# 编辑为最大金额
+- tapOn:
+    text: "编辑最大金额"
+- waitForAnimationToEnd:
+    timeout: 2000
+- tapOn:
+    id: "amount-input"
+- eraseText: 100
+- inputText: "999999.99"
+- tapOn:
+    id: "submit-button"
+- waitForAnimationToEnd:
+    timeout: 3000
+- assertVisible:
+    text: "¥99999999.00"
+
+# 测试场景3: 修改描述为1字符
+- runFlow: ../_reset.yaml
+- tapOn:
+    id: "add-entry-fab"
+- tapOn:
+    id: "amount-input"
+- inputText: "100"
+- tapOn:
+    id: "description-input"
+- inputText: "原始描述"
+- tapOn:
+    id: "submit-button"
+- waitForAnimationToEnd:
+    timeout: 3000
+
+# 编辑描述为1字符
+- tapOn:
+    text: "原始描述"
+- waitForAnimationToEnd:
+    timeout: 2000
+- tapOn:
+    id: "description-input"
+- eraseText: 100
+- inputText: "X"
+- tapOn:
+    id: "submit-button"
+- waitForAnimationToEnd:
+    timeout: 3000
+- assertVisible:
+    text: "X"

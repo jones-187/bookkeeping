@@ -1,17 +1,31 @@
 # 重置测试数据流程
 # 用法: 在其他流程开头引入
+#
+# 设计说明：
+# - 直接通过深层链接重置数据和导航
+# - 深层链接 --/reset-all-data 会：
+#   1. 清空数据库数据
+#   2. 重置导航到列表页面
 
 appId: host.exp.exponent
 ---
-# 通过深层链接重置测试数据（不重新打开应用）
+# 1. 通过深层链接重置数据并导航到列表页
 - openLink:
-    link: "exp://192.168.31.249:8081/--/reset-test-data"
+    link: "exp://192.168.31.249:8081/--/reset-all-data"
 
+# 2. 等待应用处理深链接
 - waitForAnimationToEnd:
-    timeout: 2000
+    timeout: 5000
 
-# 等待数据重置完成（列表应该为空或只显示非测试数据）
+# 3. 等待空列表状态出现 —— 这是唯一可靠的重置完成标志：
+#    - 确认导航已重置到列表页
+#    - 确认数据已清空（fetchEntries 完成且 entries 为空）
+#    - 确认加载状态已结束（isLoading = false）
 - extendedWaitUntil:
     visible:
-      id: "entry-list"
-    timeout: 15000
+      id: "empty-state"
+    timeout: 45000
+
+# 4. 额外等待确保 UI 稳定
+- waitForAnimationToEnd:
+    timeout: 1000
