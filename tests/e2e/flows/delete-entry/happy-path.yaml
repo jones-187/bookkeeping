@@ -6,22 +6,34 @@ name: 删除账目 - 正常流程
 - runFlow: ../_reset.yaml
 - tapOn:
     id: "add-entry-fab"
+# 输入金额 30（使用拨号盘）
 - tapOn:
     id: "amount-input"
-- eraseText: 100
-- inputText: "30"
+- waitForAnimationToEnd:
+    timeout: 500
+- tapOn:
+    id: "dial-3"
+- tapOn:
+    id: "dial-0"
+- tapOn:
+    id: "dial-confirm"
+- waitForAnimationToEnd:
+    timeout: 500
+# 输入描述
 - tapOn:
     id: "description-input"
-- eraseText: 100
 - inputText: "待删除数据"
+# 提交
 - tapOn:
     id: "submit-button"
 - waitForAnimationToEnd:
     timeout: 3000
 
-# 验证数据已创建
+# 验证数据已创建（同时验证描述和金额）
 - assertVisible:
     text: "待删除数据"
+- assertVisible:
+    text: "¥30.00"
 
 # ==================== When ====================
 # 点击进入编辑页面
@@ -53,6 +65,8 @@ name: 删除账目 - 正常流程
 - assertVisible:
     id: "entry-list"
 
-# 验证数据已删除
+# 验证数据已删除（同时验证描述和金额都不存在）
 - assertNotVisible:
     text: "待删除数据"
+- assertNotVisible:
+    text: "¥30.00"

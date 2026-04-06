@@ -6,14 +6,24 @@ name: 编辑账目 - 正常流程
 - runFlow: ../_reset.yaml
 - tapOn:
     id: "add-entry-fab"
+# 输入金额 50（使用拨号盘）
 - tapOn:
     id: "amount-input"
-- eraseText: 100
-- inputText: "50"
+- waitForAnimationToEnd:
+    timeout: 500
+- tapOn:
+    id: "dial-5"
+- tapOn:
+    id: "dial-0"
+- tapOn:
+    id: "dial-confirm"
+- waitForAnimationToEnd:
+    timeout: 500
+# 输入描述
 - tapOn:
     id: "description-input"
-- eraseText: 100
 - inputText: "原始数据"
+# 提交
 - tapOn:
     id: "submit-button"
 - waitForAnimationToEnd:
@@ -23,7 +33,7 @@ name: 编辑账目 - 正常流程
 - assertVisible:
     text: "原始数据"
 - assertVisible:
-    text: "¥5000.00"
+    text: "¥50.00"
 
 # ==================== When ====================
 # 点击进入编辑页面
@@ -42,24 +52,26 @@ name: 编辑账目 - 正常流程
 - assertVisible:
     id: "delete-button"
 
-# 修改金额
+# 修改金额为 75（使用拨号盘）
 - tapOn:
     id: "amount-input"
-- doubleTapOn:
-    id: "amount-input"
-- eraseText
-- eraseText
-- eraseText
-- inputText: "75"
+- waitForAnimationToEnd:
+    timeout: 500
+- tapOn:
+    id: "dial-clear"
+- tapOn:
+    id: "dial-7"
+- tapOn:
+    id: "dial-5"
+- tapOn:
+    id: "dial-confirm"
+- waitForAnimationToEnd:
+    timeout: 500
 
 # 修改描述
 - tapOn:
     id: "description-input"
-- doubleTapOn:
-    id: "description-input"
-- eraseText
-- eraseText
-- eraseText
+- eraseText: 100
 - inputText: "修改后的数据"
 
 # 提交修改
@@ -73,12 +85,14 @@ name: 编辑账目 - 正常流程
 - assertVisible:
     id: "entry-list"
 
-# 验证修改后的数据显示
+# 验证修改后的数据显示（同时验证描述和金额）
 - assertVisible:
     text: "修改后的数据"
 - assertVisible:
-    text: "¥7500.00"
+    text: "¥75.00"
 
 # 验证原始数据不再显示
 - assertNotVisible:
     text: "原始数据"
+- assertNotVisible:
+    text: "¥50.00"

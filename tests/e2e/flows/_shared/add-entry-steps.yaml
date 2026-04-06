@@ -5,11 +5,18 @@ appId: host.exp.exponent
 ---
 # 前置条件: 已在添加表单页面
 
-# 填写金额
+# 填写金额（使用拨号盘）
 - tapOn:
     id: "amount-input"
-- eraseText: 100
-- inputText: ${amount}
+- waitForAnimationToEnd:
+    timeout: 500
+# 输入金额 ${amount}（按数字键）
+- tapOn:
+    id: "dial-${amount}"
+- tapOn:
+    id: "dial-confirm"
+- waitForAnimationToEnd:
+    timeout: 500
 
 # 填写描述
 - tapOn:

@@ -34,15 +34,30 @@ name: 添加账目 - 正常流程（收入）
 - assertVisible:
     id: "submit-button"
 
-# 填写表单
+# 填写金额（使用拨号盘）
 - tapOn:
     id: "amount-input"
-- eraseText: 100
-- inputText: "100.50"
+- waitForAnimationToEnd:
+    timeout: 500
+- tapOn:
+    id: "dial-1"
+- tapOn:
+    id: "dial-0"
+- tapOn:
+    id: "dial-0"
+- tapOn:
+    id: "dial-dot"
+- tapOn:
+    id: "dial-5"
+- tapOn:
+    id: "dial-0"
+- tapOn:
+    id: "dial-confirm"
+- waitForAnimationToEnd:
+    timeout: 500
 
 - tapOn:
     id: "description-input"
-- eraseText: 100
 - inputText: "Salary Income"
 
 # 提交表单
@@ -56,14 +71,14 @@ name: 添加账目 - 正常流程（收入）
 - assertVisible:
     id: "entry-list"
 
-# 验证账目显示
+# 验证账目显示（同时验证描述和金额）
 - assertVisible:
     text: "Salary Income"
 - assertVisible:
-    text: "+¥10050.00"
+    text: "+¥100.50"
 
 # 验证汇总更新
 - assertVisible:
     text: "收入"
 - assertVisible:
-    text: "¥10050.00"
+    text: "¥100.50"

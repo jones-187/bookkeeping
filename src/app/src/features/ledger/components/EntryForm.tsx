@@ -13,6 +13,7 @@ import {
   useTheme,
 } from 'react-native-paper';
 import { entryFormSchema, EntryFormData } from '../../../shared/types/form';
+import AmountDialPadInput from '../../../shared/components/AmountDialPadInput';
 
 interface EntryFormProps {
   initialValues?: Partial<EntryFormData>;
@@ -96,20 +97,14 @@ export default function EntryForm({
       <Controller
         control={control}
         name="amount"
-        render={({ field: { onChange, onBlur, value } }) => (
+        render={({ field: { onChange, value } }) => (
           <View style={styles.field}>
-            <TextInput
+            <AmountDialPadInput
+              value={value}
+              onChange={onChange}
               label="金额（元）"
-              value={value ? String(value) : ''}
-              onChangeText={(text) => {
-                const num = parseFloat(text);
-                onChange(isNaN(num) ? undefined : num);
-              }}
-              onBlur={onBlur}
-              keyboardType="decimal-pad"
+              disabled={loading}
               error={!!errors.amount}
-              mode="outlined"
-              left={<TextInput.Affix text="¥" />}
               testID="amount-input"
               accessibilityLabel="金额输入"
             />

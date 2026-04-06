@@ -12,11 +12,23 @@ name: E2E Test Suite - Simplified
 - waitForAnimationToEnd:
     timeout: 2000
 
-# Fill form - Amount
+# Fill form - Amount (use dial pad)
 - tapOn:
     id: "amount-input"
-- inputText: "100"
+- waitForAnimationToEnd:
+    timeout: 500
+- tapOn:
+    id: "dial-1"
+- tapOn:
+    id: "dial-0"
+- tapOn:
+    id: "dial-0"
+- tapOn:
+    id: "dial-confirm"
+- waitForAnimationToEnd:
+    timeout: 500
 
+# Fill form - Description
 - tapOn:
     id: "description-input"
 - inputText: "Test Entry"
@@ -26,9 +38,11 @@ name: E2E Test Suite - Simplified
 - waitForAnimationToEnd:
     timeout: 3000
 
-# Verify
+# Verify (both description and amount)
 - assertVisible:
     text: "Test Entry"
+- assertVisible:
+    text: "¥100.00"
 
 # 6. Test: Edit Entry
 - tapOn:
@@ -36,13 +50,25 @@ name: E2E Test Suite - Simplified
 - waitForAnimationToEnd:
     timeout: 2000
 
-# 清除金额
+# Edit Amount (use dial pad)
 - tapOn:
     id: "amount-input"
-- eraseText: 100
-- inputText: "200"
+- waitForAnimationToEnd:
+    timeout: 500
+- tapOn:
+    id: "dial-clear"
+- tapOn:
+    id: "dial-2"
+- tapOn:
+    id: "dial-0"
+- tapOn:
+    id: "dial-0"
+- tapOn:
+    id: "dial-confirm"
+- waitForAnimationToEnd:
+    timeout: 500
 
-# 清除描述
+# Edit Description
 - tapOn:
     id: "description-input"
 - eraseText: 100
@@ -53,11 +79,15 @@ name: E2E Test Suite - Simplified
 - waitForAnimationToEnd:
     timeout: 3000
 
-# Verify
+# Verify (both description and amount)
 - assertVisible:
     text: "Updated Entry"
+- assertVisible:
+    text: "¥200.00"
 - assertNotVisible:
     text: "Test Entry"
+- assertNotVisible:
+    text: "¥100.00"
 
 # 7. Test: Delete Entry
 - tapOn:
@@ -78,3 +108,5 @@ name: E2E Test Suite - Simplified
 # Verify
 - assertNotVisible:
     text: "Updated Entry"
+- assertNotVisible:
+    text: "¥200.00"
