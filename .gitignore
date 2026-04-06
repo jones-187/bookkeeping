@@ -52,6 +52,15 @@ tests/e2e/results/
 tests/e2e/debug/
 tests/e2e/screenshots/
 
+# Maestro local config (contains absolute paths)
+config.yaml
+
+# Superpowers plans (generated during planning)
+docs/superpowers/plans/
+
+# Temp command files
+tmpCmd.md
+
 # Mobile
 *.apk
 *.ipa

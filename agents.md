@@ -10,15 +10,14 @@
 - 测试结果：`tests/e2e/results/`
 - 截图：`tests/e2e/screenshots/`
 
-运行测试命令：
+运行测试命令（推荐使用命令行参数指定输出目录）：
 ```bash
-cd src/app
-npm run test:e2e
+maestro test --debug-output tests/e2e/debug --test-output-dir tests/e2e/results tests/e2e/flows/test-suite.yaml
 ```
 
-或直接使用 maestro 命令：
+或运行单个测试：
 ```bash
-maestro test --debug-output tests/e2e/debug --test-output-dir tests/e2e/results tests/e2e/flows
+maestro test --debug-output tests/e2e/debug --test-output-dir tests/e2e/results tests/e2e/flows/add-entry/happy-path.yaml
 ```
 
 ### 手动截图

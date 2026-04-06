@@ -121,7 +121,7 @@ bookkeeping/
 │   │   │   │   ├── utils/
 │   │   │   │   └── types/
 │   │   │   └── navigation/     # 路由配置
-│   │   └── e2e/                # E2E 测试 (Playwright)
+│   │   └── e2e/                # E2E 测试 (Playwright)（已废弃并删除）
 │   └── server/                 # Go API 服务端（可选）
 ├── tests/
 │   └── e2e/                    # E2E 测试 (Maestro)

@@ -10,8 +10,8 @@
     "web": "expo start --web",
     "lint": "eslint . --ext .ts,.tsx",
     "test": "jest --runInBand",
-    "test:e2e": "maestro test --debug-output ../../tests/e2e/debug --test-output-dir ../../tests/e2e/results ../../tests/e2e/flows",
-    "test:e2e:ci": "maestro test --format junit --debug-output ../../tests/e2e/debug --test-output-dir ../../tests/e2e/results ../../tests/e2e/flows"
+    "test:e2e": "maestro test --debug-output ../../tests/e2e/debug --test-output-dir ../../tests/e2e/results ../../tests/e2e/flows/test-suite.yaml",
+    "test:e2e:ci": "maestro test --format junit --debug-output ../../tests/e2e/debug --test-output-dir ../../tests/e2e/results ../../tests/e2e/flows/test-suite.yaml"
   },
   "dependencies": {
     "@expo/metro-runtime": "~3.2.3",
