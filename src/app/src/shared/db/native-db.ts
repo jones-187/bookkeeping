@@ -65,9 +65,9 @@ export class SQLiteDatabase implements Database {
               deleted_at TEXT
             );
 
-            CREATE INDEX idx_ledger_entries_date ON ledger_entries(date DESC);
-            CREATE INDEX idx_ledger_entries_type ON ledger_entries(type);
-            CREATE INDEX idx_ledger_entries_deleted_at ON ledger_entries(deleted_at);
+            CREATE INDEX IF NOT EXISTS idx_ledger_entries_date ON ledger_entries(date DESC);
+            CREATE INDEX IF NOT EXISTS idx_ledger_entries_type ON ledger_entries(type);
+            CREATE INDEX IF NOT EXISTS idx_ledger_entries_deleted_at ON ledger_entries(deleted_at);
           `);
         },
       },

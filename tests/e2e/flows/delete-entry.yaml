@@ -1,66 +1,69 @@
-# 删除账目流程 E2E 测试
-# 前提：需要先有一条账目记录
+appId: host.exp.exponent
+name: Delete Entry Flow
+---
+# 0. Reset test data before starting
+- runFlow: _reset.yaml
 
-appId: host.exp.Exponent
-name: 删除账目流程
+# 1. Tap FAB button to enter add page
+- tapOn:
+    id: "add-entry-fab"
+- waitForAnimationToEnd:
+    timeout: 2000
 
-onFlowStart:
-  - clearState
+# 2. Create test data to be deleted
+- tapOn:
+    id: "amount-input"
+- doubleTapOn:
+    id: "amount-input"
+- eraseText
+- eraseText
+- eraseText
+- inputText: "30"
 
-steps:
-  # 1. 首先添加一条测试数据
-  - launchApp:
-      clearState: true
-  - waitForAnimationToEnd:
-      timeout: 3000
+- tapOn:
+    id: "description-input"
+- doubleTapOn:
+    id: "description-input"
+- eraseText
+- eraseText
+- eraseText
+- inputText: "TEST_DELETE_TARGET"
 
-  # 添加一条账目用于删除测试
-  - tapOn:
-      id: "add-entry-fab"
-  - waitForAnimationToEnd:
-      timeout: 1000
+- tapOn:
+    id: "submit-button"
+- waitForAnimationToEnd:
+    timeout: 3000
 
-  - tapOn:
-      id: "amount-input"
-  - inputText: "30"
+# 3. Verify entry exists
+- assertVisible:
+    text: "TEST_DELETE_TARGET"
 
-  - tapOn:
-      id: "description-input"
-  - inputText: "待删除的测试数据"
+# 4. Tap entry to enter edit page
+- tapOn:
+    text: "TEST_DELETE_TARGET"
+- waitForAnimationToEnd:
+    timeout: 2000
 
-  - tapOn:
-      id: "submit-button"
-  - waitForAnimationToEnd:
-      timeout: 2000
+# 5. Verify delete button displays
+- assertVisible:
+    id: "delete-button"
 
-  # 2. 验证条目存在
-  - assertVisible:
-      text: "待删除的测试数据"
+# 6. Tap delete button
+- tapOn:
+    id: "delete-button"
+- waitForAnimationToEnd:
+    timeout: 1000
 
-  # 3. 点击条目进入编辑页面
-  - tapOn:
-      text: "待删除的测试数据"
-  - waitForAnimationToEnd:
-      timeout: 1000
+# 7. Confirm delete dialog
+- tapOn:
+    text: "删除"
+- waitForAnimationToEnd:
+    timeout: 3000
 
-  # 4. 验证删除按钮显示
-  - assertVisible:
-      id: "delete-button"
+# 8. Verify return to list page
+- assertVisible:
+    id: "entry-list"
 
-  # 5. 点击删除按钮
-  - tapOn:
-      id: "delete-button"
-
-  # 6. 确认删除对话框
-  - tapOn:
-      text: "删除"
-  - waitForAnimationToEnd:
-      timeout: 2000
-
-  # 7. 验证返回列表页
-  - assertVisible:
-      id: "entry-list"
-
-  # 8. 验证条目已删除（空状态或条目不存在）
-  - assertNotVisible:
-      text: "待删除的测试数据"
+# 9. Verify entry is deleted
+- assertNotVisible:
+    text: "TEST_DELETE_TARGET"

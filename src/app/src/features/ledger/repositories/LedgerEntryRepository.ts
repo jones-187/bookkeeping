@@ -6,6 +6,15 @@ import { getDatabase, Database } from '../../../shared/db';
 import { LedgerEntryRow } from '../../../shared/db/types';
 import type { LedgerEntry, CreateLedgerEntryParams, UpdateLedgerEntryParams, LedgerEntryFilter } from '../types/ledger.types';
 
+// Simple UUID v4 generator for React Native compatibility
+function generateUUID(): string {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
 export class LedgerEntryRepository {
   private db: Database | null = null;
 
@@ -19,7 +28,7 @@ export class LedgerEntryRepository {
   async create(params: CreateLedgerEntryParams): Promise<LedgerEntry> {
     const db = await this.getDb();
     const now = new Date().toISOString();
-    const id = crypto.randomUUID();
+    const id = generateUUID();
 
     await db.runAsync(
       'INSERT INTO ledger_entries (id, amount, type, description, date, created_at, updated_at, deleted_at) VALUES (?, ?, ?, ?, ?, ?, ?, NULL)',

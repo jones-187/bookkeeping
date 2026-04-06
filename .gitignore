@@ -44,6 +44,11 @@ coverage/
 playwright-report/
 test-results/
 
+# E2E Testing
+tests/e2e/results/
+tests/e2e/debug/
+tests/e2e/screenshots/
+
 # Mobile
 *.apk
 *.ipa

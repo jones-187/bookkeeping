@@ -1,72 +1,87 @@
-# 编辑账目流程 E2E 测试
-# 前提：需要先有一条账目记录
+appId: host.exp.exponent
+name: Edit Entry Flow
+---
+# 0. Reset test data before starting
+- runFlow: _reset.yaml
 
-appId: host.exp.Exponent
-name: 编辑账目流程
+# 1. Tap FAB button to enter add page
+- tapOn:
+    id: "add-entry-fab"
+- waitForAnimationToEnd:
+    timeout: 2000
 
-onFlowStart:
-  - clearState
+# 2. Create original test data
+- tapOn:
+    id: "amount-input"
+- doubleTapOn:
+    id: "amount-input"
+- eraseText
+- eraseText
+- eraseText
+- inputText: "50"
 
-steps:
-  # 1. 首先添加一条测试数据
-  - launchApp:
-      clearState: true
-  - waitForAnimationToEnd:
-      timeout: 3000
+- tapOn:
+    id: "description-input"
+- doubleTapOn:
+    id: "description-input"
+- eraseText
+- eraseText
+- eraseText
+- inputText: "TEST_EDIT_ORIGINAL"
 
-  # 添加一条账目用于编辑测试
-  - tapOn:
-      id: "add-entry-fab"
-  - waitForAnimationToEnd:
-      timeout: 1000
+- tapOn:
+    id: "submit-button"
+- waitForAnimationToEnd:
+    timeout: 3000
 
-  - tapOn:
-      id: "amount-input"
-  - inputText: "50"
+# 3. Verify original entry exists
+- assertVisible:
+    text: "TEST_EDIT_ORIGINAL"
 
-  - tapOn:
-      id: "description-input"
-  - inputText: "编辑测试原始数据"
+# 4. Tap the entry to enter edit page
+- tapOn:
+    text: "TEST_EDIT_ORIGINAL"
+- waitForAnimationToEnd:
+    timeout: 2000
 
-  - tapOn:
-      id: "submit-button"
-  - waitForAnimationToEnd:
-      timeout: 2000
+# 5. Verify edit form displays
+- assertVisible:
+    id: "amount-input"
 
-  # 2. 点击刚添加的条目进入编辑页面
-  - tapOn:
-      text: "编辑测试原始数据"
-  - waitForAnimationToEnd:
-      timeout: 1000
+# 6. Modify amount - select all and replace
+- tapOn:
+    id: "amount-input"
+- doubleTapOn:
+    id: "amount-input"
+- eraseText
+- eraseText
+- eraseText
+- inputText: "75"
 
-  # 3. 验证编辑表单显示
-  - assertVisible:
-      id: "amount-input"
+# 7. Modify description - select all and replace
+- tapOn:
+    id: "description-input"
+- doubleTapOn:
+    id: "description-input"
+- eraseText
+- eraseText
+- eraseText
+- inputText: "TEST_EDIT_MODIFIED"
 
-  # 4. 修改金额
-  - tapOn:
-      id: "amount-input"
-  - clearText
+# 8. Submit the update
+- tapOn:
+    id: "submit-button"
+- waitForAnimationToEnd:
+    timeout: 3000
 
-  # 5. 输入新金额
-  - inputText: "75"
+# 9. Verify return to list page
+- assertVisible:
+    id: "entry-list"
 
-  # 6. 修改描述
-  - tapOn:
-      id: "description-input"
-  - clearText
-  - inputText: "编辑测试已修改"
+# 10. Verify modified entry displays
+- assertVisible:
+    text: "TEST_EDIT_MODIFIED"
 
-  # 7. 点击更新按钮
-  - tapOn:
-      id: "submit-button"
-
-  # 8. 验证返回列表页
-  - waitForAnimationToEnd:
-      timeout: 2000
-  - assertVisible:
-      id: "entry-list"
-
-  # 9. 验证修改后的条目显示
-  - assertVisible:
-      text: "编辑测试已修改"
+# 11. Verify original entry no longer exists
+- assertNotVisible:
+    text: "TEST_EDIT_ORIGINAL"

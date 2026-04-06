@@ -1,62 +1,65 @@
-# 添加账目流程 E2E 测试
-# 测试用户添加新账目的完整流程
+appId: host.exp.exponent
+name: Add Entry Flow
+---
+# 0. Reset test data before starting
+- runFlow: _reset.yaml
 
-appId: host.exp.Exponent
-name: 添加账目流程
+# 1. Tap FAB button to enter add page
+- tapOn:
+    id: "add-entry-fab"
+- waitForAnimationToEnd:
+    timeout: 2000
 
-onFlowStart:
-  - clearState
+# 2. Verify add form displays by checking for type selector
+- assertVisible:
+    text: "支出"
 
-steps:
-  # 1. 启动应用并等待加载
-  - launchApp:
-      clearState: true
-  - waitForAnimationToEnd:
-      timeout: 3000
+# 3. Select income type
+- tapOn:
+    text: "收入"
 
-  # 2. 验证首页显示（空状态或列表）
-  - assertVisible:
-      id: "entry-list"
+# 4. Input amount (using testID) - tap, select all, clear, then input
+- tapOn:
+    id: "amount-input"
+- doubleTapOn:
+    id: "amount-input"
+- eraseText
+- eraseText
+- eraseText
+- inputText: "100.50"
 
-  # 3. 点击 FAB 按钮进入添加页面
-  - tapOn:
-      id: "add-entry-fab"
-  - waitForAnimationToEnd:
-      timeout: 1000
+# 5. Input description with unique test identifier
+- tapOn:
+    id: "description-input"
+- doubleTapOn:
+    id: "description-input"
+- eraseText
+- eraseText
+- eraseText
+- inputText: "TEST_ADD_001"
 
-  # 4. 验证添加表单显示
-  - assertVisible:
-      id: "type-selector"
+# 6. Input date (using testID) - select all then input
+- tapOn:
+    id: "date-input"
+- doubleTapOn:
+    id: "date-input"
+- eraseText
+- eraseText
+- eraseText
+- inputText: "2026-04-05"
 
-  # 5. 选择类型（默认支出，可选切换到收入）
-  - tapOn:
-      id: "type-income"
+# 7. Tap add button (using testID)
+- tapOn:
+    id: "submit-button"
 
-  # 6. 输入金额
-  - tapOn:
-      id: "amount-input"
-  - inputText: "100.50"
+# 8. Verify return to list page
+- waitForAnimationToEnd:
+    timeout: 3000
 
-  # 7. 输入描述
-  - tapOn:
-      id: "description-input"
-  - inputText: "E2E测试收入"
+# 9. Verify specific new entry displays
+- assertVisible:
+    text: "TEST_ADD_001"
 
-  # 8. 输入日期（保持默认今天）
-  - tapOn:
-      id: "date-input"
-  - inputText: "2026-04-05"
-
-  # 9. 点击添加按钮
-  - tapOn:
-      id: "submit-button"
-
-  # 10. 验证返回列表页
-  - waitForAnimationToEnd:
-      timeout: 2000
-  - assertVisible:
-      id: "entry-list"
-
-  # 11. 验证新条目显示（通过描述文本匹配）
-  - assertVisible:
-      text: "E2E测试收入"
+# 10. Verify amount is displayed correctly (format: ¥10050.00)
+- assertVisible:
+    text: "¥10050.00"

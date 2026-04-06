@@ -1,0 +1,17 @@
+# 重置测试数据流程
+# 用法: 在其他流程开头引入
+
+appId: host.exp.exponent
+---
+# 通过深层链接重置测试数据（不重新打开应用）
+- openLink:
+    link: "exp://192.168.31.249:8081/--/reset-test-data"
+
+- waitForAnimationToEnd:
+    timeout: 2000
+
+# 等待数据重置完成（列表应该为空或只显示非测试数据）
+- extendedWaitUntil:
+    visible:
+      id: "entry-list"
+    timeout: 15000
