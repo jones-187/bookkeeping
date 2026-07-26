@@ -1,119 +1,140 @@
-# 文档维护指南
+# 文档治理
 
-本文件定义了项目文档的维护规范，确保文档易于维护且保持一致性。
+## 原则
 
-## 文档结构
+### 按问题确定唯一来源
 
-```
-bookkeeping/
-├── README.md        # 项目入口，快速了解项目
-├── CHANGELOG.md     # 版本变更记录
-├── ROADMAP.md       # 产品路线图（季度级别）
-├── BACKLOG.md       # 待办任务列表
-├── agents.md        # AI Agent 指南
-└── docs/
-    ├── adr/         # 架构决策记录
-    └── designs/     # 设计文档
-```
+文档不是进度数据库。当前事实、稳定知识、构建合同、工作状态和历史记录分别管理，不能在多个文件中复制同一份内容。
 
-## 各文档职责
+| 信息 | 权威来源 |
+|---|---|
+| 当前行为和精确实现 | 代码、测试、schema、接口定义 |
+| 当前系统的解释 | `docs/architecture/`、`docs/api/`、`docs/engineering/` |
+| 领域语言 | `CONTEXT.md` |
+| 稳定产品方向 | `docs/product/vision.md` |
+| 难以逆转的决策及理由 | `docs/adr/` |
+| 准备构建的行为合同 | `docs/specs/` |
+| 未知问题、任务、状态和阻塞关系 | Issue Tracker |
+| 已实现和已发布的用户可见历史 | `CHANGELOG.md` |
 
-| 文档 | 职责 | 维护频率 | 注意事项 |
-|------|------|----------|----------|
-| README.md | 项目入口、技术栈、快速开始 | 低 | 目录结构变更时更新 |
-| CHANGELOG.md | 记录版本变更和已完成功能 | 每次发布 | 只记录用户可见的变更 |
-| ROADMAP.md | 产品方向、季度规划 | 季度 | 不要写具体数字（测试数量等） |
-| BACKLOG.md | 待办任务列表 | 持续 | 完成的任务移到 CHANGELOG |
-| agents.md | AI Agent 工作指南 | 低 | 项目状态用链接指向其他文档 |
-| docs/adr/ | 架构决策记录 | 有决策时 | 只增不改 |
+信息冲突时，先按问题找到对应权威来源；不要用旧 spec、已关闭 issue 或历史 ADR 覆盖当前代码事实。
 
-## 核心原则
+### Git 是历史档案
 
-### 1. 单一数据源
+过期计划和被替代的说明直接删除，不建立 `archive/`、`legacy/` 或“旧版文档”目录。需要追溯时使用 Git 历史。ADR 是例外：真实的 accepted 决策被替代后仍保留，并明确指向替代它的新 ADR。
 
-每个信息只在一个地方维护：
+### 只创建有内容的文档
 
-- ❌ 不要在多个文档重复相同的任务列表
-- ❌ 不要在多个文档重复相同的状态信息
-- ✅ 每类信息有唯一的归属文档
+没有真实内容时不创建目录、模板或占位 README。研究、handoff 和 prototype 是临时工作资产；只有会长期帮助维护代码的结论才进入正式文档。
 
-### 2. 避免易过时的数据
+## 文档类型
 
-不要在文档中记录以下内容（它们会频繁变化）：
+### 当前状态文档
 
-| 避免记录 | 原因 | 替代方案 |
-|----------|------|----------|
-| 测试数量 | 每次添加测试都要更新 | 写 "测试 ✅ 通过" 或用 CI 徽章 |
-| 提交哈希 | 每次提交都要更新 | 不记录，Git 已有历史 |
-| 详细工时 | 需要手动跟踪 | 可选记录，或使用工具自动跟踪 |
-| 具体日期（未来） | 容易不准确 | 用季度或相对时间 |
+`README.md`、architecture、engineering 和 API 文档始终描述当前实现，允许随代码直接编辑。禁止包含未来组件、开发排期或“计划中”的接口。
 
-### 3. Done means done
+### 领域词汇
 
-- 完成的任务从 BACKLOG.md 移除
-- 重要的完成项记录到 CHANGELOG.md
-- 详细的技术决策记录到 docs/adr/
+`CONTEXT.md` 只包含已经确认的领域概念、边界和关系。实现字段、UI、技术选型和开放问题不得写入。术语确定后立即更新，不按批次补录。
 
-### 4. 文档链接优于复制
+### ADR
 
-- ✅ `详见 [CHANGELOG.md](CHANGELOG.md)`
-- ❌ 复制粘贴内容到多个文档
+只有同时满足以下条件才创建 ADR：
 
-## 变更流程
+1. 改变决定的成本显著；
+2. 缺少上下文会令维护者困惑；
+3. 存在真实替代方案和权衡。
 
-### 完成任务时
+ADR 文件名使用四位序号和英文 kebab-case，例如 `0005-sync-authority.md`。正文必须包含：
 
-1. 从 BACKLOG.md 移除任务
-2. 如果是用户可见功能，添加到 CHANGELOG.md
-3. 如果是架构变更，创建或更新 ADR
-
-### 发布版本时
-
-1. 更新 CHANGELOG.md 中的版本号和日期
-2. 将 `[Unreleased]` 内容移到新版本下
-
-### 季度规划时
-
-1. 更新 ROADMAP.md 的里程碑时间线
-2. 在 BACKLOG.md 添加新的待办任务
-
-## 示例
-
-### ✅ 好的实践
-
-**agents.md 项目状态**：
 ```markdown
-## 项目状态 (2026-04-05)
+# 决策名称
 
-- 阶段 1 已完成：本地账目流水记录
-- 测试：单元测试 ✅ E2E 测试 ✅
-- 同步功能仍在计划中
+## 状态
 
-详细进度见 [CHANGELOG.md](CHANGELOG.md)。
+Proposed | Accepted | Superseded | Rejected
+
+## 背景
+## 决策
+## 后果
 ```
 
-**CHANGELOG.md 变更记录**：
+Accepted 后不重写背景、决策和后果，只允许修正文字或增加替代关系。新决定通过新 ADR 替代旧 ADR。
+
+### Spec
+
+大型、模糊工作先通过 Wayfinder 解决决策；较小功能通过带文档的设计访谈解决。问题清空后才创建 spec。
+
+Spec 文件名使用功能名，例如 `account-and-category-management.md`，并包含：
+
 ```markdown
-## [0.1.0] - 2026-04-05
+# 功能名称
 
-### 新增
-- 账目流水 CRUD
-- 本地数据持久化（SQLite / IndexedDB）
+## 状态
+
+Draft | Accepted | Implemented | Superseded
+
+## 来源
+## Outcome
+## Non-goals
+## Domain model impact
+## User-visible behaviour
+## Data and migration
+## Interfaces
+## Failure and recovery
+## Acceptance criteria
+## Open questions
 ```
 
-### ❌ 不好的实践
+`Open questions` 非空时不能进入 Accepted。Accepted 后才能拆实现 tickets。Implemented 后冻结；后续行为变化建立新 spec，并用 Superseded 关系连接。
 
-**重复的任务列表**：
-- TODO.md 和 BACKLOG.md 都记录相同的任务
+### Issue Tracker 和 Wayfinder
 
-**易过时的数字**：
-```markdown
-- 单元测试 107/107 通过  ← 添加一个测试就要改
-- E2E 测试 39/39 通过    ← 同上
-- 提交哈希: e5c43dd      ← 每次提交都要改
+Issue Tracker 是所有未来工作的唯一状态来源：
+
+- Wayfinder map 管理大范围探索的 destination、已完成决策、fog 和 scope。
+- Wayfinder child ticket 每次解决一个决策或决策前置工作。
+- Accepted spec 通过实现 tickets 交付。
+- assignee 表示认领，原生 blocking 关系表示依赖。
+
+仓库内禁止建立 map、ticket 或状态列表的镜像。文档可以链接 issue，但不能复制它的进度。
+
+GitHub 的具体标签、父子关系、dependency、frontier 和 claim 操作见 [Issue Tracker](engineering/issue-tracker.md)。
+
+### CHANGELOG
+
+只记录已经实现的用户可见变化。`Unreleased` 保存已完成但尚未发布的变化，不得包含“计划中”条目。测试数量、提交哈希和预测日期不属于变更记录。
+
+## 更新触发条件
+
+| 发生变化 | 必须复审 |
+|---|---|
+| 启动方式、依赖或工具链 | `README.md`、`docs/engineering/setup.md` |
+| 领域含义 | `CONTEXT.md` |
+| 模块边界、数据流或存储模型 | architecture、code map；必要时 ADR |
+| 金额、迁移、同步或时区约束 | engineering invariants |
+| HTTP 接口 | API 文档 |
+| 用户可见行为 | 对应 spec、测试、CHANGELOG |
+| 测试策略或命令 | engineering testing、局部测试 README |
+
+每个 PR 必须说明 Documentation impact。没有影响时写明理由，不通过复制“无需更新”模板代替判断。
+
+## 写作和结构
+
+- 叙述使用中文；代码符号、命令和标准名称保持原文
+- 文件名使用英文 kebab-case
+- 一个文件只回答一类问题
+- 使用相对链接，不复制其他文档正文
+- 不写手工“最后更新”日期；Git 提供时间
+- 不记录易过期的测试数量、提交哈希或未来日期
+- 不使用 emoji 表示状态；ADR、spec 和 issue 状态必须是机器可检查的文本
+
+## 自动检查
+
+从仓库根运行：
+
+```bash
+bash scripts/check-docs.sh
 ```
 
-## 参考资料
-
-- [Keep a Changelog](https://keepachangelog.com/) - CHANGELOG 格式规范
-- [Feature-Sliced Design](https://feature-sliced.design/) - 架构设计参考
+CI 使用同一命令检查入口文件、禁止的计划文件、内部链接以及 ADR/spec 状态。

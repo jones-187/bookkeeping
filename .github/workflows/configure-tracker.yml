@@ -1,0 +1,26 @@
+name: Configure issue tracker
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/configure-tracker.yml"
+      - "scripts/setup-tracker.sh"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  labels:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure Wayfinder labels
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash scripts/setup-tracker.sh "${{ github.repository }}"

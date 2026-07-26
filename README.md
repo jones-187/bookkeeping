@@ -1,150 +1,59 @@
 # Bookkeeping
 
-基于 Local-First 架构的记账应用，支持 iOS、Android 和 Web 平台，使用本地存储和离线使用。
+Bookkeeping 是一款 Local-First 个人记账应用。账目条目首先写入设备本地存储，核心记账流程不依赖服务端在线。
 
-## 当前状态
+## 当前能力
 
-**阶段 1 已完成** ✅ - 本地账目流水记录功能已实现：
+- 新增、查看、编辑和软删除收入/支出账目条目
+- 按日期排列账目条目并计算收入、支出和结余汇总
+- iOS/Android 使用 SQLite；Web 提供辅助 IndexedDB 适配器，其已知语义差异记录在[工程不变量](docs/engineering/invariants.md)
+- Jest 覆盖领域逻辑、数据访问和集成流程
+- Maestro 覆盖原生端关键用户流程
+- Go 服务提供健康检查和启动元数据接口；它不参与当前本地记账流程
 
-- ✅ SQLite 本地存储（iOS/Android）
-- ✅ IndexedDB 本地存储（Web）
-- ✅ 账目流水的增删改查
-- ✅ 收入/支出分类
-- ✅ 金额使用整数存储（避免浮点精度问题）
-- ✅ 单元测试和集成测试
-- ✅ E2E 测试框架（Maestro）
+iOS 和 Android 是主要产品平台；Web 是辅助运行目标，不能替代原生端验收。
 
-## 技术栈
+## 快速开始
 
-- **应用**：Expo 51 + React Native 0.74 + TypeScript
-- **UI**：React Native Paper
-- **导航**：React Navigation
-- **存储**：expo-sqlite (iOS/Android) / IndexedDB (Web)
-- **测试**：Jest + Maestro
-- **服务端**：Go 1.22 + Gin（可选，用于未来同步功能）
-
-## 本地运行
-
-### 1. 安装依赖
+需要 Node.js 22、npm 10 和 Go 1.22。
 
 ```bash
-# 安装应用依赖
-cd src/app
-npm install
-
-# 安装服务端依赖（可选）
-cd ../server
-go mod download
+make setup
+make run-app
 ```
 
-### 2. 启动应用
+也可以直接启动应用：
 
 ```bash
 cd src/app
+npm install
 npm start
 ```
 
-然后选择：
-- 按 `w` 打开 Web 浏览器
-- 按 `i` 打开 iOS 模拟器
-- 按 `a` 打开 Android 模拟器
-
-### 3. 启动服务端（可选）
-
-服务端目前仅用于健康检查，未来将支持数据同步：
+Expo 启动后可选择 iOS、Android 或 Web 运行目标。Go 服务不是本地记账流程的前置条件；如需验证服务接口：
 
 ```bash
-cd src/server
-go run ./cmd/server
+make run-server
 ```
 
-服务端地址：`http://localhost:8080`
-
-## 已实现功能
-
-### 账目管理
-
-- 📝 添加账目（收入/支出）
-- ✏️ 编辑账目
-- 🗑️ 删除账目（软删除）
-- 📋 账目列表（按日期排序）
-- 📊 收支汇总（总收入、总支出、结余）
-
-### 数据存储
-
-- 💾 本地存储（SQLite for iOS/Android，IndexedDB for Web）
-- 🔢 金额整数存储（分为单位）
-- 🔒 数据验证和错误处理
-
-## 测试
-
-### 单元测试和集成测试
+## 验证
 
 ```bash
-cd src/app
-npm test
+make lint
+make test
+bash scripts/check-docs.sh
 ```
 
-### E2E 测试（需要模拟器）
-
-```bash
-# 安装 Maestro
-brew tap mobiledevops/mobiledevops
-brew install maestro
-
-# 启动应用后运行
-cd src/app
-npm run test:e2e
-```
-
-详细说明请参考 [tests/e2e/README.md](tests/e2e/README.md)。
-
-## 项目结构
-
-```
-bookkeeping/
-├── src/
-│   ├── app/                    # React Native 应用
-│   │   ├── src/
-│   │   │   ├── features/       # 功能模块 (Feature-Slice)
-│   │   │   │   └── ledger/     # 账目功能
-│   │   │   │       ├── components/
-│   │   │   │       ├── screens/
-│   │   │   │       ├── services/
-│   │   │   │       ├── repositories/
-│   │   │   │       ├── stores/
-│   │   │   │       ├── hooks/
-│   │   │   │       └── types/
-│   │   │   ├── shared/         # 共享资源
-│   │   │   │   ├── components/
-│   │   │   │   ├── db/
-│   │   │   │   ├── utils/
-│   │   │   │   └── types/
-│   │   │   └── navigation/     # 路由配置
-│   │   └── e2e/                # E2E 测试 (Playwright)（已废弃并删除）
-│   └── server/                 # Go API 服务端（可选）
-├── tests/
-│   └── e2e/                    # E2E 测试 (Maestro)
-├── docs/                       # 文档
-│   ├── adr/                    # 架构决策记录
-│   └── designs/                # 设计文档
-├── BACKLOG.md                  # 任务待办列表
-└── ROADMAP.md                  # 产品路线图
-```
+原生端 E2E 测试需要 Maestro 和模拟器或真机，详见 [E2E 测试说明](tests/e2e/README.md)。
 
 ## 文档
 
-- [CHANGELOG.md](CHANGELOG.md) - 版本变更记录
-- [ROADMAP.md](ROADMAP.md) - 产品路线图
-- [BACKLOG.md](BACKLOG.md) - 待办任务列表
-- [docs/adr/](docs/adr/) - 架构决策记录
-- [docs/DOCUMENTATION.md](docs/DOCUMENTATION.md) - 文档维护指南
+- [文档导航](docs/README.md)
+- [领域词汇](CONTEXT.md)
+- [开发环境](docs/engineering/setup.md)
+- [代码地图](docs/engineering/code-map.md)
+- [工程不变量](docs/engineering/invariants.md)
+- [贡献指南](CONTRIBUTING.md)
+- [变更记录](CHANGELOG.md)
 
-## 下一步计划
-
-参见 [ROADMAP.md](ROADMAP.md) 阶段 2：
-
-- 账户管理（现金、银行卡、信用卡等）
-- 类别管理（餐饮、交通、工资等）
-- 按账户/类别筛选
-- 数据同步（可选）
+尚未完成的决策和工作统一在 GitHub Issues 中管理，不在仓库内维护 Roadmap 或 Backlog。

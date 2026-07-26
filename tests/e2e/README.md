@@ -1,272 +1,71 @@
-# 端到端测试
+# Maestro 端到端测试
 
-最后更新：2026-04-06
+本目录包含移动端的 Maestro E2E 测试。测试入口是
+`flows/test-suite.yaml`，覆盖添加、编辑和删除账目条目的完整流程；各场景也可
+从 `flows/add-entry`、`flows/edit-entry` 和 `flows/delete-entry` 单独运行。
 
-此目录包含 E2E 测试配置和测试流程。
+## 运行前提
 
-## 技术选型
-
-使用 [Maestro](https://maestro.mobile.dev/) 作为 E2E 测试框架：
-
-- 原生支持 Expo，无需 `expo prebuild`
-- YAML 格式测试用例，简单直观
-- 支持文本匹配和 testID 选择器
-- CI/CD 友好
-
-## 已知问题与解决方案
-
-### 问题 1：Expo Go 不能使用 clearState
-
-**症状**：每次测试开始都超时，日志显示等待 "收入" 文字超时
-
-**根因**：`config.yaml` 的 `onFlowStart: clearState` 对 `host.exp.exponent`（Expo Go）执行 `adb pm clear`，清除整个 JS bundle 缓存。每次测试都要重新从 Metro 下载并编译 bundle，耗时 30-60 秒
-
-**解决**：删除 `clearState`，改用 `_reset.yaml` 的深层链接重置数据
-
-### 问题 2：重置完成判断不可靠
-
-**症状**：测试在脏数据上运行，导致断言失败
-
-**根因**：`_reset.yaml` 等待 "收入" 文字，但 "收入" 是列表页固定文字，数据未清空时也可见
-
-**解决**：改为等待 `empty-state` testID，这是空列表才显示的元素，能确保数据已清空
-
-### 问题 3：eraseText 只删一个字符
-
-**症状**：编辑时文本追加而非替换，如 "Test EntryUpdated Entry"
-
-**根因**：`eraseText` 不带参数时只删除选中内容，不选中则删除一个字符
-
-**解决**：使用 `eraseText: 100` 删除足够多的字符（最多删到字段为空）
-
-## 测试数据隔离
-
-为了确保测试可靠性，每个测试用例都遵循以下原则：
-
-1. **测试前重置**: 每个测试开始前调用 `_reset.yaml` 重置测试数据
-2. **唯一标识**: 使用 `TEST_{类型}_{序号}` 格式命名测试数据
-3. **精确断言**: 验证特定的测试数据，而非模糊匹配
-
-### 测试数据命名规范
-
-| 测试文件 | 数据前缀 |
-|---------|---------|
-| add-entry.yaml | TEST_ADD_001 |
-| edit-entry.yaml | TEST_EDIT_ORIGINAL, TEST_EDIT_MODIFIED |
-| delete-entry.yaml | TEST_DELETE_TARGET |
-
-## 目录结构
-
-```
-tests/e2e/
-├── config.yaml          # Maestro 全局配置
-├── README.md            # 本文档
-├── _reset.yaml          # 测试数据重置流程
-├── flows/               # 测试流程
-│   ├── add-entry.yaml   # 添加账目流程
-│   ├── edit-entry.yaml  # 编辑账目流程
-│   └── delete-entry.yaml # 删除账目流程
-├── debug/               # 调试输出
-├── results/             # 测试结果
-└── screenshots/         # 手动截图
-```
-
-## 本地运行
-
-### 步骤 1：安装 Maestro
-
-```bash
-# macOS
-brew tap mobiledevops/mobiledevops
-brew install maestro
-
-# 验证安装
-maestro --version
-```
-
-### 步骤 2：启动模拟器
-
-```bash
-# iOS (macOS only)
-open -a Simulator
-
-# 或 Android
-# 启动 Android Studio 的模拟器
-```
-
-### 步骤 3：安装 Expo Go
-
-```bash
-# iOS 模拟器
-xcrun simctl install booted "$(find ~/Library/Developer/CoreSimulator/Devices -name "Expo Go.app" | head -1)"
-
-# 如果没有找到，可以从 App Store 或 Play Store 下载
-```
-
-### 步骤 4：启动应用
+- 已安装 [Maestro](https://maestro.mobile.dev/) 并可执行 `maestro --version`。
+- 已启动 Android 或 iOS 模拟器，并在其中启动了应用。
+- 在 `src/app` 中运行 Expo 开发服务器，并等待应用进入账目列表页。
+- 已设置 `MAESTRO_RESET_URL`，其值是当前设备可访问的 Expo URL，并以
+  `/--/reset-all-data` 结尾。
 
 ```bash
 cd src/app
 npm start
 ```
 
-在 Expo CLI 中选择：
-- 按 `i` 打开 iOS 模拟器
-- 或按 `a` 打开 Android 模拟器
-
-等待应用完全加载，看到账目列表页面。
-
-### 步骤 5：运行测试
-
-**新开一个终端窗口**，运行测试：
+例如 Metro 显示的地址是 `exp://192.168.1.20:8081` 时，在另一个终端设置：
 
 ```bash
-cd src/app
+export MAESTRO_RESET_URL="exp://192.168.1.20:8081/--/reset-all-data"
+```
 
-# 运行所有 E2E 测试
+PowerShell 使用：
+
+```powershell
+$env:MAESTRO_RESET_URL="exp://192.168.1.20:8081/--/reset-all-data"
+```
+
+Maestro CLI 会自动把以 `MAESTRO_` 开头的 shell 环境变量注入 flow。不要把个人局域网地址提交进 YAML。
+
+## 命令
+
+从 `src/app` 运行完整套件：
+
+```bash
 npm run test:e2e
-
-# 或运行单个测试
-maestro test ../../tests/e2e/flows/add-entry.yaml
 ```
 
-### 快速运行（一行命令）
+运行单个流程时，从 `src/app` 指定对应 YAML 文件：
 
 ```bash
-# 从项目根目录
-cd src/app && npm start & sleep 30 && maestro test ../../tests/e2e/flows/add-entry.yaml
+maestro test ../../tests/e2e/flows/add-entry/happy-path.yaml
 ```
 
-## 测试覆盖
+## 数据隔离
 
-| 流程 | 文件 | 覆盖场景 |
-|------|------|----------|
-| 添加账目 | `add-entry.yaml` | 重置数据 → 添加 → 验证特定数据 |
-| 编辑账目 | `edit-entry.yaml` | 重置数据 → 添加 → 编辑 → 验证修改 |
-| 删除账目 | `delete-entry.yaml` | 重置数据 → 添加 → 删除 → 验证删除 |
+每个独立场景应在开头运行 `flows/_reset.yaml`。该流程通过 `MAESTRO_RESET_URL` 指向的开发环境重置
+深层链接清空测试数据、回到列表页，并等待 `empty-state` 出现后才继续。
 
-## 数据重置 API
+新增场景请使用明确的 `TEST_` 前缀测试数据，并断言该测试数据本身，避免
+依赖之前的测试执行顺序或设备上的残留数据。
 
-开发模式下可用深层链接重置数据：
+## 产物
 
-```bash
-# 软删除测试数据
-adb shell "am start -a android.intent.action.VIEW -d 'exp://192.168.31.249:8081/--/reset-test-data' host.exp.exponent"
+测试运行产生的调试信息位于 `tests/e2e/debug/`，结果位于
+`tests/e2e/results/`。这两个目录用于本地排查，不应作为测试用例的输入。
 
-# 清空所有数据
-adb shell "am start -a android.intent.action.VIEW -d 'exp://192.168.31.249:8081/--/reset-all-data' host.exp.exponent"
-```
+## 常见排错
 
-## UI 选择器
-
-测试使用以下选择器定位 UI 元素：
-
-| 元素 | 选择器类型 | 值 |
-|------|------------|-----|
-| 添加按钮 | testID | `add-entry-fab` |
-| 账目列表 | testID | `entry-list` |
-| 空列表状态 | testID | `empty-state` |
-| 类型选择 | testID | `type-selector` |
-| 金额输入 | testID | `amount-input` |
-| 描述输入 | testID | `description-input` |
-| 日期输入 | testID | `date-input` |
-| 提交按钮 | testID | `submit-button` |
-| 删除按钮 | testID | `delete-button` |
-
-## 文本输入框清空方法
-
-React Native Paper 的 TextInput 与 react-hook-form 组合时，文本清空需要特别注意：
-
-```yaml
-# ✅ 正确方法：使用 eraseText 删除足够多的字符
-- tapOn:
-    id: "amount-input"
-- eraseText: 100    # 删除最多 100 个字符，确保清空
-- inputText: "新值"
-
-# ❌ 错误方法：doubleTapOn + eraseText 不带参数
-- doubleTapOn:
-    id: "amount-input"  # 只选中一个词
-- eraseText              # 只删除选中内容
-- eraseText              # 无效
-- eraseText              # 无效
-- inputText: "新值"      # 变成追加而非替换
-```
-
-**原因**：`doubleTapOn` 在英文环境下只选中光标处的一个词，不是整个字段。`eraseText` 不带参数只删除选中内容或一个字符。
-
-## 添加新测试
-
-1. 使用 `TEST_{类型}_{序号}` 格式命名测试数据
-2. 在测试开头引入 `- runFlow: _reset.yaml`
-3. 验证特定数据而非模糊匹配
-4. 运行测试验证隔离性
-
-## 故障排除
-
-### 测试找不到元素
-
-1. 确保应用已完全加载（等待几秒再运行测试）
-2. 检查应用是否在 Expo Go 中运行
-3. 使用 `maestro studio` 进行可视化调试：
-   ```bash
-   maestro studio
-   ```
-
-### 测试数据残留
-
-如果测试数据没有正确清理：
-1. 手动调用重置深层链接
-2. 检查 `__DEV__` 模式是否正确启用
-3. 查看应用日志确认重置函数被调用
-
-### 测试顺序依赖
-
-如果测试必须按特定顺序运行才能通过，说明隔离性有问题。检查：
-1. 是否正确调用了 `_reset.yaml`
-2. 深层链接处理是否正确
-3. 数据库操作是否成功
-
-### 模拟器启动失败
-
-```bash
-# iOS 模拟器重置
-xcrun simctl shutdown all
-xcrun simctl erase all
-
-# 重新启动模拟器
-open -a Simulator
-```
-
-### "App not found" 错误
-
-确认 Expo Go 已安装在模拟器中：
-```bash
-# iOS
-xcrun simctl listapps booted | grep Expo
-
-# 如果没有，手动安装 Expo Go
-```
-
-### CI 测试超时
-
-增加 `waitForAnimationToEnd` 的 timeout 值：
-```yaml
-- waitForAnimationToEnd:
-    timeout: 5000  # 增加到 5 秒
-```
-
-## CI/CD 集成
-
-E2E 测试已集成到 GitHub Actions（`.github/workflows/ci.yml`）：
-
-- **触发条件**：main 分支的 push
-- **运行环境**：macOS + iOS 模拟器
-- **测试结果**：上传为 artifacts
-
-## 注意事项
-
-1. **appId 配置**：当前配置为 `host.exp.exponent`（Expo Go），生产环境需修改为实际应用 ID
-2. **数据隔离**：每个测试流程开始时会调用 `_reset.yaml` 清理测试数据
-3. **异步操作**：测试中已添加适当的等待时间，避免时序问题
-4. **DEV 模式**：数据重置 API 仅在 `__DEV__` 模式下可用
+- `App not found`：确认模拟器已启动，且应用已在该模拟器中打开。
+- 找不到元素或超时：等待 Metro 构建完成，并确认应用当前停留在账目列表页；
+  可使用 `maestro studio` 检查当前界面和选择器。
+- `MAESTRO_RESET_URL is undefined` 或无法打开重置链接：按 Metro 当前显示的
+  Expo URL 重新设置环境变量，并确认模拟器或真机可以访问该主机。
+- 重置后仍有数据：确认开发模式下的重置深层链接可用，并等待 `_reset.yaml`
+  的 `empty-state` 断言完成。
+- 流程单独通过、整套失败：检查新流程是否先执行重置，以及测试数据与断言
+  是否具有唯一性。

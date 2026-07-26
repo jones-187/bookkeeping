@@ -15,7 +15,6 @@ bin/
 # IDE
 .idea/
 .vscode/
-.trae/
 *.swp
 *.swo
 *~
@@ -44,8 +43,6 @@ yarn-error.log*
 coverage/
 *.out
 .nyc_output/
-playwright-report/
-test-results/
 
 # E2E Testing
 tests/e2e/results/
@@ -54,9 +51,6 @@ tests/e2e/screenshots/
 
 # Maestro local config (contains absolute paths)
 config.yaml
-
-# Superpowers plans (generated during planning)
-docs/superpowers/plans/
 
 # Temp command files
 tmpCmd.md
