@@ -1,8 +1,3 @@
-# Maestro E2E 测试配置
-# 文档: https://maestro.mobile.dev/
-
-# Expo Go 应用 ID（在 Expo Go 中运行时使用）
-appId: host.exp.exponent
-
-# 注意：不使用 clearState（会清除 Expo Go 的 JS bundle 缓存，导致每次测试都要重新编译，耗时 30-60 秒）
-# 重置由各 flow 内的 _reset.yaml 通过深链接完成
+# Maestro 原生 E2E 测试配置
+# 仅针对 iOS / Android dedicated development build。
+appId: com.jones187.bookkeeping

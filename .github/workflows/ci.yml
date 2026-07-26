@@ -14,21 +14,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: "1.22.2"
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "22.13"
           cache: "npm"
           cache-dependency-path: src/app/package-lock.json
-
-      - name: Install server dependencies
-        working-directory: src/server
-        run: go mod download
 
       - name: Install app dependencies
         working-directory: src/app
@@ -37,31 +28,18 @@ jobs:
       - name: Check documentation
         run: bash scripts/check-docs.sh
 
+      - name: Type-check app
+        working-directory: src/app
+        run: npm run typecheck
+
       - name: Lint app
         working-directory: src/app
         run: npm run lint
 
-      - name: Test server
-        working-directory: src/server
-        run: go test ./...
-
       - name: Test app
         working-directory: src/app
-        run: npm test -- --runInBand
+        run: npm test
 
-  build:
-    needs: lint-and-test
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: "1.22.2"
-
-      - name: Build server
-        working-directory: src/server
-        run: go build -o bin/server ./cmd/server
+      - name: Build native bundles
+        working-directory: src/app
+        run: npm run build

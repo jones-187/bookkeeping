@@ -5,13 +5,14 @@
     "version": "0.1.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "platforms": ["ios", "android", "web"],
-    "web": {
-      "favicon": "./assets/favicon.png",
-      "bundler": "metro"
+    "platforms": ["ios", "android"],
+    "ios": {
+      "bundleIdentifier": "com.jones187.bookkeeping",
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.jones187.bookkeeping",
+      "predictiveBackGestureEnabled": false
     }
   }
 }

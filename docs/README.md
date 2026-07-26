@@ -14,7 +14,6 @@
 | 怎样配置和测试 | [开发设置](engineering/setup.md)、[测试策略](engineering/testing.md) |
 | Issue 和 Wayfinder 怎样操作 | [Issue Tracker](engineering/issue-tracker.md) |
 | 必须保护哪些工程约束 | [工程不变量](engineering/invariants.md) |
-| 当前 HTTP 接口是什么 | [HTTP API](api/http-api.md) |
 | 文档该写在哪里 | [文档治理](DOCUMENTATION.md) |
 | 已经实现或发布过什么 | [变更记录](../CHANGELOG.md) |
 

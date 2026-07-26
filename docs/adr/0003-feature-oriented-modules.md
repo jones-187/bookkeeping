@@ -2,7 +2,9 @@
 
 ## 状态
 
-Accepted
+Superseded
+
+已由 [ADR 0006：深层 Ledger 模块](0006-deep-ledger-module.md) 替代。
 
 ## 背景
 

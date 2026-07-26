@@ -1,0 +1,26 @@
+appId: com.jones187.bookkeeping
+name: 金额校验和上限
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "还没有账目条目"
+    timeout: 10000
+- tapOn: "新增账目"
+- tapOn: "金额"
+- inputText: "0.001"
+- tapOn: "说明"
+- inputText: "precision"
+- tapOn: "保存账目"
+- assertVisible: "金额必须是最多两位小数的十进制数字"
+- tapOn: "金额"
+- eraseText: 20
+- inputText: "1000000.00"
+- tapOn: "说明"
+- eraseText: 20
+- inputText: "maximum"
+- tapOn: "保存账目"
+- extendedWaitUntil:
+    visible: "maximum"
+    timeout: 10000
+- assertVisible: "+¥1000000.00"

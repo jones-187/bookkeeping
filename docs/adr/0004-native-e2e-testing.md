@@ -2,7 +2,9 @@
 
 ## 状态
 
-Accepted
+Superseded
+
+已由 [ADR 0007：独立原生构建与状态隔离](0007-dedicated-native-e2e.md) 替代。
 
 ## 背景
 

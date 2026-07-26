@@ -5,18 +5,15 @@
 ```text
 bookkeeping/
 ├── src/
-│   ├── app/                 # Expo + React Native 应用
-│   │   ├── src/
-│   │   │   ├── features/    # 按业务功能组织的应用代码
-│   │   │   ├── navigation/  # React Navigation 配置
-│   │   │   └── shared/      # 数据库、金额、错误和共享组件
-│   │   └── __tests__/       # Jest 测试
-│   └── server/              # Gin HTTP 服务
+│   └── app/                 # Expo + React Native 应用
+│       ├── src/
+│       │   └── ledger/      # 账本深模块及其界面
+│       ├── __tests__/       # Jest 测试
+│       └── test-support/    # 真实 SQLite 测试适配器
 ├── tests/
 │   └── e2e/                 # Maestro 端到端流程
 ├── docs/
 │   ├── adr/                 # 架构决策记录
-│   ├── api/                 # API 文档
 │   ├── architecture/        # 架构文档
 │   └── engineering/         # 工程协作说明
 └── Makefile                 # 常用开发命令
@@ -24,37 +21,20 @@ bookkeeping/
 
 ## 应用端
 
-应用入口是 `src/app/App.tsx`，它装配 React Native Paper 和 `AppNavigator`。导航定义在 `src/app/src/navigation/`，账目功能位于 `src/app/src/features/ledger/`。
+应用入口是 `src/app/App.tsx`。它是组合根：创建原生 Ledger，处理初始化状态，并将 Ledger 交给 `LedgerApp`。账目功能位于 `src/app/src/ledger/`。
 
 | 位置 | 职责 |
 | --- | --- |
-| `features/ledger/screens/` | 账目列表、添加和编辑页面 |
-| `features/ledger/components/EntryForm.tsx` | 添加和编辑共用的表单 |
-| `features/ledger/stores/ledgerStore.ts` | Zustand 状态、列表和汇总刷新 |
-| `features/ledger/hooks/useEntry.ts` | 按 ID 读取单个账目条目 |
-| `features/ledger/services/LedgerEntryService.ts` | 输入校验、金额转换、汇总和领域错误 |
-| `features/ledger/repositories/LedgerEntryRepository.ts` | 账目条目的持久化查询与软删除 |
-| `shared/db/` | `Database` 接口及 SQLite、IndexedDB 实现 |
-| `shared/utils/Money.ts` | 分单位金额的计算、转换和格式化 |
-| `shared/constants/api.ts` | API 基地址解析 |
+| `ledger/contract.ts` | `Ledger` 的公开契约、输入输出类型及领域错误。 |
+| `ledger/native.ts` | 原生组合：打开 SQLite、配置连接并创建 Ledger。 |
+| `ledger/internal/` | Ledger 私有的 SQLite 接口、迁移、校验、查询和汇总实现。 |
+| `ledger/ui/` | 账目列表、添加、编辑、汇总和共用表单。 |
+| `ledger/localDate.ts` | 设备本地日期格式化。 |
 
-数据路径为：页面和表单 → Zustand store 或 `useEntry` → `LedgerEntryService` → `LedgerEntryRepository` → `Database`。原生平台使用 `expo-sqlite`，Web 平台使用 IndexedDB；两者都通过 `shared/db/interface.ts` 暴露数据库操作。
+数据路径为：`App.tsx`（组合根）→ `LedgerApp` 与页面 → `Ledger` 公开契约 → Ledger 内部 SQLite 实现。界面不依赖数据库、迁移或 SQL。
 
-在开发构建中，`AppNavigator` 处理 `reset-test-data`、`reset-all-data` 与 `go-home` 深层链接，用于端到端测试重置数据和导航。
-
-## 服务端
-
-`src/server/cmd/server/main.go` 读取配置并启动 Gin 路由。服务端代码按下列边界组织：
-
-| 位置 | 职责 |
-| --- | --- |
-| `internal/app/config.go` | 读取端口、服务名、版本和功能标记 |
-| `internal/http/router.go` | 创建带日志、恢复和 CORS 中间件的路由器 |
-| `internal/http/handler/bootstrap.go` | 注册并实现 HTTP 处理器 |
-| `internal/http/router_test.go` | 健康检查和 bootstrap 端点测试 |
-
-已注册的端点为 `GET /healthz` 与 `GET /api/v1/bootstrap`。
+Maestro 使用原生开发构建的 `clearState` 建立每个流程的干净应用状态。
 
 ## 测试位置
 
-应用的 Jest 测试放在 `src/app/__tests__/`，覆盖应用入口、数据库、金额工具、账目服务、仓储和集成流程。Go 测试与路由代码相邻。Maestro 流程放在 `tests/e2e/flows/`，共享步骤位于 `tests/e2e/flows/_shared/`。测试命令见 [testing.md](testing.md)。
+应用的 Jest 测试放在 `src/app/__tests__/`，覆盖 App 初始化、完整 Ledger 契约、真实 SQLite 迁移与查询，以及 Ledger UI 行为。Maestro 流程放在 `tests/e2e/flows/`。测试命令见 [testing.md](testing.md)。

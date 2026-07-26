@@ -1,54 +1,28 @@
-/**
- * App 组件测试
- */
-import { render } from "@testing-library/react-native";
-import App from "../App";
+import { render, screen } from '@testing-library/react-native';
 
-// Mock navigation components
-jest.mock("@react-navigation/native", () => ({
-  NavigationContainer: ({ children }: { children: React.ReactNode }) => children,
-}));
+import { BookkeepingApp } from '../App';
+import type { Ledger } from '../src/ledger';
 
-jest.mock("@react-navigation/native-stack", () => ({
-  createNativeStackNavigator: () => ({
-    Navigator: ({ children }: { children: React.ReactNode }) => children,
-    Screen: () => null,
-  }),
-}));
+it('composition root 打开本地账本后才呈现账目界面', async () => {
+  const ledger: Ledger = {
+    snapshot: jest.fn().mockResolvedValue({
+      entries: [],
+      summary: {
+        totalIncome: 0,
+        totalExpense: 0,
+        balance: 0,
+        count: 0,
+      },
+    }),
+    add: jest.fn(),
+    update: jest.fn(),
+    remove: jest.fn(),
+  };
+  const openLedger = jest.fn().mockResolvedValue(ledger);
 
-jest.mock("react-native-paper", () => ({
-  PaperProvider: ({ children }: { children: React.ReactNode }) => children,
-  useTheme: () => ({ colors: { primary: "#6200ee" } }),
-}));
+  render(<BookkeepingApp openLedger={openLedger} />);
 
-jest.mock("react-native-screens", () => ({
-  enableScreens: jest.fn(),
-}));
-
-jest.mock("react-native-gesture-handler", () => ({
-  GestureHandlerRootView: ({ children }: { children: React.ReactNode }) => children,
-}));
-
-jest.mock("react-native-safe-area-context", () => ({
-  SafeAreaProvider: ({ children }: { children: React.ReactNode }) => children,
-}));
-
-// Mock screens
-jest.mock("../src/features/ledger/screens/LedgerListScreen", () => {
-  const { Text } = require("react-native");
-  return () => null;
-});
-
-jest.mock("../src/features/ledger/screens/AddEntryScreen", () => {
-  return () => null;
-});
-
-jest.mock("../src/features/ledger/screens/EditEntryScreen", () => {
-  return () => null;
-});
-
-describe("App", () => {
-  it("renders without crashing", () => {
-    render(<App />);
-  });
+  expect(screen.getByText('正在打开本地账本…')).toBeOnTheScreen();
+  expect(await screen.findByText('还没有账目条目')).toBeOnTheScreen();
+  expect(openLedger).toHaveBeenCalledTimes(1);
 });

@@ -1,0 +1,18 @@
+appId: com.jones187.bookkeeping
+name: 新增账目
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "还没有账目条目"
+    timeout: 10000
+- tapOn: "新增账目"
+- tapOn: "金额"
+- inputText: "0.01"
+- tapOn: "说明"
+- inputText: "minimum"
+- tapOn: "保存账目"
+- extendedWaitUntil:
+    visible: "minimum"
+    timeout: 10000
+- assertVisible: "+¥0.01"

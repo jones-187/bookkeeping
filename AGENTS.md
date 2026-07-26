@@ -20,7 +20,6 @@
 |---|---|
 | 金额、汇总、数据库或迁移 | [工程不变量](docs/engineering/invariants.md) |
 | 模块边界、数据流或运行单元 | [架构文档](docs/architecture/context.md) |
-| HTTP 接口 | [HTTP API](docs/api/http-api.md) |
 | 测试基础设施 | [测试策略](docs/engineering/testing.md) |
 | Issue、blocking 或 Wayfinder | [Issue Tracker](docs/engineering/issue-tracker.md) |
 | 非平凡产品行为 | 对应 accepted spec；没有 spec 时先完成设计流程 |
@@ -29,14 +28,14 @@
 
 ### 金额
 
-- 目标不变量是持久化和领域运算使用整数最小货币单位；人民币当前使用“分”
+- 持久化和领域运算必须使用整数最小货币单位；人民币当前使用“分”
 - 不得在领域层引入基于浮点数的金额累计、比较或持久化
 - 输入解析、舍入、负数、零值和上限必须有边界测试
-- 当前 UI/Service 输入边界及 Web 存储仍有已知偏差，见[工程不变量](docs/engineering/invariants.md)；修改相关路径时不得扩大偏差
+- UI 向 `Ledger` 传递原始十进制字符串；不得把金额输入边界改回浮点数
 
 ### Local-First
 
-- 本地记账不能依赖 Go 服务可用
+- 本地记账不能依赖远程服务可用
 - 同步、备份或远程错误不能阻塞本地读写
 - 不得把尚未实现的远程系统写成当前架构
 
@@ -68,9 +67,9 @@
 ```bash
 make setup
 make run-app
-make run-server
 make lint
 make test
+make build
 bash scripts/check-docs.sh
 ```
 

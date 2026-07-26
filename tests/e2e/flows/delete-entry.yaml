@@ -1,0 +1,25 @@
+appId: com.jones187.bookkeeping
+name: 删除账目
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "还没有账目条目"
+    timeout: 10000
+- tapOn: "新增账目"
+- tapOn: "金额"
+- inputText: "8.00"
+- tapOn: "说明"
+- inputText: "todelete"
+- tapOn: "保存账目"
+- extendedWaitUntil:
+    visible: "todelete"
+    timeout: 10000
+- tapOn: "编辑 todelete"
+- tapOn: "删除账目"
+- assertVisible: "确定删除这笔账目？"
+- tapOn: "确认删除"
+- extendedWaitUntil:
+    visible: "还没有账目条目"
+    timeout: 10000
+- assertNotVisible: "todelete"

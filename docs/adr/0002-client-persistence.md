@@ -2,7 +2,9 @@
 
 ## 状态
 
-Accepted
+Superseded
+
+已由 [ADR 0005：仅原生端本地持久化](0005-native-only-persistence.md) 替代。
 
 ## 背景
 

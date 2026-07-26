@@ -1,35 +1,26 @@
 # Maestro 端到端测试
 
-本目录包含移动端的 Maestro E2E 测试。测试入口是
-`flows/test-suite.yaml`，覆盖添加、编辑和删除账目条目的完整流程；各场景也可
-从 `flows/add-entry`、`flows/edit-entry` 和 `flows/delete-entry` 单独运行。
+本目录验证 iOS 和 Android dedicated development build 的原生账目流程。测试不使用
+Expo Go、深层链接或应用内测试后门。
 
 ## 运行前提
 
-- 已安装 [Maestro](https://maestro.mobile.dev/) 并可执行 `maestro --version`。
-- 已启动 Android 或 iOS 模拟器，并在其中启动了应用。
-- 在 `src/app` 中运行 Expo 开发服务器，并等待应用进入账目列表页。
-- 已设置 `MAESTRO_RESET_URL`，其值是当前设备可访问的 Expo URL，并以
-  `/--/reset-all-data` 结尾。
+- 已安装 [Maestro](https://maestro.mobile.dev/)；`maestro --version` 应可执行。
+- 已启动 Android 或 iOS 模拟器。
+- 已构建并安装目标平台的 dedicated development build。首次或原生依赖、应用配置变更后，
+  从 `src/app` 执行：
 
 ```bash
-cd src/app
-npm start
+npx expo run:android
+# 或
+npx expo run:ios
 ```
 
-例如 Metro 显示的地址是 `exp://192.168.1.20:8081` 时，在另一个终端设置：
+`expo run:*` 会启动 Metro；若已安装构建，只需启动 Metro：
 
 ```bash
-export MAESTRO_RESET_URL="exp://192.168.1.20:8081/--/reset-all-data"
+npx expo start --dev-client
 ```
-
-PowerShell 使用：
-
-```powershell
-$env:MAESTRO_RESET_URL="exp://192.168.1.20:8081/--/reset-all-data"
-```
-
-Maestro CLI 会自动把以 `MAESTRO_` 开头的 shell 环境变量注入 flow。不要把个人局域网地址提交进 YAML。
 
 ## 命令
 
@@ -39,33 +30,29 @@ Maestro CLI 会自动把以 `MAESTRO_` 开头的 shell 环境变量注入 flow�
 npm run test:e2e
 ```
 
-运行单个流程时，从 `src/app` 指定对应 YAML 文件：
+运行独立流程：
 
 ```bash
-maestro test ../../tests/e2e/flows/add-entry/happy-path.yaml
+maestro test ../../tests/e2e/flows/add-entry.yaml
 ```
+
+可用的独立流程为 `add-entry.yaml`、`edit-entry.yaml`、`delete-entry.yaml` 和
+`validation.yaml`。
 
 ## 数据隔离
 
-每个独立场景应在开头运行 `flows/_reset.yaml`。该流程通过 `MAESTRO_RESET_URL` 指向的开发环境重置
-深层链接清空测试数据、回到列表页，并等待 `empty-state` 出现后才继续。
+每个独立流程均以 `launchApp` 的 `clearState: true` 开始。Maestro 会清除该应用的
+本地状态（包括 SQLite 数据库）后重新启动应用，因此流程不依赖执行顺序，也不需要
+额外的重置 URL 环境变量。这会删除模拟器中该应用的本地测试数据；不要在需要保留的
+数据上运行这些流程。
 
-新增场景请使用明确的 `TEST_` 前缀测试数据，并断言该测试数据本身，避免
-依赖之前的测试执行顺序或设备上的残留数据。
-
-## 产物
-
-测试运行产生的调试信息位于 `tests/e2e/debug/`，结果位于
-`tests/e2e/results/`。这两个目录用于本地排查，不应作为测试用例的输入。
+测试描述使用 ASCII 字符串，避免 Android `inputText` 的非 ASCII 输入差异。
 
 ## 常见排错
 
-- `App not found`：确认模拟器已启动，且应用已在该模拟器中打开。
-- 找不到元素或超时：等待 Metro 构建完成，并确认应用当前停留在账目列表页；
-  可使用 `maestro studio` 检查当前界面和选择器。
-- `MAESTRO_RESET_URL is undefined` 或无法打开重置链接：按 Metro 当前显示的
-  Expo URL 重新设置环境变量，并确认模拟器或真机可以访问该主机。
-- 重置后仍有数据：确认开发模式下的重置深层链接可用，并等待 `_reset.yaml`
-  的 `empty-state` 断言完成。
-- 流程单独通过、整套失败：检查新流程是否先执行重置，以及测试数据与断言
-  是否具有唯一性。
+- `App not found`：先运行对应平台的 `npx expo run:android` 或 `npx expo run:ios`，确认
+  bundle ID / package 为 `com.jones187.bookkeeping`。
+- 找不到元素或超时：确认 Metro 已连接到 development build，并用 `maestro studio`
+  查看当前界面及可访问名称。
+- 清除后仍有旧数据：确认运行的是 dedicated development build，而不是 Expo Go；单独运行
+  对应 flow 也会重新执行 `clearState`。

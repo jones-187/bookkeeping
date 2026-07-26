@@ -1,0 +1,30 @@
+appId: com.jones187.bookkeeping
+name: 编辑账目
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "还没有账目条目"
+    timeout: 10000
+- tapOn: "新增账目"
+- tapOn: "金额"
+- inputText: "10.00"
+- tapOn: "说明"
+- inputText: "beforeedit"
+- tapOn: "保存账目"
+- extendedWaitUntil:
+    visible: "beforeedit"
+    timeout: 10000
+- tapOn: "编辑 beforeedit"
+- tapOn: "金额"
+- eraseText: 20
+- inputText: "25.50"
+- tapOn: "说明"
+- eraseText: 20
+- inputText: "afteredit"
+- tapOn: "保存修改"
+- extendedWaitUntil:
+    visible: "afteredit"
+    timeout: 10000
+- assertVisible: "+¥25.50"
+- assertNotVisible: "beforeedit"
