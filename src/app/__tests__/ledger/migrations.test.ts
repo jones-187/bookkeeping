@@ -64,4 +64,22 @@ describe('Ledger SQLite migration', () => {
       summary: { totalIncome: 888, count: 1 },
     });
   });
+
+  it('拒绝用当前代码打开未知的未来 schema 版本', async () => {
+    await database.exec(`
+      CREATE TABLE ledger_schema (
+        singleton INTEGER PRIMARY KEY CHECK (singleton = 1),
+        version INTEGER NOT NULL CHECK (version >= 1)
+      ) STRICT;
+      INSERT INTO ledger_schema(singleton, version) VALUES (1, 2);
+    `);
+
+    await expect(
+      createLedger({
+        database,
+        now: () => new Date('2026-07-26T08:00:00.000Z'),
+        generateId: () => 'entry-1',
+      }),
+    ).rejects.toThrow('不支持的账本数据库版本：2，当前版本：1');
+  });
 });

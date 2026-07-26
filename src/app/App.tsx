@@ -8,7 +8,8 @@ import {
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 
-import { createNativeLedger, type Ledger } from './src/ledger';
+import type { Ledger } from './src/ledger';
+import { createNativeLedger } from './src/ledger/native';
 import { LedgerApp } from './src/ledger/ui/LedgerApp';
 
 type AppState =

@@ -9,10 +9,12 @@ name: 新增账目
 - tapOn: "新增账目"
 - tapOn: "金额"
 - inputText: "0.01"
+- tapOn: "支出"
 - tapOn: "说明"
 - inputText: "minimum"
 - tapOn: "保存账目"
 - extendedWaitUntil:
     visible: "minimum"
     timeout: 10000
-- assertVisible: "+¥0.01"
+- assertVisible: "-¥0.01"
+- assertVisible: "结余 -¥0.01"

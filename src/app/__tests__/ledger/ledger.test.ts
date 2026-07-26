@@ -303,4 +303,41 @@ describe('Ledger', () => {
       LedgerEntryNotFoundError,
     );
   });
+
+  it('编辑输入校验失败时保留原账目，不产生部分更新', async () => {
+    const ledger = await createLedger({
+      database,
+      now: () => new Date('2026-07-26T08:00:00.000Z'),
+      generateId: () => 'unchanged-entry',
+    });
+    await ledger.add({
+      amount: '9.99',
+      type: 'income',
+      description: '原值',
+      date: '2026-07-25',
+    });
+
+    await expect(
+      ledger.update('unchanged-entry', {
+        amount: '9.999',
+        type: 'expense',
+        description: '不应写入',
+        date: '2026-07-26',
+      }),
+    ).rejects.toMatchObject<Partial<LedgerValidationError>>({
+      field: 'amount',
+    });
+    await expect(ledger.snapshot()).resolves.toMatchObject({
+      entries: [
+        {
+          id: 'unchanged-entry',
+          amount: 999,
+          type: 'income',
+          description: '原值',
+          date: '2026-07-25',
+        },
+      ],
+      summary: { totalIncome: 999, totalExpense: 0, balance: 999, count: 1 },
+    });
+  });
 });

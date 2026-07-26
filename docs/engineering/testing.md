@@ -21,7 +21,7 @@ make build
 也可按组件分别运行：
 
 ```bash
-cd src/app && npm test -- --runInBand
+cd src/app && npm test
 cd src/app && npm run lint
 cd src/app && npm run typecheck
 cd src/app && npm run build

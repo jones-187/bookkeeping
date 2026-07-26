@@ -9,13 +9,13 @@ help:
 	@echo "  make build       Build Android and iOS bundles"
 
 setup:
-	cd src/app && npm install
+	cd src/app && npm ci
 
 build:
 	cd src/app && npm run build
 
 test:
-	cd src/app && npm test -- --runInBand
+	cd src/app && npm test
 
 lint:
 	cd src/app && npm run lint

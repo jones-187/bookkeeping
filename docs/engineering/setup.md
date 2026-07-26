@@ -17,7 +17,7 @@ cd src/app
 npm ci
 ```
 
-也可以执行 `make setup`；该命令在应用目录运行 `npm install`。
+也可以执行 `make setup`；该命令在应用目录运行 `npm ci`。
 
 ## 运行应用
 

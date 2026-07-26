@@ -78,15 +78,24 @@ class ExpoConnectionAdapter
 
 export async function createNativeLedger(): Promise<Ledger> {
   const database = await openDatabaseAsync(DATABASE_NAME);
-  await database.execAsync(`
-    PRAGMA journal_mode = WAL;
-    PRAGMA foreign_keys = ON;
-    PRAGMA busy_timeout = 5000;
-  `);
+  try {
+    await database.execAsync(`
+      PRAGMA journal_mode = WAL;
+      PRAGMA foreign_keys = ON;
+      PRAGMA busy_timeout = 5000;
+    `);
 
-  return createLedger({
-    database: new ExpoConnectionAdapter(database),
-    now: () => new Date(),
-    generateId: randomUUID,
-  });
+    return await createLedger({
+      database: new ExpoConnectionAdapter(database),
+      now: () => new Date(),
+      generateId: randomUUID,
+    });
+  } catch (error) {
+    try {
+      await database.closeAsync();
+    } catch {
+      // 保留导致装配失败的原始错误，关闭失败不应覆盖根因。
+    }
+    throw error;
+  }
 }

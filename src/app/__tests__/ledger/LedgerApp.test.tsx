@@ -5,7 +5,11 @@ import {
   waitFor,
 } from '@testing-library/react-native';
 
-import type { Ledger, LedgerSnapshot } from '../../src/ledger';
+import {
+  LedgerValidationError,
+  type Ledger,
+  type LedgerSnapshot,
+} from '../../src/ledger';
 import { LedgerApp } from '../../src/ledger/ui/LedgerApp';
 
 describe('LedgerApp', () => {
@@ -272,5 +276,43 @@ describe('LedgerApp', () => {
 
     expect(await screen.findByText('还没有账目条目')).toBeOnTheScreen();
     expect(ledger.snapshot).toHaveBeenCalledTimes(2);
+  });
+
+  it('输入校验失败时保留表单并显示 Ledger 返回的字段错误', async () => {
+    const emptySnapshot: LedgerSnapshot = {
+      entries: [],
+      summary: {
+        totalIncome: 0,
+        totalExpense: 0,
+        balance: 0,
+        count: 0,
+      },
+    };
+    const ledger: Ledger = {
+      snapshot: jest.fn().mockResolvedValue(emptySnapshot),
+      add: jest
+        .fn()
+        .mockRejectedValue(
+          new LedgerValidationError(
+            'amount',
+            '金额必须是最多两位小数的十进制数字',
+          ),
+        ),
+      update: jest.fn(),
+      remove: jest.fn(),
+    };
+    render(<LedgerApp ledger={ledger} today={() => '2026-07-26'} />);
+    expect(await screen.findByText('还没有账目条目')).toBeOnTheScreen();
+    fireEvent.press(screen.getByRole('button', { name: '新增账目' }));
+    fireEvent.changeText(await screen.findByLabelText('金额'), '0.001');
+    fireEvent.changeText(screen.getByLabelText('说明'), '精度错误');
+
+    fireEvent.press(screen.getByRole('button', { name: '保存账目' }));
+
+    expect(
+      await screen.findByText('金额必须是最多两位小数的十进制数字'),
+    ).toBeOnTheScreen();
+    expect(screen.getByText('新增账目')).toBeOnTheScreen();
+    expect(ledger.snapshot).toHaveBeenCalledTimes(1);
   });
 });

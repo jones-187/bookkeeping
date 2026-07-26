@@ -10,8 +10,6 @@
 - 从同一账目快照计算收入、支出和结余
 - iOS/Android 的 SQLite 本地持久化与显式 schema v1 迁移
 - 支持精确十进制金额、收支类型、说明和本地日期的原生表单
-- Ledger 契约、真实 SQLite 和界面测试
-- Maestro 原生端 E2E 测试
 
 ### 变更
 
