@@ -59,9 +59,9 @@ tmpCmd.md
 *.apk
 *.ipa
 *.aab
-android/app/build/
-ios/build/
-ios/Pods/
+# Expo CNG generated native projects
+src/app/android/
+src/app/ios/
 .expo/
 
 # Database

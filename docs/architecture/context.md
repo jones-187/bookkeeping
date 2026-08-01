@@ -19,3 +19,7 @@ flowchart LR
 | SQLite | iOS 与 Android 上的持久化存储，数据库文件名为 `bookkeeping-native-v1.db`。 |
 
 账目读写不依赖网络或远程进程。应用的组合根创建原生 Ledger；对外只暴露 [Ledger 契约](../../src/app/src/ledger/contract.ts)，SQLite 连接、迁移和行映射均为该模块内部实现。
+
+## Expo 原生工程归属
+
+`src/app/app.json` 是受版本控制的 Expo 配置，也是当前原生应用身份和平台配置的权威输入。项目采用 Expo CNG；`src/app/android/` 与 `src/app/ios/` 是由该配置生成、整体被 Git 忽略的本地产物，不作为手工维护的源码提交。详细决策见 [Expo CNG 原生工程归属](../adr/0008-expo-cng-native-project-ownership.md)，开发命令见 [开发环境](../engineering/setup.md)。

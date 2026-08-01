@@ -8,19 +8,21 @@ Expo Go、深层链接或应用内测试后门。
 - 已安装 [Maestro](https://maestro.mobile.dev/)；`maestro --version` 应可执行。
 - 已启动 Android 或 iOS 模拟器。
 - 已构建并安装目标平台的 dedicated development build。首次或原生依赖、应用配置变更后，
-  从 `src/app` 执行：
+  从 `src/app` 执行对应仓库命令：
 
 ```bash
-npx expo run:android
+npm run android
 # 或
-npx expo run:ios
+npm run ios
 ```
 
-`expo run:*` 会启动 Metro；若已安装构建，只需启动 Metro：
+若已安装构建，只需启动 Metro：
 
 ```bash
 npx expo start --dev-client
 ```
+
+原生工程生成和目录归属见[开发环境](../../docs/engineering/setup.md)。
 
 ## 命令
 
@@ -50,7 +52,7 @@ maestro test ../../tests/e2e/flows/add-entry.yaml
 
 ## 常见排错
 
-- `App not found`：先运行对应平台的 `npx expo run:android` 或 `npx expo run:ios`，确认
+- `App not found`：先从 `src/app` 运行对应平台的 `npm run android` 或 `npm run ios`，确认
   bundle ID / package 为 `com.jones187.bookkeeping`。
 - 找不到元素或超时：确认 Metro 已连接到 development build，并用 `maestro studio`
   查看当前界面及可访问名称。

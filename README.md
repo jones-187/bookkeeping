@@ -18,18 +18,22 @@ iOS 和 Android 是当前且仅有的产品平台。
 
 ```bash
 make setup
-make run-app
+make run-android  # 或 make run-ios
 ```
 
-也可以直接启动应用：
+首次运行或原生配置变化后的完整命令和原生工程归属见[开发环境](docs/engineering/setup.md)和
+[Expo CNG 原生工程归属](docs/adr/0008-expo-cng-native-project-ownership.md)。
+
+也可以直接运行对应平台命令：
 
 ```bash
 cd src/app
-npm install
-npm start
+npm run android
+# 或
+npm run ios
 ```
 
-使用 `npm run ios` 或 `npm run android` 选择原生运行目标。
+如果已经安装 development build，只需运行 `npx expo start --dev-client` 启动 Metro。
 
 ## 验证
 
@@ -40,7 +44,7 @@ make build
 bash scripts/check-docs.sh
 ```
 
-原生端 E2E 测试需要 Maestro 和模拟器或真机，详见 [E2E 测试说明](tests/e2e/README.md)。
+原生端 E2E 测试需要 Maestro、dedicated development build 和模拟器或真机，详见 [E2E 测试说明](tests/e2e/README.md)。
 
 ## 文档
 

@@ -11,5 +11,6 @@
 - [仅保留原生本地持久化](0005-native-only-persistence.md)
 - [深 Ledger 模块与统一装配](0006-deep-ledger-module.md)
 - [独立原生构建与状态隔离](0007-dedicated-native-e2e.md)
+- [Expo CNG 原生工程归属](0008-expo-cng-native-project-ownership.md)
 
 ADR 的创建条件、状态和不可变规则见[文档治理](../DOCUMENTATION.md#adr)。

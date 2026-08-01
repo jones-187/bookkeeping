@@ -21,14 +21,32 @@ npm ci
 
 ## 运行应用
 
-启动 Expo 开发服务器：
+构建并安装 Android 或 iOS dedicated development build：
 
 ```bash
 cd src/app
-npm start
+npm run android
+# 或
+npm run ios
 ```
 
-也可使用 `npm run android` 或 `npm run ios` 启动对应平台。应用在设备本地使用 SQLite。
+这两个命令分别执行 `expo run:android` 和 `expo run:ios`。当 `src/app/android/` 或
+`src/app/ios/` 不存在时，Expo 会依据受版本控制的 `app.json` 生成对应原生工程，再构建并安装 development build；生成目录是可重新生成的本地产物，不提交到 Git。
+
+如果 `app.json` 发生变化且对应原生目录已经存在，先从 `src/app` 重新生成配置：
+
+```bash
+npx expo prebuild --clean --no-install
+```
+
+如果目标平台已经安装了 development build，只需启动连接该构建的 Metro 开发服务器：
+
+```bash
+cd src/app
+npx expo start --dev-client
+```
+
+应用在设备本地使用 SQLite。`npm start` 只启动通用 Expo 开发服务器，不负责生成或安装原生构建。
 
 ## 常用检查
 
@@ -38,4 +56,4 @@ make lint
 make build
 ```
 
-这些命令分别运行应用测试、应用 lint，以及导出 Android 和 iOS bundle。更细的测试分层和命令见 [testing.md](testing.md)。
+这些命令分别运行应用测试、应用 lint，以及导出 Android 和 iOS bundle；它们不替代设备上的原生构建安装。更细的测试分层和命令见 [testing.md](testing.md)。
