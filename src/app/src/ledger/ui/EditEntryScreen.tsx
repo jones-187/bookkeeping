@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import type { Ledger, LedgerEntry, LedgerEntryInput } from '../contract';
-import { EntryForm } from './EntryForm';
+import { EntryForm, type EntryFormWriteState } from './EntryForm';
 import { formatCentsForInput } from './money';
 
 interface EditEntryScreenProps {
@@ -10,8 +10,6 @@ interface EditEntryScreenProps {
   ledger: Ledger;
   onComplete: () => void;
 }
-
-type WriteState = 'idle' | 'saving' | 'deleting';
 
 function entryToInput(entry: LedgerEntry): LedgerEntryInput {
   return {
@@ -25,7 +23,7 @@ function entryToInput(entry: LedgerEntry): LedgerEntryInput {
 /** 编辑页面执行完整替换；领域模块仍是唯一的校验与持久化边界。 */
 export function EditEntryScreen({ entry, ledger, onComplete }: EditEntryScreenProps) {
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
-  const [writeState, setWriteState] = useState<WriteState>('idle');
+  const [writeState, setWriteState] = useState<EntryFormWriteState>('idle');
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const isBusy = writeState !== 'idle';
 
@@ -50,7 +48,6 @@ export function EditEntryScreen({ entry, ledger, onComplete }: EditEntryScreenPr
   return (
     <EntryForm
       initialValues={entryToInput(entry)}
-      isBusy={isBusy}
       onCancel={onComplete}
       onSubmit={async (input) => {
         if (isBusy) {
@@ -67,6 +64,7 @@ export function EditEntryScreen({ entry, ledger, onComplete }: EditEntryScreenPr
       }}
       saveLabel="保存修改"
       title="编辑账目"
+      writeState={writeState}
     >
       <View style={styles.deleteSection}>
         {isConfirmingDelete ? (

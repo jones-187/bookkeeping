@@ -355,6 +355,7 @@ describe('LedgerApp', () => {
     await waitFor(() => {
       expect(ledger.update).toHaveBeenCalledTimes(1);
     });
+    expect(screen.getByText('正在保存…')).toBeOnTheScreen();
     expect(screen.getByLabelText('金额').props.editable).toBe(false);
     expect(screen.getByLabelText('说明').props.editable).toBe(false);
     expect(screen.getByLabelText('日期').props.editable).toBe(false);

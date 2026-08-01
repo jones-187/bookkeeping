@@ -15,13 +15,15 @@ import type { LedgerEntryInput } from '../contract';
 
 interface EntryFormProps {
   children?: ReactNode;
-  isBusy?: boolean;
   initialValues: LedgerEntryInput;
   onCancel: () => void;
   onSubmit: (input: LedgerEntryInput) => Promise<void>;
   saveLabel: string;
   title: string;
+  writeState?: EntryFormWriteState;
 }
+
+export type EntryFormWriteState = 'idle' | 'saving' | 'deleting';
 
 /**
  * 新增和编辑共用的纯输入表单。
@@ -29,17 +31,19 @@ interface EntryFormProps {
  */
 export function EntryForm({
   children,
-  isBusy: controlledBusy,
   initialValues,
   onCancel,
   onSubmit,
   saveLabel,
   title,
+  writeState,
 }: EntryFormProps) {
   const [values, setValues] = useState<LedgerEntryInput>(initialValues);
   const [error, setError] = useState<string | null>(null);
-  const [isSaving, setIsSaving] = useState(false);
-  const isBusy = controlledBusy ?? isSaving;
+  const [isSavingInternally, setIsSavingInternally] = useState(false);
+  const isControlled = writeState !== undefined;
+  const isSaving = isControlled ? writeState === 'saving' : isSavingInternally;
+  const isBusy = isControlled ? writeState !== 'idle' : isSavingInternally;
 
   const save = async () => {
     if (isBusy) {
@@ -47,8 +51,8 @@ export function EntryForm({
     }
 
     setError(null);
-    if (controlledBusy === undefined) {
-      setIsSaving(true);
+    if (!isControlled) {
+      setIsSavingInternally(true);
     }
 
     try {
@@ -56,8 +60,8 @@ export function EntryForm({
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : '无法保存账目，请稍后重试。');
     } finally {
-      if (controlledBusy === undefined) {
-        setIsSaving(false);
+      if (!isControlled) {
+        setIsSavingInternally(false);
       }
     }
   };
