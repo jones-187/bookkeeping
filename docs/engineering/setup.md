@@ -6,6 +6,7 @@
 - npm
 - 可选：`make`（只在使用仓库根目录的 `make` 命令时需要）
 - Android：JDK、Android SDK，以及已启动的 Android 模拟器或已连接设备
+  WSL2 与 Windows 模拟器混合环境的适配步骤见 [android-e2e-wsl-windows.md](android-e2e-wsl-windows.md)。
 - iOS：macOS、Xcode、CocoaPods，以及已启动的 iOS 模拟器或已连接设备
 
 移动端端到端测试还需要 Maestro、已启动的 iOS 或 Android 模拟器，以及已安装的 Bookkeeping 原生开发构建。安装与运行细节见 [端到端测试说明](../../tests/e2e/README.md)。
