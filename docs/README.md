@@ -8,6 +8,7 @@
 | 业务词语的准确含义 | [领域词汇](../CONTEXT.md) |
 | 产品长期解决什么问题 | [产品愿景](product/vision.md) |
 | 系统当前怎样运行 | [系统上下文](architecture/context.md) |
+| 为什么 Ledger 不需推倒重构、哪些压力已存在 | [Ledger 设计评审记录](architecture/ledger-design-review.md) |
 | 当前数据怎样组织 | [数据模型](architecture/data-model.md) |
 | 为什么作出重要架构选择 | [架构决策](adr/README.md) |
 | 代码在哪里 | [代码地图](engineering/code-map.md) |
