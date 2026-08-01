@@ -11,6 +11,8 @@ interface EditEntryScreenProps {
   onComplete: () => void;
 }
 
+type WriteState = 'idle' | 'saving' | 'deleting';
+
 function entryToInput(entry: LedgerEntry): LedgerEntryInput {
   return {
     amount: formatCentsForInput(entry.amount),
@@ -23,16 +25,17 @@ function entryToInput(entry: LedgerEntry): LedgerEntryInput {
 /** 编辑页面执行完整替换；领域模块仍是唯一的校验与持久化边界。 */
 export function EditEntryScreen({ entry, ledger, onComplete }: EditEntryScreenProps) {
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [writeState, setWriteState] = useState<WriteState>('idle');
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const isBusy = writeState !== 'idle';
 
   const remove = async () => {
-    if (isDeleting) {
+    if (isBusy) {
       return;
     }
 
     setDeleteError(null);
-    setIsDeleting(true);
+    setWriteState('deleting');
 
     try {
       await ledger.remove(entry.id);
@@ -40,17 +43,27 @@ export function EditEntryScreen({ entry, ledger, onComplete }: EditEntryScreenPr
     } catch (reason) {
       setDeleteError(reason instanceof Error ? reason.message : '无法删除账目，请稍后重试。');
     } finally {
-      setIsDeleting(false);
+      setWriteState('idle');
     }
   };
 
   return (
     <EntryForm
       initialValues={entryToInput(entry)}
+      isBusy={isBusy}
       onCancel={onComplete}
       onSubmit={async (input) => {
-        await ledger.update(entry.id, input);
-        onComplete();
+        if (isBusy) {
+          return;
+        }
+
+        setWriteState('saving');
+        try {
+          await ledger.update(entry.id, input);
+          onComplete();
+        } finally {
+          setWriteState('idle');
+        }
       }}
       saveLabel="保存修改"
       title="编辑账目"
@@ -64,7 +77,7 @@ export function EditEntryScreen({ entry, ledger, onComplete }: EditEntryScreenPr
               <Pressable
                 accessibilityLabel="取消删除"
                 accessibilityRole="button"
-                disabled={isDeleting}
+                disabled={isBusy}
                 onPress={() => {
                   setDeleteError(null);
                   setIsConfirmingDelete(false);
@@ -76,13 +89,13 @@ export function EditEntryScreen({ entry, ledger, onComplete }: EditEntryScreenPr
               <Pressable
                 accessibilityLabel="确认删除"
                 accessibilityRole="button"
-                accessibilityState={{ disabled: isDeleting }}
-                disabled={isDeleting}
+                accessibilityState={{ disabled: isBusy }}
+                disabled={isBusy}
                 onPress={() => void remove()}
                 style={styles.confirmDeleteButton}
               >
                 <Text style={styles.confirmDeleteText}>
-                  {isDeleting ? '正在删除…' : '确认删除'}
+                  {writeState === 'deleting' ? '正在删除…' : '确认删除'}
                 </Text>
               </Pressable>
             </View>
@@ -91,6 +104,7 @@ export function EditEntryScreen({ entry, ledger, onComplete }: EditEntryScreenPr
           <Pressable
             accessibilityLabel="删除账目"
             accessibilityRole="button"
+            disabled={isBusy}
             onPress={() => setIsConfirmingDelete(true)}
             style={styles.deleteButton}
           >

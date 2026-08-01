@@ -315,4 +315,220 @@ describe('LedgerApp', () => {
     expect(screen.getByText('新增账目')).toBeOnTheScreen();
     expect(ledger.snapshot).toHaveBeenCalledTimes(1);
   });
+
+  it('保存进行中时禁用编辑页的删除、取消、再次保存和所有编辑控件', async () => {
+    const existingSnapshot: LedgerSnapshot = {
+      entries: [
+        {
+          id: 'busy-save-entry',
+          amount: 12000,
+          type: 'expense',
+          description: '房租',
+          date: '2026-07-25',
+        },
+      ],
+      summary: {
+        totalIncome: 0,
+        totalExpense: 12000,
+        balance: -12000,
+        count: 1,
+      },
+    };
+    let resolveUpdate!: () => void;
+    const updatePromise = new Promise<void>((resolve) => {
+      resolveUpdate = resolve;
+    });
+    const ledger: Ledger = {
+      snapshot: jest.fn().mockResolvedValue(existingSnapshot),
+      add: jest.fn(),
+      update: jest.fn().mockReturnValue(updatePromise),
+      remove: jest.fn(),
+    };
+
+    render(<LedgerApp ledger={ledger} />);
+    expect(await screen.findByText('房租')).toBeOnTheScreen();
+    fireEvent.press(screen.getByRole('button', { name: '编辑 房租' }));
+    expect(await screen.findByDisplayValue('120.00')).toBeOnTheScreen();
+
+    fireEvent.press(screen.getByRole('button', { name: '保存修改' }));
+
+    await waitFor(() => {
+      expect(ledger.update).toHaveBeenCalledTimes(1);
+    });
+    expect(screen.getByLabelText('金额').props.editable).toBe(false);
+    expect(screen.getByLabelText('说明').props.editable).toBe(false);
+    expect(screen.getByLabelText('日期').props.editable).toBe(false);
+    expect(screen.getByRole('button', { disabled: true, name: '收入' })).toBeOnTheScreen();
+    expect(screen.getByRole('button', { disabled: true, name: '支出' })).toBeOnTheScreen();
+    expect(screen.getByRole('button', { disabled: true, name: '保存修改' })).toBeOnTheScreen();
+    expect(screen.getByLabelText('取消').props.accessibilityState?.disabled).toBe(true);
+    expect(screen.getByRole('button', { disabled: true, name: '删除账目' })).toBeOnTheScreen();
+
+    fireEvent.press(screen.getByRole('button', { name: '保存修改' }));
+    fireEvent.press(screen.getByRole('button', { name: '删除账目' }));
+    expect(screen.queryByText('确定删除这笔账目？')).toBeNull();
+    expect(ledger.update).toHaveBeenCalledTimes(1);
+    expect(ledger.remove).not.toHaveBeenCalled();
+
+    resolveUpdate();
+    expect(await screen.findByText('房租')).toBeOnTheScreen();
+  });
+
+  it('删除进行中时禁用编辑页的保存、取消、再次删除和所有编辑控件', async () => {
+    const existingSnapshot: LedgerSnapshot = {
+      entries: [
+        {
+          id: 'busy-delete-entry',
+          amount: 500,
+          type: 'expense',
+          description: '待删除',
+          date: '2026-07-26',
+        },
+      ],
+      summary: {
+        totalIncome: 0,
+        totalExpense: 500,
+        balance: -500,
+        count: 1,
+      },
+    };
+    let resolveRemove!: () => void;
+    const removePromise = new Promise<void>((resolve) => {
+      resolveRemove = resolve;
+    });
+    const ledger: Ledger = {
+      snapshot: jest.fn().mockResolvedValue(existingSnapshot),
+      add: jest.fn(),
+      update: jest.fn(),
+      remove: jest.fn().mockReturnValue(removePromise),
+    };
+
+    render(<LedgerApp ledger={ledger} />);
+    expect(await screen.findByText('待删除')).toBeOnTheScreen();
+    fireEvent.press(screen.getByRole('button', { name: '编辑 待删除' }));
+    expect(await screen.findByDisplayValue('5.00')).toBeOnTheScreen();
+    fireEvent.press(screen.getByRole('button', { name: '删除账目' }));
+    fireEvent.press(screen.getByRole('button', { name: '确认删除' }));
+
+    await waitFor(() => {
+      expect(ledger.remove).toHaveBeenCalledTimes(1);
+    });
+    expect(screen.getByLabelText('金额').props.editable).toBe(false);
+    expect(screen.getByLabelText('说明').props.editable).toBe(false);
+    expect(screen.getByLabelText('日期').props.editable).toBe(false);
+    expect(screen.getByRole('button', { disabled: true, name: '收入' })).toBeOnTheScreen();
+    expect(screen.getByRole('button', { disabled: true, name: '支出' })).toBeOnTheScreen();
+    expect(screen.getByRole('button', { disabled: true, name: '保存修改' })).toBeOnTheScreen();
+    expect(screen.getByLabelText('取消').props.accessibilityState?.disabled).toBe(true);
+    expect(screen.getByRole('button', { disabled: true, name: '取消删除' })).toBeOnTheScreen();
+    expect(screen.getByRole('button', { disabled: true, name: '确认删除' })).toBeOnTheScreen();
+
+    fireEvent.press(screen.getByRole('button', { name: '保存修改' }));
+    fireEvent.press(screen.getByLabelText('取消'));
+    fireEvent.press(screen.getByRole('button', { name: '确认删除' }));
+    expect(ledger.update).not.toHaveBeenCalled();
+    expect(ledger.remove).toHaveBeenCalledTimes(1);
+
+    resolveRemove();
+    expect(await screen.findByText('待删除')).toBeOnTheScreen();
+  });
+
+  it('保存失败后恢复编辑页操作并允许再次保存', async () => {
+    const existingSnapshot: LedgerSnapshot = {
+      entries: [
+        {
+          id: 'failed-save-entry',
+          amount: 12000,
+          type: 'expense',
+          description: '房租',
+          date: '2026-07-25',
+        },
+      ],
+      summary: {
+        totalIncome: 0,
+        totalExpense: 12000,
+        balance: -12000,
+        count: 1,
+      },
+    };
+    const ledger: Ledger = {
+      snapshot: jest.fn().mockResolvedValue(existingSnapshot),
+      add: jest.fn(),
+      update: jest
+        .fn()
+        .mockRejectedValueOnce(new Error('保存失败'))
+        .mockResolvedValueOnce(undefined),
+      remove: jest.fn(),
+    };
+
+    render(<LedgerApp ledger={ledger} />);
+    expect(await screen.findByText('房租')).toBeOnTheScreen();
+    fireEvent.press(screen.getByRole('button', { name: '编辑 房租' }));
+    expect(await screen.findByDisplayValue('120.00')).toBeOnTheScreen();
+    fireEvent.press(screen.getByRole('button', { name: '保存修改' }));
+
+    expect(await screen.findByText('保存失败')).toBeOnTheScreen();
+    expect(screen.getByLabelText('金额').props.editable).toBe(true);
+    expect(screen.getByLabelText('说明').props.editable).toBe(true);
+    expect(screen.getByLabelText('日期').props.editable).toBe(true);
+    expect(screen.getByRole('button', { disabled: false, name: '保存修改' })).toBeOnTheScreen();
+    expect(screen.getByLabelText('取消').props.accessibilityState?.disabled).not.toBe(true);
+    expect(screen.getByRole('button', { disabled: false, name: '删除账目' })).toBeOnTheScreen();
+
+    fireEvent.press(screen.getByRole('button', { name: '保存修改' }));
+    await waitFor(() => {
+      expect(ledger.update).toHaveBeenCalledTimes(2);
+    });
+    expect(await screen.findByText('房租')).toBeOnTheScreen();
+  });
+
+  it('删除失败后恢复确认操作并允许再次删除', async () => {
+    const existingSnapshot: LedgerSnapshot = {
+      entries: [
+        {
+          id: 'failed-delete-entry',
+          amount: 500,
+          type: 'expense',
+          description: '待删除',
+          date: '2026-07-26',
+        },
+      ],
+      summary: {
+        totalIncome: 0,
+        totalExpense: 500,
+        balance: -500,
+        count: 1,
+      },
+    };
+    const ledger: Ledger = {
+      snapshot: jest.fn().mockResolvedValue(existingSnapshot),
+      add: jest.fn(),
+      update: jest.fn(),
+      remove: jest
+        .fn()
+        .mockRejectedValueOnce(new Error('删除失败'))
+        .mockResolvedValueOnce(undefined),
+    };
+
+    render(<LedgerApp ledger={ledger} />);
+    expect(await screen.findByText('待删除')).toBeOnTheScreen();
+    fireEvent.press(screen.getByRole('button', { name: '编辑 待删除' }));
+    expect(await screen.findByDisplayValue('5.00')).toBeOnTheScreen();
+    fireEvent.press(screen.getByRole('button', { name: '删除账目' }));
+    fireEvent.press(screen.getByRole('button', { name: '确认删除' }));
+
+    expect(await screen.findByText('删除失败')).toBeOnTheScreen();
+    expect(screen.getByLabelText('金额').props.editable).toBe(true);
+    expect(screen.getByLabelText('说明').props.editable).toBe(true);
+    expect(screen.getByLabelText('日期').props.editable).toBe(true);
+    expect(screen.getByRole('button', { disabled: false, name: '保存修改' })).toBeOnTheScreen();
+    expect(screen.getByRole('button', { disabled: false, name: '取消删除' })).toBeOnTheScreen();
+    expect(screen.getByRole('button', { disabled: false, name: '确认删除' })).toBeOnTheScreen();
+
+    fireEvent.press(screen.getByRole('button', { name: '确认删除' }));
+    await waitFor(() => {
+      expect(ledger.remove).toHaveBeenCalledTimes(2);
+    });
+    expect(await screen.findByText('待删除')).toBeOnTheScreen();
+  });
 });

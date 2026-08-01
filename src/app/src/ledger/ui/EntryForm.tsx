@@ -15,6 +15,7 @@ import type { LedgerEntryInput } from '../contract';
 
 interface EntryFormProps {
   children?: ReactNode;
+  isBusy?: boolean;
   initialValues: LedgerEntryInput;
   onCancel: () => void;
   onSubmit: (input: LedgerEntryInput) => Promise<void>;
@@ -28,6 +29,7 @@ interface EntryFormProps {
  */
 export function EntryForm({
   children,
+  isBusy: controlledBusy,
   initialValues,
   onCancel,
   onSubmit,
@@ -37,21 +39,26 @@ export function EntryForm({
   const [values, setValues] = useState<LedgerEntryInput>(initialValues);
   const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const isBusy = controlledBusy ?? isSaving;
 
   const save = async () => {
-    if (isSaving) {
+    if (isBusy) {
       return;
     }
 
     setError(null);
-    setIsSaving(true);
+    if (controlledBusy === undefined) {
+      setIsSaving(true);
+    }
 
     try {
       await onSubmit(values);
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : '无法保存账目，请稍后重试。');
     } finally {
-      setIsSaving(false);
+      if (controlledBusy === undefined) {
+        setIsSaving(false);
+      }
     }
   };
 
@@ -70,7 +77,7 @@ export function EntryForm({
             <Pressable
               accessibilityLabel="取消"
               accessibilityRole="button"
-              disabled={isSaving}
+              disabled={isBusy}
               onPress={onCancel}
               style={styles.cancelButton}
             >
@@ -81,6 +88,7 @@ export function EntryForm({
             <Text style={styles.label}>金额</Text>
             <TextInput
               accessibilityLabel="金额"
+              editable={!isBusy}
               inputMode="decimal"
               onChangeText={(amount) => setValues((current) => ({ ...current, amount }))}
               placeholder="例如 12.34"
@@ -98,7 +106,8 @@ export function EntryForm({
                   <Pressable
                     accessibilityLabel={label}
                     accessibilityRole="button"
-                    accessibilityState={{ selected: values.type === type }}
+                    accessibilityState={{ disabled: isBusy, selected: values.type === type }}
+                    disabled={isBusy}
                     key={type}
                     onPress={() => setValues((current) => ({ ...current, type }))}
                     style={values.type === type ? styles.selectedType : styles.typeButton}
@@ -115,6 +124,7 @@ export function EntryForm({
             <Text style={styles.label}>说明</Text>
             <TextInput
               accessibilityLabel="说明"
+              editable={!isBusy}
               onChangeText={(description) =>
                 setValues((current) => ({ ...current, description }))
               }
@@ -128,6 +138,7 @@ export function EntryForm({
             <Text style={styles.label}>日期</Text>
             <TextInput
               accessibilityLabel="日期"
+              editable={!isBusy}
               onChangeText={(date) => setValues((current) => ({ ...current, date }))}
               placeholder="YYYY-MM-DD"
               placeholderTextColor="#6b7280"
@@ -139,8 +150,8 @@ export function EntryForm({
           <Pressable
             accessibilityLabel={saveLabel}
             accessibilityRole="button"
-            accessibilityState={{ disabled: isSaving }}
-            disabled={isSaving}
+            accessibilityState={{ disabled: isBusy }}
+            disabled={isBusy}
             onPress={() => void save()}
             style={styles.saveButton}
           >
