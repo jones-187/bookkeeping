@@ -14,7 +14,9 @@ iOS 和 Android 是当前且仅有的产品平台。
 
 ## 快速开始
 
-需要 Node.js 22.13 或更高版本和 npm。
+需要 Node.js 22.13 或更高版本和 npm；使用下列 `make` 命令还需要安装 Make。
+原生运行还需要对应平台工具链和已启动的模拟器或已连接设备：Android 使用 JDK 与
+Android SDK，iOS 使用 macOS、Xcode 与 CocoaPods。完整准备说明见[开发环境](docs/engineering/setup.md)。
 
 ```bash
 make setup

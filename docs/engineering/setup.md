@@ -4,7 +4,9 @@
 
 - Node.js 22.13 或更高版本（CI 使用 Node.js 22.13）
 - npm
-- 可选：`make`
+- 可选：`make`（只在使用仓库根目录的 `make` 命令时需要）
+- Android：JDK、Android SDK，以及已启动的 Android 模拟器或已连接设备
+- iOS：macOS、Xcode、CocoaPods，以及已启动的 iOS 模拟器或已连接设备
 
 移动端端到端测试还需要 Maestro、已启动的 iOS 或 Android 模拟器，以及已安装的 Bookkeeping 原生开发构建。安装与运行细节见 [端到端测试说明](../../tests/e2e/README.md)。
 
